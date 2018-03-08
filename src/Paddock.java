@@ -1,23 +1,31 @@
+import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Paddock implements Paddock_Broker{
     private final Lock r1;
-    private final Condition broker;
-    private final Condition horses;
-    private final Condition spectators;
+    private final Condition brokerWait;
+    private final Condition horsesWait;
+    private final Condition spectatorsWait;
+    private final ArrayList<HorseInPaddock> horses = new ArrayList<>();
 
-    public Paddock(){
+    Paddock(){
         this.r1 = new ReentrantLock(false);
-        r1.lock();
-        this.broker = r1.newCondition();
-        this.horses = r1.newCondition();
-        this.spectators = r1.newCondition();
+        this.brokerWait = r1.newCondition();
+        this.horsesWait = r1.newCondition();
+        this.spectatorsWait = r1.newCondition();
     }
 
     public void SummonHorsesToPaddock(){
-        System.out.println("Announcing next race");
-        r1.unlock();
+        
     }
+
+    private class HorseInPaddock{
+        public int horseID;
+        public int pnk;
+    }
+
+
 }
+
