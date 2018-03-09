@@ -2,9 +2,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Paddock implements Paddock_Broker{
+public class Paddock implements Paddock_Broker, Paddock_Horses, Paddock_Spectators{
     private final Lock r1;
-    private final Condition brokerCond;
+    private final Condition brokerLeave;
     private final Condition horsesEnter;
     private final Condition horsesLeave;
     private final Condition spectatorsEnter;
@@ -24,7 +24,7 @@ public class Paddock implements Paddock_Broker{
         this.r1 = new ReentrantLock(false);
         this.horsesEnter = r1.newCondition();
         this.horsesLeave = r1.newCondition();
-        this.brokerCond = r1.newCondition();
+        this.brokerLeave = r1.newCondition();
         this.spectatorsEnter = r1.newCondition();
         this.spectatorsLeave = r1.newCondition();
         this.allowHorsesEnter = false;
@@ -38,6 +38,13 @@ public class Paddock implements Paddock_Broker{
         this.horses = new HorseInPaddock[nHorses];
     }
 
+    public void summonHorsesToPaddock(){
+        r1.lock();
+        allowHorsesEnter = true;
+        horsesEnter.signal();
+        r1.unlock();
+    }
+
     public void proceedToPaddock(int horseID, int pnk){
         r1.lock();
         try {
@@ -49,6 +56,7 @@ public class Paddock implements Paddock_Broker{
 
             if(horsesInPaddock == nHorses){
                 this.allowSpectatorsEnter = true;
+                this.allowHorsesEnter = false;
                 spectatorsEnter.signal();
             }
             else{
@@ -73,20 +81,21 @@ public class Paddock implements Paddock_Broker{
 
             if(spectatorsInPaddock == nSpectators){
                 allowHorsesLeave = true;
+                allowSpectatorsEnter = false;
                 horsesLeave.signal();
-                brokerCond.signal();
+                brokerLeave.signal();
             }
             else{
                 spectatorsEnter.signal();
             }
 
-            return horses;
 
         }catch(InterruptedException ie){
 
         }finally{
             r1.unlock();
         }
+        return horses;
     }
 
     public void proceedToStartLine(){
@@ -96,6 +105,16 @@ public class Paddock implements Paddock_Broker{
                 horsesLeave.await();
             }
 
+            this.horsesInPaddock--;
+
+            if(horsesInPaddock == 0){
+                allowSpectatorsLeave = true;
+                allowHorsesLeave = false;
+                spectatorsLeave.signal();
+            }
+            else{
+                horsesLeave.signal();
+            }
 
         }catch(InterruptedException ie){
 
@@ -104,7 +123,30 @@ public class Paddock implements Paddock_Broker{
         }
     }
 
-    private class HorseInPaddock {
+    public void goPlaceBet(){
+        r1.lock();
+        try{
+            while(!allowSpectatorsLeave){
+                spectatorsLeave.await();
+            }
+
+            this.spectatorsInPaddock--;
+
+            if(spectatorsInPaddock == 0){
+                allowSpectatorsLeave = false;
+            }
+            else{
+                spectatorsLeave.signal();
+            }
+
+        }catch(InterruptedException ie){
+
+        }finally{
+            r1.unlock();
+        }
+    }
+
+    public class HorseInPaddock {
         public int horseID;
         public int pnk;
 

@@ -9,7 +9,7 @@ public class Broker extends Thread{
 
     @Override
     public void run(){
-        pb.SummonHorsesToPaddock();
+        pb.summonHorsesToPaddock();
         bcb.acceptTheBets();
     }
 }
