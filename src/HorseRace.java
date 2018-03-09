@@ -9,7 +9,7 @@ public class HorseRace {
         BettingCentre bettingCentre = new BettingCentre(nSpectators);
 
         //Threads
-        Broker broker = new Broker((Paddock_Broker) paddock, (BettingCentre_Broker) bettingCentre);
+        Broker broker = new Broker((BettingCentre_Broker) bettingCentre);
 
         //Starting threads
         broker.run();

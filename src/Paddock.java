@@ -2,7 +2,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Paddock implements Paddock_Broker, Paddock_Horses, Paddock_Spectators{
+public class Paddock implements Paddock_Horses, Paddock_Spectators{
     private final Lock r1;
     private final Condition brokerLeave;
     private final Condition horsesEnter;
@@ -36,13 +36,6 @@ public class Paddock implements Paddock_Broker, Paddock_Horses, Paddock_Spectato
         this.horsesInPaddock = 0;
         this.spectatorsInPaddock = 0;
         this.horses = new HorseInPaddock[nHorses];
-    }
-
-    public void summonHorsesToPaddock(){
-        r1.lock();
-        allowHorsesEnter = true;
-        horsesEnter.signal();
-        r1.unlock();
     }
 
     public void proceedToPaddock(int horseID, int pnk){
