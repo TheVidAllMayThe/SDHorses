@@ -15,7 +15,20 @@ public class RaceTrack {
         this.numHorses = 0;
     }
 
-    int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
+    public void startTheRace(){
+        r1.lock();
+
+        try{
+            this.canRace = true;
+            this.raceStarted.signal();
+        }catch(InterruptedException ie){
+
+        }finally{
+            r1.unlock();
+        }
+    }
+
+    public int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
         r1.lock();
         try{
             horses[numHorses++] = new HorsePos(pID, 0);
@@ -26,7 +39,7 @@ public class RaceTrack {
         return numHorses - 1;
     }
 
-    void makeAMove(int horsePos, int moveAmount){
+    public void makeAMove(int horsePos, int moveAmount){
         r1.lock();
         try{
             while (!canRace)

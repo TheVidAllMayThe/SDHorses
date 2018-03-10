@@ -27,9 +27,8 @@ public class BettingCentre{
         this.currentlyRefunding = false;
     }
 
-    public void acceptBet() throws IllegalMonitorStateException{
+    public void acceptTheBets() throws IllegalMonitorStateException{
         r1.lock();
-        System.out.println("Waiting for bets");
 
         try {
             do {

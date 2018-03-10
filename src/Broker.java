@@ -1,6 +1,6 @@
 public class Broker extends Thread{
     private String state;
-    private int numberOfRaces;
+    private int winners[];
     private final ControlCentre_Broker controlcentre;
     private final Stable_Broker stable;
     private final BettingCentre_Broker bettingcentre;
@@ -18,9 +18,9 @@ public class Broker extends Thread{
         this.state = "opening the event";
         
         for(int i=0; i < this.numberOfRaces; i++){
-            stable.summonHorsesToStable();
+            stable.summonHorsesToPaddock();
             this.state = "announcing next race";
-            controlcentre.summonHorsesToStable();
+            controlcentre.summonHorsesToPaddock();
             
             this.state = "waiting for bets";
             bettingcentre.acceptTheBets();
