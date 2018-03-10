@@ -18,11 +18,12 @@ public class Spectator extends Thread{
         for(int i=0; i < this.numberOfRaces; i++){
             this.state = "waiting for a race to start";
             controlcenter.waitForNextRace();
-            
-            this.state = "appraising the horses";
-            paddock.goCheckHorses();
 
-            this.state = "placing a bet"
+            controlcentre.goCheckHorses();
+            this.state = "appraising the horses";
+            padock.goCheckHorses();
+
+            this.state = "placing a bet";
             bettingcentre.placeABet();
 
             this.state = "watching a race"

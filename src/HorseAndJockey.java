@@ -18,20 +18,25 @@ public class HorseAndJockey extends Thread{
         for(int i=0; i < this.numberOfRaces; i++){
             this.state = "at the stable";
             stable.proceedToStable();
-            
+
+            controlcentre.proceedToPaddock();
             this.state = "at the paddock";
             paddock.proceedToPaddock();
 
+            paddock.proceedToStartLine();
             this.state = "at the start line";
             racetrack.proceedToStartLine();
 
             this.state = "running";
-            do{
+            while(!racetrack.hasFinishLineBeenCrossed()){
                 racetrack.makeAMove();
-            }while(!racetrack.hasFinishLineBeenCrossed());
-
-            //blocks here because a horse who has finished is only given access to monitor after all horses finished
+            }
+            // I have my doubts on what to do here
+            // Depois de acabar a corrida vai ao control center registar, se for o ultimo acorda o broker
             this.state = "at the finish line";
-            hasFinishLineBeenCrossed();}
-    }
+            controlcentre.makeAMove();
+        }
+
+        this.state = "at the stable";
+        stable.proceedToStable();
 }

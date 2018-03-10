@@ -30,7 +30,7 @@ public class Broker extends Thread{
             controlcentre.startTheRace();
 
             controlcentre.reportResults();
-            if(areThereAnyWinners()){
+            if(controlcentre.areThereAnyWinners()){
                 this.state = "settling accounts";
                 bettingcentre.honourTheBets();
             }
