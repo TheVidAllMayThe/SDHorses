@@ -1,7 +1,13 @@
+package Monitors;
+
+import Monitors.Interfaces.ControlCenterAndWatchingStand_Broker;
+import Monitors.Interfaces.ControlCenterAndWatchingStand_Horse;
+import Monitors.Interfaces.ControlCenterAndWatchingStand_Spectator;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ControlCentreAndWatchingStand {
+public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingStand_Broker, ControlCenterAndWatchingStand_Spectator, ControlCenterAndWatchingStand_Horse{
     private ReentrantLock r1;
     private int horsesThatWon[];
     private Condition brokerLeave;
@@ -49,10 +55,26 @@ public class ControlCentreAndWatchingStand {
         }
     }
 
-    public void reportResults(){
+    public void reportResults(int pID){
         r1.lock();
         this.resultsReported = true;
         this.spectatorWaitingForResult.signal();
+
         r1.unlock();
+    }
+
+    public int watchRace(){
+        r1.lock();
+        int returnValue = -1;
+        try{
+            while(!resultsReported){
+                spectatorWaitingForResult.await();
+            }
+            returnValue = horsesThatWon[0];
+        }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
+        finally {
+            r1.unlock();
+        }
+        return returnValue;
     }
 }

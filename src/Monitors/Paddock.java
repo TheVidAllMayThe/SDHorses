@@ -1,8 +1,13 @@
+package Monitors;
+
+import Monitors.Interfaces.Paddock_Horses;
+import Monitors.Interfaces.Paddock_Spectators;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Paddock implements Paddock_Horses, Paddock_Spectators{
+public class Paddock implements Paddock_Horses, Paddock_Spectators {
     private final Lock r1;
     private final Condition brokerLeave;
     private final Condition horsesEnter;

@@ -1,3 +1,5 @@
+package Monitors;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,8 +23,8 @@ public class RaceTrack {
         try{
             this.canRace = true;
             this.raceStarted.signal();
-        }catch(InterruptedException ie){
-
+        }catch(IllegalMonitorStateException e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }

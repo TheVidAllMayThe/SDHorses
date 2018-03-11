@@ -1,3 +1,8 @@
+import Monitors.BettingCentre;
+import Monitors.Interfaces.BettingCentre_Broker;
+import Monitors.Paddock;
+import Threads.Broker;
+
 public class HorseRace {
     public void main(String[] args){
         //Simulation variables

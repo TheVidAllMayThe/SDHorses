@@ -1,11 +1,16 @@
+package Threads;
+
+import Monitors.Interfaces.*;
+
 public class HorseAndJockey extends Thread{
+    private final RaceTrack_Horse racetrack;
     private String state;
     private int numberOfRaces;
-    private final ControlCentre_Broker controlcentre;
+    private final ControlCenterAndWatchingStand_Horse controlcentre;
     private final Stable_Broker stable;
     private final BettingCentre_Broker bettingcentre;
 
-    public HorseAndJockey(int n, ControlCentre_Broker cc, Stable_Broker s, BettingCentre_Broker bc, RaceTrack_Broker rtb){
+    public HorseAndJockey(int n, ControlCenterAndWatchingStand_Horse cc, Stable_Broker s, BettingCentre_Broker bc, RaceTrack_Horse rtb){
         this.numberOfRaces = n;
         this.controlcentre = cc;
         this.stable = s;

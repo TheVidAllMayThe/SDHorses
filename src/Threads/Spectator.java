@@ -1,3 +1,7 @@
+package Threads;
+
+import Monitors.Interfaces.BettingCentre_Broker;
+
 public class Spectator extends Thread{
     private String state;
     private int numberOfRaces;
