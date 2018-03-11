@@ -25,7 +25,7 @@ public class Paddock implements Paddock_Horses, Paddock_Spectators {
     private int horsesInPaddock;
     private int spectatorsInPaddock;
 
-    Paddock(int nHorses, int nSpectators){
+    public Paddock(int nHorses, int nSpectators){
         this.r1 = new ReentrantLock(false);
         this.horsesEnter = r1.newCondition();
         this.horsesLeave = r1.newCondition();

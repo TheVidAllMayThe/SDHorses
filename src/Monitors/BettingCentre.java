@@ -20,7 +20,7 @@ public class BettingCentre implements BettingCentre_Broker, BettingCentre_Specta
     private final Bet[] bets;
     private int currentNumberOfSpectators;
 
-    BettingCentre(int numSpectators){
+    public BettingCentre(int numSpectators){
         this.r1 = new ReentrantLock(false);
         this.spectatorCond = r1.newCondition();
         this.brokerCond = r1.newCondition();

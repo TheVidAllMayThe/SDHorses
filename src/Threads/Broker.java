@@ -1,19 +1,24 @@
 package Threads;
 
 import Monitors.Interfaces.BettingCentre_Broker;
+import Monitors.Interfaces.ControlCenterAndWatchingStand_Broker;
+import Monitors.Interfaces.RaceTrack_Broker;
+import Monitors.Interfaces.Stable_Broker;
 
 public class Broker extends Thread{
+    private final int numberOfRaces;
+    private final RaceTrack_Broker racetrack;
     private String state;
     private int winners[];
-    private final ControlCentre_Broker controlcentre;
+    private final ControlCenterAndWatchingStand_Broker controlCentre;
     private final Stable_Broker stable;
-    private final BettingCentre_Broker bettingcentre;
+    private final BettingCentre_Broker bettingCentre;
 
-    public Broker(int n, ControlCentre_Broker cc, Stable_Broker s, BettingCentre_Broker bc, RaceTrack_Broker rtb){
+    public Broker(int n, ControlCenterAndWatchingStand_Broker cc, Stable_Broker s, BettingCentre_Broker bc, RaceTrack_Broker rtb){
         this.numberOfRaces = n;
-        this.controlcentre = cc;
+        this.controlCentre = cc;
         this.stable = s;
-        this.bettingcentre = bc;
+        this.bettingCentre = bc;
         this.racetrack = rtb;
     }
 
@@ -24,23 +29,22 @@ public class Broker extends Thread{
         for(int i=0; i < this.numberOfRaces; i++){
             stable.summonHorsesToPaddock();
             this.state = "announcing next race";
-            controlcentre.summonHorsesToPaddock();
+            controlCentre.summonHorsesToPaddock();
             
             this.state = "waiting for bets";
-            bettingcentre.acceptTheBets();
+            bettingCentre.acceptTheBets();
             
             racetrack.startTheRace();
             this.state = "supervising the race";
-            controlcentre.startTheRace();
+            controlCentre.startTheRace();
 
-            controlcentre.reportResults();
-            if(controlcentre.areThereAnyWinners()){
+            if(controlCentre.areThereAnyWinners()){
                 this.state = "settling accounts";
-                bettingcentre.honourTheBets();
+                bettingCentre.honourTheBets();
             }
         }
 
-        controlcentre.entertainTheGuests();
+        controlCentre.entertainTheGuests();
         this.state = "playing host at the bar";
     }
 }

@@ -11,7 +11,7 @@ public class Stable {
     private int totalNumHorses;
     private int numHorses;
 
-    Stable(int totalNumHorses){
+    public Stable(int totalNumHorses){
         r1 = new ReentrantLock();
         horsesToPaddock = r1.newCondition();
         canHorsesMoveToPaddock = false;
@@ -37,7 +37,7 @@ public class Stable {
             while(!canHorsesMoveToPaddock)
                 horsesToPaddock.wait();
 
-            if(numHorses == totalNumHorses){
+            if(numHorses == totalNumHorses){ //If it is the las horse to leave the Stable then the following horses will have to wait
                 numHorses = 0;
                 canHorsesMoveToPaddock = false;
             }
