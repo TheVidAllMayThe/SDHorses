@@ -10,7 +10,7 @@ public class RaceTrack {
     private HorsePos[] horses;
     private int numHorses;
 
-    RaceTrack(int totalNumHorses){
+    public RaceTrack(int totalNumHorses){
         r1 = new ReentrantLock();
         canRace = false;
         horses = new HorsePos[numHorses];

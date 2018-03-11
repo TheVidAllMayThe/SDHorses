@@ -1,20 +1,19 @@
 package Threads;
 
-import Monitors.Interfaces.BettingCentre_Broker;
+import Monitors.ControlCentreAndWatchingStand;
+import Monitors.Interfaces.*;
 
 public class Spectator extends Thread{
-    private String state;
+    private final Paddock_Spectators paddock;
     private int numberOfRaces;
-    private final ControlCentre_Broker controlcentre;
-    private final Stable_Broker stable;
-    private final BettingCentre_Broker bettingcentre;
+    private final ControlCenterAndWatchingStand_Spectator controlCenter;
+    private final BettingCentre_Spectator bettingCenter;
 
-    public Spectator(int n, ControlCentre_Broker cc, Stable_Broker s, BettingCentre_Broker bc, RaceTrack_Broker rtb){
-        this.numberOfRaces = n;
-        this.controlcentre = cc;
-        this.stable = s;
-        this.bettingcentre = bc;
-        this.racetrack = rtb;
+    public Spectator(int numberOfRaces, ControlCenterAndWatchingStand_Spectator controlCenter, BettingCentre_Spectator bettingCenter, Paddock_Spectators paddock){
+        this.numberOfRaces = numberOfRaces;
+        this.controlCenter = controlCenter;
+        this.bettingCenter = bettingCenter;
+        this.paddock = paddock;
     }
 
     @Override
@@ -23,23 +22,23 @@ public class Spectator extends Thread{
             this.state = "waiting for a race to start";
             controlcenter.waitForNextRace();
 
-            controlcentre.goCheckHorses();
+            controlCenter.goCheckHorses();
             this.state = "appraising the horses";
             padock.goCheckHorses();
 
             this.state = "placing a bet";
-            bettingcentre.placeABet();
+            bettingCenter.placeABet();
 
             this.state = "watching a race"
-            controlcentre.goWatchTheRace();
+            controlCenter.goWatchTheRace();
 
-            if(controlcentre.haveIWon()){
+            if(controlCenter.haveIWon()){
                 this.state = "collecting the gains";
-                bettingcentre.goCollectTheGains();
+                bettingCenter.goCollectTheGains();
             }
         }
 
         this.state = "celebrating";
-        controlcentre.relaxABit();
+        controlCenter.relaxABit();
     }
 }

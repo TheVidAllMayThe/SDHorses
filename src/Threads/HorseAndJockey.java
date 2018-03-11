@@ -17,8 +17,8 @@ public class HorseAndJockey extends Thread {
     private int pnk;
     private int pID;
 
-    public HorseAndJockey(int n, ControlCenterAndWatchingStand_Horse cc, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph, int raceLength) {
-        this.numberOfRaces = n;
+    public HorseAndJockey(int numberOfRaces, int raceLength, ControlCenterAndWatchingStand_Horse cc, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph) {
+        this.numberOfRaces = numberOfRaces;
         this.controlCentre = cc;
         this.stable = s;
         this.paddock = ph;

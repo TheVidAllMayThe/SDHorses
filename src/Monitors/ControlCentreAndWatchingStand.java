@@ -15,7 +15,7 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
     private boolean canBrokerLeave;
     private boolean resultsReported;
 
-    ControlCentreAndWatchingStand(int nHorses){
+    public ControlCentreAndWatchingStand(int nHorses){
         this.horsesThatWon = new int[nHorses];
         this.r1 = new ReentrantLock(false);
         this.brokerLeave = r1.newCondition();
