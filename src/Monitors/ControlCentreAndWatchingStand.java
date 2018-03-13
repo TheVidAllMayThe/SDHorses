@@ -1,13 +1,12 @@
 package Monitors;
 
 import Monitors.Interfaces.ControlCenterAndWatchingStand_Broker;
-import Monitors.Interfaces.ControlCenterAndWatchingStand_Horse;
 import Monitors.Interfaces.ControlCenterAndWatchingStand_Spectator;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingStand_Broker, ControlCenterAndWatchingStand_Spectator, ControlCenterAndWatchingStand_Horse{
+public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingStand_Broker, ControlCenterAndWatchingStand_Spectator{
     private ReentrantLock r1;
     private int horsesThatWon[];
     private Condition brokerLeave;
@@ -22,6 +21,7 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         this.spectatorWaitingForResult = r1.newCondition();
         this.canBrokerLeave = false;
         this.resultsReported = false;
+        this.numHorsesFinished = 0;
     }
 
     public void summonHorsesToPaddock(){
@@ -32,34 +32,36 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
             }
 
             this.canBrokerLeave = false;
-        }catch(InterruptedException ie){
-
+        }catch(InterruptedException | IllegalMonitorStateException e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
     }
 
-    public void startTheRace(){
+    public int[] areThereAnyWinners(){
         r1.lock();
+        int[] returnValue = null;
+
         try{
             while(!canBrokerLeave){
                 brokerLeave.await();
             }
 
             canBrokerLeave = false;
-
+            returnValue = horsesThatWon;
         }catch(InterruptedException ie){
-
+            ie.printStackTrace();
         }finally{
             r1.unlock();
         }
+
+        return returnValue;
     }
 
-    public void reportResults(int pID){
+    public void reportResults(int[] winners){
         r1.lock();
-        this.resultsReported = true;
-        this.spectatorWaitingForResult.signal();
-
+        horsesThatWon = winners;
         r1.unlock();
     }
 
@@ -77,4 +79,6 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         }
         return returnValue;
     }
+
+
 }

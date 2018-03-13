@@ -36,15 +36,15 @@ public class Broker extends Thread{
             
             racetrack.startTheRace();
             this.state = "supervising the race";
-            controlCentre.startTheRace();
 
-            if(controlCentre.areThereAnyWinners()){
-                this.state = "settling accounts";
-                bettingCentre.honourTheBets();
-            }
+            controlCentre.reportResults();
+            controlCentre.areThereAnyWinners();
+            this.state = "settling accounts";
+            bettingCentre.honorBet();
+
         }
 
-        controlCentre.entertainTheGuests();
         this.state = "playing host at the bar";
+        //controlCentre.entertainTheGuests();
     }
 }

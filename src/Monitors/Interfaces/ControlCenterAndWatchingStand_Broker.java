@@ -2,5 +2,6 @@ package Monitors.Interfaces;
 
 public interface ControlCenterAndWatchingStand_Broker {
     void summonHorsesToPaddock();
-    void startTheRace();
+    int[] areThereAnyWinners();
+    void reportResults(int[] winners);
 }

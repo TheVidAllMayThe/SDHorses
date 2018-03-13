@@ -1,7 +1,6 @@
 package Threads;
 
 
-import Monitors.Interfaces.ControlCenterAndWatchingStand_Horse;
 import Monitors.Interfaces.Paddock_Horses;
 import Monitors.Interfaces.RaceTrack_Horse;
 import Monitors.Interfaces.Stable_Horse;
@@ -11,15 +10,14 @@ public class HorseAndJockey extends Thread {
     private final RaceTrack_Horse raceTrack;
     private final Paddock_Horses paddock;
     private int numberOfRaces;
-    private final ControlCenterAndWatchingStand_Horse controlCentre;
+
     private final Stable_Horse stable;
     private final int raceLength;
     private int pnk;
     private int pID;
 
-    public HorseAndJockey(int numberOfRaces, int raceLength, ControlCenterAndWatchingStand_Horse cc, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph) {
+    public HorseAndJockey(int numberOfRaces, int raceLength, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph) {
         this.numberOfRaces = numberOfRaces;
-        this.controlCentre = cc;
         this.stable = s;
         this.paddock = ph;
         this.raceTrack = rtb;
