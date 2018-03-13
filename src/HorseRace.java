@@ -5,7 +5,7 @@ import Threads.HorseAndJockey;
 import Threads.Spectator;
 
 public class HorseRace {
-    public void main(String[] args){
+    public static void main(String[] args){
         //Simulation variables
         int nHorses = 4;
         int nSpectators = 4;
@@ -16,14 +16,15 @@ public class HorseRace {
         BettingCentre bettingCentre = new BettingCentre(nSpectators);
         Stable stable = new Stable(nHorses);
         ControlCentreAndWatchingStand controlCentre = new ControlCentreAndWatchingStand(nHorses);
-        RaceTrack raceTrack = new RaceTrack(nHorses);
+        RaceTrack raceTrack = new RaceTrack(nHorses, raceLength);
+
         //Threads
         Thread horses[] = new Thread[nHorses];
         Thread spectators[] = new Thread[nSpectators];
         Broker broker = new Broker(numRaces, controlCentre, (Stable_Broker) stable, bettingCentre, (RaceTrack_Broker) raceTrack);
 
         for(Thread i: horses){
-            i = new HorseAndJockey(numRaces, raceLength, controlCentre, (Stable_Horse) stable, (RaceTrack_Horse) raceTrack, paddock);
+            i = new HorseAndJockey(numRaces, raceLength, (Stable_Horse) stable, (RaceTrack_Horse) raceTrack, (Paddock_Horses) paddock);
         }
 
         for(Thread i: spectators){

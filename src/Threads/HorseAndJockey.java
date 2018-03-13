@@ -10,17 +10,15 @@ public class HorseAndJockey extends Thread {
     private final RaceTrack_Horse raceTrack;
     private final Paddock_Horses paddock;
     private int numberOfRaces;
-
     private final Stable_Horse stable;
     private int pnk;
     private int pID;
 
-    public HorseAndJockey(int numberOfRaces, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph) {
+    public HorseAndJockey(int numberOfRaces, int raceLength, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph) {
         this.numberOfRaces = numberOfRaces;
         this.stable = s;
         this.paddock = ph;
         this.raceTrack = rtb;
-        this.raceLength = raceLength;
         pnk = ThreadLocalRandom.current().nextInt(1, raceLength/4);
 
     }

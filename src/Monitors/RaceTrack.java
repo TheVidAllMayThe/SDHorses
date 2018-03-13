@@ -18,13 +18,13 @@ public class RaceTrack {
 
 
     public RaceTrack(int totalNumHorses, int raceLength){
-        r1 = new ReentrantLock();
+        r1 = new ReentrantLock(true);
         raceStarted = r1.newCondition();
         resultsForBroker = r1.newCondition();
         lastHorseFinished = false;
         canRace = false;
         horses = new HorsePos[numHorses];
-        this.numHorses = 0;
+        this.numHorses = totalNumHorses;
         this.raceLength = raceLength;
     }
 
@@ -74,6 +74,10 @@ public class RaceTrack {
         try{
             while (!canRace)
                 raceStarted.await();
+
+            this.horses[horsePos].addPos(moveAmount);
+            raceStarted.signal();
+
         }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
         finally {
             r1.unlock();
@@ -83,24 +87,20 @@ public class RaceTrack {
     public boolean hasFinishLineBeenCrossed(int pID){
         r1.lock();
         boolean returnVal = false;
-        try {
-            for (int i = 0; i < numHorses; i++) {
-                if (horses[i].pos == pID){
+        for (int i = 0; i < numHorses; i++) {
+            if (horses[i].horseID == pID){
+                if(horses[i].pos > this.raceLength) {
                     returnVal = true;
                     break;
                 }
             }
-
-
-            return returnVal;
-        }catch(InterruptedException ie){
-
-        }finally{
-            r1.unlock();
         }
+
+        r1.unlock();
+        return returnVal;
     }
 
-    private class HorsePos implements Comparable{
+    private class HorsePos implements Comparable<HorsePos>{
         int horseID;
         int pos;
         int numSteps;
@@ -113,9 +113,11 @@ public class RaceTrack {
 
         void addPos(int amount){
             pos += amount;
+            this.numSteps++;
         }
 
-        int compareTo(HorsePos horse){
+        @Override
+        public int compareTo(HorsePos horse){
             if (horse.numSteps<this.numSteps)
                 return -1;
 
