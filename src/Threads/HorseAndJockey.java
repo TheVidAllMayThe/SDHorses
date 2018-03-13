@@ -41,16 +41,14 @@ public class HorseAndJockey extends Thread {
             int racePos = raceTrack.proceedToStartLine(pID);
 
             //this.state = "running";
-            int tmp = 0;
             do{
                 raceTrack.makeAMove(racePos, ThreadLocalRandom.current().nextInt(1, pnk));
             }while (!raceTrack.hasFinishLineBeenCrossed());
 
             //this.state = "at the finish line";
-
-            controlCentre.reportResults(pID);
         }
 
+        //this.state = "at the stable";
         stable.proceedToStable();
     }
 }
