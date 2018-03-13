@@ -12,11 +12,10 @@ public class HorseAndJockey extends Thread {
     private int numberOfRaces;
 
     private final Stable_Horse stable;
-    private final int raceLength;
     private int pnk;
     private int pID;
 
-    public HorseAndJockey(int numberOfRaces, int raceLength, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph) {
+    public HorseAndJockey(int numberOfRaces, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph) {
         this.numberOfRaces = numberOfRaces;
         this.stable = s;
         this.paddock = ph;
@@ -43,7 +42,7 @@ public class HorseAndJockey extends Thread {
             //this.state = "running";
             do{
                 raceTrack.makeAMove(racePos, ThreadLocalRandom.current().nextInt(1, pnk));
-            }while (!raceTrack.hasFinishLineBeenCrossed());
+            }while (!raceTrack.hasFinishLineBeenCrossed(pID));
 
             //this.state = "at the finish line";
         }

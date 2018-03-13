@@ -14,9 +14,10 @@ public class RaceTrack {
     private boolean canRace;
     private HorsePos[] horses;
     private int numHorses;
+    private final int raceLength;
 
 
-    public RaceTrack(int totalNumHorses){
+    public RaceTrack(int totalNumHorses, int raceLength){
         r1 = new ReentrantLock();
         raceStarted = r1.newCondition();
         resultsForBroker = r1.newCondition();
@@ -24,6 +25,7 @@ public class RaceTrack {
         canRace = false;
         horses = new HorsePos[numHorses];
         this.numHorses = 0;
+        this.raceLength = raceLength;
     }
 
     public int[] startTheRace(){
@@ -74,6 +76,26 @@ public class RaceTrack {
                 raceStarted.await();
         }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
         finally {
+            r1.unlock();
+        }
+    }
+
+    public boolean hasFinishLineBeenCrossed(int pID){
+        r1.lock();
+        boolean returnVal = false;
+        try {
+            for (int i = 0; i < numHorses; i++) {
+                if (horses[i].pos == pID){
+                    returnVal = true;
+                    break;
+                }
+            }
+
+
+            return returnVal;
+        }catch(InterruptedException ie){
+
+        }finally{
             r1.unlock();
         }
     }
