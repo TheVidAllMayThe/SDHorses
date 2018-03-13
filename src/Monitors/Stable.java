@@ -30,7 +30,7 @@ public class Stable {
         }
     }
 
-    void proceedToPaddock(){
+    void proceedToStable(){
         r1.lock();
         numHorses++;
         try{

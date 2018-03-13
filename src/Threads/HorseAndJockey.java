@@ -33,7 +33,7 @@ public class HorseAndJockey extends Thread {
         pID = (int)Thread.currentThread().getId();
         for (int i = 0; i < this.numberOfRaces; i++) {
             //this.state = "at the stable";
-            stable.proceedToPaddock();
+            stable.proceedToStable();
 
             //this.state = "at the paddock";
             paddock.proceedToPaddock(pID, pnk);
@@ -44,15 +44,15 @@ public class HorseAndJockey extends Thread {
 
             //this.state = "running";
             int tmp = 0;
-            while (tmp == 1){//!raceTrack.hasFinishLineBeenCrossed()) {
+            do{
                 raceTrack.makeAMove(racePos, ThreadLocalRandom.current().nextInt(1, pnk));
-            }
-            // I have my doubts on what to do here
-            // Depois de acabar a corrida vai ao control center registar, se for o ultimo acorda o broker
+            }while (!raceTrack.hasFinishLineBeenCrossed());
+
+            //this.state = "at the finish line";
 
             controlCentre.reportResults(pID);
         }
 
-        stable.proceedToPaddock();
+        stable.proceedToStable();
     }
 }
