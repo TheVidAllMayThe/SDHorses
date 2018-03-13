@@ -6,12 +6,18 @@ import java.util.concurrent.locks.ReentrantLock;
 public class RaceTrack {
     private ReentrantLock r1;
     private Condition raceStarted;
+    private Condition resultsForBroker;
+    private boolean lastHorseFinished;
     private boolean canRace;
     private HorsePos[] horses;
     private int numHorses;
 
+
     public RaceTrack(int totalNumHorses){
         r1 = new ReentrantLock();
+        raceStarted = r1.newCondition();
+        resultsForBroker = r1.newCondition();
+        lastHorseFinished = false;
         canRace = false;
         horses = new HorsePos[numHorses];
         this.numHorses = 0;
@@ -23,9 +29,11 @@ public class RaceTrack {
         try{
             this.canRace = true;
             this.raceStarted.signal();
-        }catch(IllegalMonitorStateException e){
+            while(!lastHorseFinished)
+                resultsForBroker.await();
+        }catch(IllegalMonitorStateException | InterruptedException e){
             e.printStackTrace();
-        }finally{
+        } finally{
             r1.unlock();
         }
     }
@@ -55,10 +63,12 @@ public class RaceTrack {
     private class HorsePos{
         int horseID;
         int pos;
+        int numSteps;
 
         HorsePos(int horseID, int pos) {
             this.horseID = horseID;
             this.pos = pos;
+            this.numSteps = 0;
         }
 
         void addPos(int amount){

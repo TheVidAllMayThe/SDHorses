@@ -34,10 +34,10 @@ public class Broker extends Thread{
             this.state = "waiting for bets";
             bettingCentre.acceptTheBets();
             
-            racetrack.startTheRace();
+            int[] results =  racetrack.startTheRace();
             this.state = "supervising the race";
 
-            controlCentre.reportResults();
+            controlCentre.reportResults(results);
             controlCentre.areThereAnyWinners();
             this.state = "settling accounts";
             bettingCentre.honorBet();
