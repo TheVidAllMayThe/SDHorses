@@ -8,6 +8,7 @@ public class Spectator extends Thread{
     private int numberOfRaces;
     private final ControlCenterAndWatchingStand_Spectator controlCenter;
     private final BettingCentre_Spectator bettingCenter;
+    private String status;
 
     public Spectator(int numberOfRaces, ControlCenterAndWatchingStand_Spectator controlCenter, BettingCentre_Spectator bettingCenter, Paddock_Spectators paddock){
         this.numberOfRaces = numberOfRaces;
@@ -20,7 +21,7 @@ public class Spectator extends Thread{
     public void run(){
         for(int i=0; i < this.numberOfRaces; i++){
             this.state = "waiting for a race to start";
-            controlcenter.waitForNextRace();
+            controlCenter.waitForNextRace();
 
             controlCenter.goCheckHorses();
             this.state = "appraising the horses";

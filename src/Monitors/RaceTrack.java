@@ -1,5 +1,8 @@
 package Monitors;
 
+import Monitors.AuxiliaryClasses.HorsePos;
+import Monitors.AuxiliaryClasses.Parameters;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,56 +10,13 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RaceTrack {
-    private ReentrantLock r1;
-    private Condition raceStarted;
-    private Condition resultsForBroker;
-    private boolean lastHorseFinished;
-    private boolean canRace;
-    private HorsePos[] horses;
-    private int numHorses;
-    private final int raceLength;
-
-
-    public RaceTrack(int totalNumHorses, int raceLength){
-        r1 = new ReentrantLock(true);
-        raceStarted = r1.newCondition();
-        resultsForBroker = r1.newCondition();
-        lastHorseFinished = false;
-        canRace = false;
-        horses = new HorsePos[numHorses];
-        this.numHorses = totalNumHorses;
-        this.raceLength = raceLength;
-    }
-
-    public int[] startTheRace(){
-        r1.lock();
-
-        try{
-            this.canRace = true;
-            this.raceStarted.signal();
-            while(!lastHorseFinished)
-                resultsForBroker.await();
-        }catch(IllegalMonitorStateException | InterruptedException e){
-            e.printStackTrace();
-        } finally{
-            r1.unlock();
-        }
-        ArrayList<HorsePos> horsestmp = new ArrayList<>(Arrays.asList(horses));
-        HorsePos min = Collections.min(horsestmp);
-        horsestmp.remove(min);
-        for (HorsePos horse: horsestmp)
-            if(horse.compareTo(min)>0)
-                horsestmp.remove(horse);
-        int[] winners = new int[horsestmp.size()];
-
-        int i = 0;
-        for(HorsePos horse: horsestmp){
-            winners[i++] = horse.horseID;
-        }
-        return winners;
-
-
-    }
+    public static ReentrantLock r1 = new ReentrantLock(true);
+    public static Condition raceStarted = r1.newCondition();
+    public static Condition resultsForBroker = r1.newCondition();
+    public static boolean lastHorseFinished = false;
+    public static boolean canRace = false;
+    public static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
+    public static int numHorses;
 
     public int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
         r1.lock();
@@ -100,39 +60,5 @@ public class RaceTrack {
         return returnVal;
     }
 
-    private class HorsePos implements Comparable<HorsePos>{
-        int horseID;
-        int pos;
-        int numSteps;
 
-        HorsePos(int horseID, int pos) {
-            this.horseID = horseID;
-            this.pos = pos;
-            this.numSteps = 0;
-        }
-
-        void addPos(int amount){
-            pos += amount;
-            this.numSteps++;
-        }
-
-        @Override
-        public int compareTo(HorsePos horse){
-            if (horse.numSteps<this.numSteps)
-                return -1;
-
-            else if (horse.numSteps>this.numSteps)
-                return 1;
-
-            else {
-                if (horse.pos<this.pos)
-                    return -1;
-                else if (horse.pos>this.pos)
-                    return 1;
-            }
-            return 0;
-
-
-        }
-    }
 }

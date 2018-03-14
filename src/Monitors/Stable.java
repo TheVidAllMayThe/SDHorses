@@ -1,43 +1,28 @@
 package Monitors;
 
+import Monitors.AuxiliaryClasses.Parameters;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Stable {
 
-    private ReentrantLock r1;
-    private Condition horsesToPaddock;
-    private boolean canHorsesMoveToPaddock;
-    private int totalNumHorses;
-    private int numHorses;
+    public static ReentrantLock r1 = new ReentrantLock();
+    public static Condition horsesToPaddock = r1.newCondition();
+    public static Condition lastHorseNotInPaddock = r1.newCondition();
+    public static boolean canHorsesMoveToPaddock = false;
+    public static boolean isLastHorseInPaddock = false;
+    public static int numHorses = 0;
 
-    public Stable(int totalNumHorses){
-        r1 = new ReentrantLock();
-        horsesToPaddock = r1.newCondition();
-        canHorsesMoveToPaddock = false;
-        this.totalNumHorses = totalNumHorses;
-        this.numHorses = 0;
-    }
 
-    void summonHorsesToPaddock(){
-        r1.lock();
-        try{
-            canHorsesMoveToPaddock = true;
-            horsesToPaddock.signal();
-        }catch (IllegalMonitorStateException e){e.printStackTrace();}
-        finally {
-            r1.unlock();
-        }
-    }
-
-    void proceedToStable(){
+    static void proceedToStable(){
         r1.lock();
         numHorses++;
         try{
             while(!canHorsesMoveToPaddock)
                 horsesToPaddock.wait();
 
-            if(numHorses == totalNumHorses){ //If it is the las horse to leave the Stable then the following horses will have to wait
+            if(numHorses == Parameters.getNumberOfHorses()){ //If it is the las horse to leave the Stable then the following horses will have to wait
                 numHorses = 0;
                 canHorsesMoveToPaddock = false;
             }
