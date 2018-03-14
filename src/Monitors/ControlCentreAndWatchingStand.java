@@ -8,30 +8,35 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingStand_Broker, ControlCenterAndWatchingStand_Spectator{
     private ReentrantLock r1;
+
+    private Condition broker;
+    private Condition spectator;
+
+    private boolean brokerUnlocked;
+    private boolean spectatorUnlocked;
+
     private int horsesThatWon[];
-    private Condition brokerLeave;
-    private Condition spectatorWaitingForResult;
-    private boolean canBrokerLeave;
-    private boolean resultsReported;
 
     public ControlCentreAndWatchingStand(int nHorses){
-        this.horsesThatWon = new int[nHorses];
         this.r1 = new ReentrantLock(false);
-        this.brokerLeave = r1.newCondition();
-        this.spectatorWaitingForResult = r1.newCondition();
-        this.canBrokerLeave = false;
-        this.resultsReported = false;
-        this.numHorsesFinished = 0;
+
+        this.broker = r1.newCondition();
+        this.spectator = r1.newCondition();
+
+        this.brokerUnlocked = false;
+        this.spectatorUnlocked = false;
+
+        this.horsesThatWon = new int[nHorses];
     }
 
-    public void summonHorsesToPaddock(){
+    public void acceptTheBets(){
         r1.lock();
         try{
             while(!canBrokerLeave){
-                brokerLeave.await();
+                broker.await();
             }
 
-            this.canBrokerLeave = false;
+            this.brokerUnlocked = false;
         }catch(InterruptedException | IllegalMonitorStateException e){
             e.printStackTrace();
         }finally{

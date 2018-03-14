@@ -7,41 +7,32 @@ import Monitors.Interfaces.Stable_Broker;
 
 public class Broker extends Thread{
     private final int numberOfRaces;
-    private final RaceTrack_Broker racetrack;
     private String state;
     private int winners[];
-    private final ControlCenterAndWatchingStand_Broker controlCentre;
-    private final Stable_Broker stable;
-    private final BettingCentre_Broker bettingCentre;
 
-    public Broker(int numberOfRaces, ControlCenterAndWatchingStand_Broker cc, Stable_Broker s, BettingCentre_Broker bc, RaceTrack_Broker rtb){
+    public Broker(int numberOfRaces){
         this.numberOfRaces = numberOfRaces;
-        this.controlCentre = cc;
-        this.stable = s;
-        this.bettingCentre = bc;
-        this.racetrack = rtb;
+        this.state = "opening the event";
     }
 
     @Override
     public void run(){
-        this.state = "opening the event";
         
         for(int i=0; i < this.numberOfRaces; i++){
-            stable.summonHorsesToPaddock();
+            StableBroker.summonHorsesToPaddock();
             this.state = "announcing next race";
-            controlCentre.summonHorsesToPaddock();
-            
+
+            ControlCentreAndWatchingStand_Broker.acceptTheBets();
             this.state = "waiting for bets";
-            bettingCentre.acceptTheBets();
+            BettingCentre_Broker.acceptTheBets();
             
-            int[] results =  racetrack.startTheRace();
+            int[] results =  RaceTrack_Broker.startTheRace();
             this.state = "supervising the race";
 
-            controlCentre.reportResults(results);
-            controlCentre.areThereAnyWinners();
+            ControlCentreAndWatchingStand_Broker.reportResults(results);
+            ControlCentreAndWatchingStand_Broker.areThereAnyWinners();
             this.state = "settling accounts";
-            bettingCentre.honorBet();
-
+            BettingCentre_Broker.honorBet();
         }
 
         this.state = "playing host at the bar";
