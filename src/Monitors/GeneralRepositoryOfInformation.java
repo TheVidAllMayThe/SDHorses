@@ -1,3 +1,5 @@
+package Monitors;
+
 public class GeneralRepositoryOfInformation {
     private final int numSpectators;
     private final int numHorses;

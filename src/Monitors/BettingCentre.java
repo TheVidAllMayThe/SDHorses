@@ -1,8 +1,14 @@
+package Monitors;
+
+import Monitors.Interfaces.BettingCentre_Broker;
+import Monitors.Interfaces.BettingCentre_Spectator;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class BettingCentre{
+
+public class BettingCentre implements BettingCentre_Broker, BettingCentre_Spectator{
     private final Lock r1;
     private final Condition brokerCond;
     private final Condition spectatorCond;
@@ -14,7 +20,7 @@ public class BettingCentre{
     private final Bet[] bets;
     private int currentNumberOfSpectators;
 
-    BettingCentre(int numSpectators){
+    public BettingCentre(int numSpectators){
         this.r1 = new ReentrantLock(false);
         this.spectatorCond = r1.newCondition();
         this.brokerCond = r1.newCondition();
