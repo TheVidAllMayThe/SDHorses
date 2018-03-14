@@ -20,31 +20,67 @@ public class Broker extends Thread{
         this.stable = s;
         this.bettingCentre = bc;
         this.racetrack = rtb;
+        this.state = "opening the event";
+    }
+
+    private void summonHorsesToPaddock(){
+        this.state = "announcing next race";
+        stable.unlockHorses();
+        controlCentre.brokerBlock();
+    }
+
+    private void acceptTheBets(){
+        this.state = "waiting for bets";
+
+        while(!bettingCentre.betsDone()){
+            bettingCentre.unlockSpectator();
+            bettingCentre.blockBroker();
+        }
+    }
+
+    private void startTheRace(){
+        this.state = "supervising the race";
+        racetrack.unlockHorses();
+        racetrack.blockBroker();
+    }
+
+    private void reportResults(){
+        int[] results = racetrack.getWinners();
+        concontrolCentre.writeHorsesThatWon(results);
+        controlCentre.unlockSpectator();
+    }
+
+    private boolean areThereAnyWinners(){
+        return controlCentre.areThereAnyWinners();
+    }
+
+    private void honourTheBets(){
+        this.state = "settling accounts";
+        
+        while(!bettingCentre.paidAllSpectators()){
+            bettingCentre.blockBroker();
+            bettingCentre.unlockSpectators();
+        }
+    }
+
+    private void entertainTheGuests(){
+        this.state = "playing host at the bar";
+        stable.unlockHorses();
     }
 
     @Override
     public void run(){
-        this.state = "opening the event";
         
         for(int i=0; i < this.numberOfRaces; i++){
-            stable.summonHorsesToPaddock();
-            this.state = "announcing next race";
-            controlCentre.summonHorsesToPaddock();
-            
-            this.state = "waiting for bets";
-            bettingCentre.acceptTheBets();
-            
-            int[] results =  racetrack.startTheRace();
-            this.state = "supervising the race";
-
-            controlCentre.reportResults(results);
-            controlCentre.areThereAnyWinners();
-            this.state = "settling accounts";
-            bettingCentre.honorBet();
-
+            this.summonHorsesToPaddock(); 
+            this.acceptTheBets(); 
+            this.startTheRace();
+            this.reportResults();
+            if(this.areThereAnyWinners()){
+                this.honourTheBets();
+            }
         }
 
-        this.state = "playing host at the bar";
-        //controlCentre.entertainTheGuests();
+        this.entertainTheGuests();
     }
 }

@@ -6,59 +6,68 @@ import Monitors.Interfaces.BettingCentre_Spectator;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+import java.util.ArrayList;
 
 public class BettingCentre implements BettingCentre_Broker, BettingCentre_Spectator{
     private final Lock r1;
+
     private final Condition brokerCond;
-    private final Condition spectatorCond;
+    private final Condition spectator;
+    private boolean brokerUnlocked;
+    private boolean spectatorUnlocked;
     private boolean previousBetAccepted;
     private boolean previousBetHonored;
-    private boolean anyBets;
     private boolean currentlyRefunding;
+
     private final int numSpectators;
-    private final Bet[] bets;
+    private final ArrayList<Bet> bets;
     private int currentNumberOfSpectators;
 
     public BettingCentre(int numSpectators){
         this.r1 = new ReentrantLock(false);
-        this.spectatorCond = r1.newCondition();
-        this.brokerCond = r1.newCondition();
-        this.numSpectators = numSpectators;
-        this.bets = new Bet[numSpectators];
-        this.currentNumberOfSpectators = 0;
-        this.anyBets = false;
-        this.previousBetAccepted = true;
-        this.previousBetAccepted= true;
+
+        this.spectator = r1.newCondition();
+        this.broker = r1.newCondition();
+
+        this.brokerUnlocked = false;
+        this.spectatorUnlocked = false;
+        this.spectatorUnlocked = false;
         this.currentlyRefunding = false;
+
+        this.currentNumberOfSpectators = 0;
+        this.numSpectators = numSpectators;
+        this.bets = new ArrayList<Bet>();;
     }
 
-    public void acceptTheBets() throws IllegalMonitorStateException{
+    public void blockBroker(){
         r1.lock();
+        try{
+            while(!brokerUnlocked){
+                broker.await();
+            } 
+            brokerUnlocked = false;
+        catch(InterruptedException ie){
 
-        try {
-            do {
-                while (!anyBets)
-                    brokerCond.await();
-
-                bets[currentNumberOfSpectators - 1].accepted = true;
-
-                spectatorCond.signal();
-            }while (currentNumberOfSpectators != numSpectators);
-        }catch (IllegalMonitorStateException | InterruptedException e){
-            e.printStackTrace();
-        } finally {
+        }finally{
             r1.unlock();
         }
     }
 
+    public void unlockSpectator(){
+        r1.lock();
+        spectatorUnlocked = true;
+        spectator.signal();
+        r1.unlock();
+    }
+    
     public void placeBet(int procID, int betAmount)  throws IllegalMonitorStateException{
         r1.lock();
         try{
 
             while(!previousBetAccepted)
                 spectatorCond.await();
-            bets[currentNumberOfSpectators++] = new Bet(procID, betAmount);
+            bets.add(new Bet(procID, betAmount);
+            currentNumberOfSpectators++;
             anyBets = true;
             previousBetAccepted = false;
             brokerCond.signal();
@@ -109,15 +118,29 @@ public class BettingCentre implements BettingCentre_Broker, BettingCentre_Specta
         return returnValue;
     }
 
+    public boolean betsDone(){
+        boolean result;
+        r1.lock();
+        result = this.currentNumOfSpectators == this.numSpectators;
+        r1.unlock();
+        return result;
+    }
+
+    public boolean paidAllSpectators(){
+        boolean result;
+        r1.lock();
+        result = (this.bets.size() == 0);
+        r1.unlock();
+        return result;
+    }
+
     private class Bet{
         public int spectatorID;
         public int betAmount;
-        public boolean accepted;
 
         public Bet(int proc, int betAmount) {
             this.spectatorID = proc;
             this.betAmount = betAmount;
-            this.accepted = false;
         }
     }
 }

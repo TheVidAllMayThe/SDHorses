@@ -13,6 +13,7 @@ public class HorseAndJockey extends Thread {
     private final Stable_Horse stable;
     private int pnk;
     private int pID;
+    private string state;
 
     public HorseAndJockey(int numberOfRaces, int raceLength, Stable_Horse s, RaceTrack_Horse rtb, Paddock_Horses ph) {
         this.numberOfRaces = numberOfRaces;
@@ -21,6 +22,12 @@ public class HorseAndJockey extends Thread {
         this.raceTrack = rtb;
         pnk = ThreadLocalRandom.current().nextInt(1, raceLength/4);
 
+    }
+
+    private void proceedToStable(){
+        this.state = "at the stable";
+        stable.blockHorses();        
+        if(stable.isEmpty()) stable.setUnlockHorses(false);
     }
 
     @Override

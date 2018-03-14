@@ -8,24 +8,50 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class RaceTrack {
     private ReentrantLock r1;
-    private Condition raceStarted;
-    private Condition resultsForBroker;
-    private boolean lastHorseFinished;
-    private boolean canRace;
-    private HorsePos[] horses;
+
+    private Condition broker;
+    private Condition horses;
+    private boolean brokerUnlocked;
+    private boolean horsesUnlocked;
+
+    private ArrayList<HorseInfo> horsesInfo;
     private int numHorses;
     private final int raceLength;
 
 
     public RaceTrack(int totalNumHorses, int raceLength){
-        r1 = new ReentrantLock(true);
-        raceStarted = r1.newCondition();
-        resultsForBroker = r1.newCondition();
-        lastHorseFinished = false;
-        canRace = false;
-        horses = new HorsePos[numHorses];
+        r1 = new ReentrantLock(false);
+
+        broker= r1.newCondition();
+        horses = r1.newCondition();
+        brokerUnlocked = false;
+        horsesUnlocked = false;
+
+        this,horsesInfo = new ArrayList<HorseInfo>();
         this.numHorses = totalNumHorses;
         this.raceLength = raceLength;
+    }
+
+    public void blockBroker(){
+        r1.lock();
+        try{
+            while(!brokerUnlocked){
+                broker.await();
+            }
+
+            this.brokerUnlocked = false;
+        }catch(InterruptedException e){
+        
+        }finally{
+            r1.unlock();
+        }
+    }
+
+    public void unlockHorse(){
+        r1.lock();
+        horsesUnlocked = true;
+        horses.signal();
+        r1.unlock();
     }
 
     public int[] startTheRace(){
@@ -100,39 +126,28 @@ public class RaceTrack {
         return returnVal;
     }
 
-    private class HorsePos implements Comparable<HorsePos>{
+    public int[] getWinners(){
+        int[] result = int[horsesInfo.size()]; 
+        r1.lock();
+        for(int i=0; i<horseInfo.size(); i++) result[i] = horseInfo.get(i).horseID;
+        r1.unlock();
+        return result;
+    }
+
+    private class HorseInfo{
         int horseID;
         int pos;
         int numSteps;
 
-        HorsePos(int horseID, int pos) {
+        HorseInfo(int horseID, int pos) {
             this.horseID = horseID;
             this.pos = pos;
             this.numSteps = 0;
         }
 
-        void addPos(int amount){
+        void move(int amount){
             pos += amount;
             this.numSteps++;
-        }
-
-        @Override
-        public int compareTo(HorsePos horse){
-            if (horse.numSteps<this.numSteps)
-                return -1;
-
-            else if (horse.numSteps>this.numSteps)
-                return 1;
-
-            else {
-                if (horse.pos<this.pos)
-                    return -1;
-                else if (horse.pos>this.pos)
-                    return 1;
-            }
-            return 0;
-
-
         }
     }
 }

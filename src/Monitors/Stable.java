@@ -6,28 +6,56 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Stable {
 
     private ReentrantLock r1;
-    private Condition horsesToPaddock;
-    private boolean canHorsesMoveToPaddock;
+
+    private Condition horses;
+    private boolean horsesUnlocked;
+
     private int totalNumHorses;
     private int numHorses;
 
     public Stable(int totalNumHorses){
         r1 = new ReentrantLock();
-        horsesToPaddock = r1.newCondition();
-        canHorsesMoveToPaddock = false;
+
+        horses = r1.newCondition();
+        horsesUnlocked = false;
+
         this.totalNumHorses = totalNumHorses;
         this.numHorses = 0;
     }
 
-    void summonHorsesToPaddock(){
+    void blockHorses(){
         r1.lock();
         try{
-            canHorsesMoveToPaddock = true;
-            horsesToPaddock.signal();
-        }catch (IllegalMonitorStateException e){e.printStackTrace();}
-        finally {
+            while(!horsesUnlocked){
+                horses.await();
+            }
+        catch(InterruptedException ie){
+        
+        }finally{
             r1.unlock();
         }
+        }
+    }
+    
+    void unlockHorses(){
+        r1.lock();
+        horsesUnlocked = true;
+        horses.signal();
+        r1.unlock();
+    }
+
+    void setHorsesUnlocked(boolean b){
+        r1.lock();
+        this.horsesUnlocked = b;
+        r1.unlock();
+    }
+
+    void boolean isEmpty(){
+        boolean result;
+        r1.lock();
+        result = numHorses == 0;
+        r1.unlock();
+        return result;
     }
 
     void proceedToStable(){

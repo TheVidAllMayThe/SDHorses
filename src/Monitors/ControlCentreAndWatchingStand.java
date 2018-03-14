@@ -8,61 +8,60 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingStand_Broker, ControlCenterAndWatchingStand_Spectator{
     private ReentrantLock r1;
+
+    private Condition broker;
+    private Condition spectators;
+    private boolean brokerUnlocked;
+    private boolean spectatorsUnlocked;;
+
+    private int numHorsesFinished;
     private int horsesThatWon[];
-    private Condition brokerLeave;
-    private Condition spectatorWaitingForResult;
-    private boolean canBrokerLeave;
-    private boolean resultsReported;
 
     public ControlCentreAndWatchingStand(int nHorses){
-        this.horsesThatWon = new int[nHorses];
         this.r1 = new ReentrantLock(false);
-        this.brokerLeave = r1.newCondition();
-        this.spectatorWaitingForResult = r1.newCondition();
-        this.canBrokerLeave = false;
-        this.resultsReported = false;
+
+        this.broker = r1.newCondition();
+        this.spectator = r1.newCondition();
+        this.brokerUnlocked = false;
+        this.spectatorsUnlocked = false;
+
         this.numHorsesFinished = 0;
     }
 
-    public void summonHorsesToPaddock(){
+    public void blockBroker(){
         r1.lock();
         try{
-            while(!canBrokerLeave){
-                brokerLeave.await();
+            while(!brokerUnlocked){
+                broker.await();
             }
 
-            this.canBrokerLeave = false;
-        }catch(InterruptedException | IllegalMonitorStateException e){
-            e.printStackTrace();
+            this.brokerUnlocked = false;
+        }catch(InterruptedException){
+
         }finally{
             r1.unlock();
         }
     }
 
-    public int[] areThereAnyWinners(){
+    public void unlockSpectators(){
         r1.lock();
-        int[] returnValue = null;
-
-        try{
-            while(!canBrokerLeave){
-                brokerLeave.await();
-            }
-
-            canBrokerLeave = false;
-            returnValue = horsesThatWon;
-        }catch(InterruptedException ie){
-            ie.printStackTrace();
-        }finally{
-            r1.unlock();
-        }
-
-        return returnValue;
+        this.spectatorsUnlocked = true;
+        spectators.signal();
+        r1.unlock();
     }
 
-    public void reportResults(int[] winners){
+    public void writeHorsesThatWon(int[] winners){
         r1.lock();
         horsesThatWon = winners;
         r1.unlock();
+    }
+
+    public boolean areThereAnyWinners(){
+        boolean result;
+        r1.lock();
+        result = (this.horsesThatWon != null);
+        r1.unlock();
+        return result;
     }
 
     public int watchRace(){
