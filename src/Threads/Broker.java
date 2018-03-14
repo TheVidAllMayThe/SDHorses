@@ -10,12 +10,12 @@ import Monitors.RaceTrack;
 
 public class Broker extends Thread{
 
+
     private String state;
 
     @Override
     public void run(){
-        this.state = "opening the event";
-        
+
         for(int i = 0; i < Parameters.getNumberOfHorses(); i++){
             state = "announcing next race";
             Stable_Broker.summonHorsesToPaddock();
@@ -34,6 +34,7 @@ public class Broker extends Thread{
                 state = "settling accounts";
                 BettingCentre_Broker.honorBets();
             }
+
         }
 
         this.state = "playing host at the bar";
