@@ -14,4 +14,18 @@ public class Stable {
     public static int numHorses = 0;
     public static boolean isLastSpectatorInPaddock = false;
 
+
+    static void summonHorsesToPaddock(){
+        r1.lock();
+        try{
+            canHorsesMoveToPaddock = true;
+            horsesToPaddock.signal();
+            while(!isLastSpectatorInPaddock)
+                lastSpectatorInPaddock.await();
+            isLastSpectatorInPaddock = false;
+        }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
+        finally {
+            r1.unlock();
+        }
+    }
 }

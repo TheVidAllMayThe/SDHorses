@@ -25,4 +25,39 @@ public class BettingCentre implements BettingCentre_Broker, BettingCentre_Specta
         BettingCentre.currentNumberOfSpectators = 0;
     }
 
+
+    public static void acceptTheBets() throws IllegalMonitorStateException{
+        r1.lock();
+
+        try {
+            do {
+                while (!newBets)
+                    brokerCond.await();
+                newBets = false;
+                bets[currentNumberOfSpectators - 1].accepted = true;
+                spectatorCond.signal();
+            }while (currentNumberOfSpectators != numSpectators);
+        }catch (IllegalMonitorStateException | InterruptedException e){
+            e.printStackTrace();
+        } finally {
+            r1.unlock();
+        }
+    }
+    public static void honorBets(){
+        r1.lock();
+        try{
+            while(!previousBetHonored)
+                brokerCond.await();
+
+            spectatorCond.signal();
+            previousBetHonored = true;
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }finally {
+            r1.unlock();
+        }
+    }
+
+
 }
