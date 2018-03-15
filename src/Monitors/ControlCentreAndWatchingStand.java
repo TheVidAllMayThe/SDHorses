@@ -1,8 +1,8 @@
 package Monitors;
 
 
+import Monitors.AuxiliaryClasses.Bet;
 import Monitors.AuxiliaryClasses.HorsePos;
-import Monitors.Interfaces.ControlCenterAndWatchingStand_Broker;
 import Monitors.Interfaces.ControlCenterAndWatchingStand_Spectator;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         return returnValue;
     }
 
-    static void reportResults() {
+    public static void reportResults() {
         r1.lock();
         try {
             ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>(Arrays.asList(RaceTrack.horses));
@@ -65,7 +65,7 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         r1.unlock();
     }
 
-    static void startTheRace(){
+    public static void startTheRace(){
         r1.lock();
 
         try{
@@ -81,5 +81,26 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         }
 
     }
+
+    static public boolean areThereAnyWinners() {
+        r1.lock();
+        boolean returnValue = false;
+        try {
+            for (Bet bet : BettingCentre.bets)
+                if (Arrays.asList(winnerHorses).contains(bet.getHorseID())) {
+                    returnValue = true;
+                    break;
+                }
+
+            canBrokerLeave = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            r1.unlock();
+        }
+
+        return returnValue;
+    }
+
 
 }

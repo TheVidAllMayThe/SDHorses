@@ -18,7 +18,7 @@ public class RaceTrack {
     public static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
     public static int numHorses;
 
-    public int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
+    public static int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
         r1.lock();
         try{
             horses[numHorses++] = new HorsePos(pID, 0);
@@ -29,13 +29,13 @@ public class RaceTrack {
         return numHorses - 1;
     }
 
-    public void makeAMove(int horsePos, int moveAmount){
+    public static boolean makeAMove(int horsePos, int moveAmount){
         r1.lock();
         try{
             while (!canRace)
                 raceStarted.await();
 
-            this.horses[horsePos].addPos(moveAmount);
+            horses[horsePos].addPos(moveAmount);
             raceStarted.signal();
 
         }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
@@ -44,19 +44,20 @@ public class RaceTrack {
         }
     }
 
-    public boolean hasFinishLineBeenCrossed(int pID){
+    public static boolean hasFinishLineBeenCrossed(int horsePos){
         r1.lock();
         boolean returnVal = false;
-        for (int i = 0; i < numHorses; i++) {
-            if (horses[i].horseID == pID){
-                if(horses[i].pos > this.raceLength) {
+        try{
+                if(horses[horsePos].getPos() > Parameters.getRaceLenght()) {
                     returnVal = true;
-                    break;
                 }
-            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            r1.unlock();
         }
 
-        r1.unlock();
         return returnVal;
     }
 

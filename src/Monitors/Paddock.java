@@ -1,14 +1,14 @@
 package Monitors;
 
+import Monitors.AuxiliaryClasses.HorseInPaddock;
 import Monitors.AuxiliaryClasses.Parameters;
-import Monitors.Interfaces.Paddock_Horses;
 import Monitors.Interfaces.Paddock_Spectators;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Paddock implements Paddock_Horses, Paddock_Spectators {
+public class Paddock{
     static public final Lock r1;
     static public final Condition horsesLeave;
     static public final Condition spectatorsLeave;
@@ -112,6 +112,29 @@ public class Paddock implements Paddock_Horses, Paddock_Spectators {
             }
 
         }catch(InterruptedException ie){
+
+        }finally{
+            r1.unlock();
+        }
+    }
+
+    public static void proceedToPaddock(int horseID, int pnk){
+        r1.lock();
+        try {
+            horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
+            if(horsesInPaddock == Parameters.getNumberOfHorses()){
+                allowSpectatorsEnter = true;
+                spectatorsEnter.signal();
+            }
+
+            while(!allowHorsesLeave){
+                horsesLeave.await();
+            }
+            if (--horsesInPaddock == 0)
+                allowHorsesLeave = false;
+
+        }catch(InterruptedException ie){
+            ie.printStackTrace();
 
         }finally{
             r1.unlock();

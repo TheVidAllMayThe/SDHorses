@@ -5,13 +5,13 @@ public class HorsePos implements Comparable<HorsePos>{
     private int pos;
     private int numSteps;
 
-    HorsePos(int horseID, int pos) {
+    public HorsePos(int horseID, int pos) {
         this.horseID = horseID;
         this.pos = pos;
         this.numSteps = 0;
     }
 
-    void addPos(int amount){
+    public void addPos(int amount){
         pos += amount;
         this.numSteps++;
     }

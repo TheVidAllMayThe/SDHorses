@@ -14,8 +14,7 @@ public class Stable {
     public static int numHorses = 0;
     public static boolean isLastSpectatorInPaddock = false;
 
-
-    static void summonHorsesToPaddock(){
+    public static void summonHorsesToPaddock(){
         r1.lock();
         try{
             canHorsesMoveToPaddock = true;
@@ -25,6 +24,25 @@ public class Stable {
             isLastSpectatorInPaddock = false;
         }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
         finally {
+            r1.unlock();
+        }
+    }
+
+    public static void proceedToStable(){
+        r1.lock();
+        numHorses++;
+        try{
+            while(!canHorsesMoveToPaddock)
+                horsesToPaddock.wait();
+
+
+            if(numHorses == Parameters.getNumberOfHorses()){ //If it is the las horse to leave the Stable then the following horses will have to wait
+                numHorses = 0;
+                canHorsesMoveToPaddock = false;
+            }
+        }catch (IllegalMonitorStateException | InterruptedException e){
+            e.printStackTrace();
+        } finally {
             r1.unlock();
         }
     }

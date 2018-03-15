@@ -24,4 +24,9 @@ public class Parameters {
     public static int getNumberOfSpectators() {
         return numberOfSpectators;
     }
+
+    public static int getRaceLenght(){
+        return raceLength;
+    }
+
 }
