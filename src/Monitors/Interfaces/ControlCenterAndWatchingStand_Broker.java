@@ -9,7 +9,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static Monitors.ControlCentreAndWatchingStand.*;
+import static Monitors.ControlCentreAndWatchingStand.r1;
+import static Monitors.ControlCentreAndWatchingStand.winnerHorses;
+import static Monitors.ControlCentreAndWatchingStand.resultsReported;
+import static Monitors.ControlCentreAndWatchingStand.canBrokerLeave;
+import static Monitors.ControlCentreAndWatchingStand.spectatorWaitingForResult;
+
+import static Monitors.RaceTrack.lastHorseFinished;
+import static Monitors.RaceTrack.raceStarted;
+import static Monitors.RaceTrack.resultsForBroker;
+import static Monitors.RaceTrack.canRace;
 
 public interface ControlCenterAndWatchingStand_Broker {
     void summonHorsesToPaddock();
@@ -34,7 +43,6 @@ public interface ControlCenterAndWatchingStand_Broker {
         return returnValue;
     }
 
-
     static void reportResults() {
         r1.lock();
         try {
@@ -58,5 +66,22 @@ public interface ControlCenterAndWatchingStand_Broker {
             r1.unlock();
         }
         r1.unlock();
+    }
+
+    static void startTheRace(){
+        r1.lock();
+
+        try{
+            canRace = true;
+            raceStarted.signal();
+            while(!lastHorseFinished)
+                resultsForBroker.await();
+            lastHorseFinished = false;
+        }catch(IllegalMonitorStateException | InterruptedException e){
+            e.printStackTrace();
+        } finally{
+            r1.unlock();
+        }
+
     }
 }

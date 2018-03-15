@@ -8,7 +8,7 @@ import Threads.Spectator;
 public class HorseRace {
     public static void main(String[] args){
         //Simulation variables
-        Parameters.initialize(4,4,4);
+        Parameters.initialize(4,4,4, 100);
 
         new Broker().start();
 

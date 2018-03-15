@@ -1,5 +1,6 @@
 package Monitors;
 
+import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.Interfaces.Paddock_Horses;
 import Monitors.Interfaces.Paddock_Spectators;
 
@@ -8,25 +9,22 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Paddock implements Paddock_Horses, Paddock_Spectators {
-    private final Lock r1;
-    private final Condition brokerLeave;
-    private final Condition horsesEnter;
-    private final Condition horsesLeave;
-    private final Condition spectatorsEnter;
-    private final Condition spectatorsLeave;
-    private final HorseInPaddock horses[];
-    private final int nHorses;
-    private final int nSpectators;
-
-    private Boolean allowHorsesEnter;
-    private Boolean allowHorsesLeave;
-    private Boolean allowSpectatorsEnter;
-    private Boolean allowSpectatorsLeave;
-    private int horsesInPaddock;
-    private int spectatorsInPaddock;
+    static public final Lock r1;
+    static public final Condition horsesLeave;
+    static public final Condition spectatorsLeave;
+    static public final Condition spectatorsEnter;
+    static public final HorseInPaddock horses[];
+    static public final int nHorses;
+    static public final int nSpectators;
+    static public Boolean allowHorsesEnter;
+    static public Boolean allowHorsesLeave;
+    static public Boolean allowSpectatorsEnter;
+    static public Boolean allowSpectatorsLeave;
+    static public int horsesInPaddock;
+    static public int spectatorsInPaddock;
 
     public Paddock(int nHorses, int nSpectators){
-        this.r1 = new ReentrantLock(false);
+        this.r1          = new ReentrantLock(false);
         this.horsesEnter = r1.newCondition();
         this.horsesLeave = r1.newCondition();
         this.brokerLeave = r1.newCondition();
@@ -43,30 +41,6 @@ public class Paddock implements Paddock_Horses, Paddock_Spectators {
         this.horses = new HorseInPaddock[nHorses];
     }
 
-    public void proceedToPaddock(int horseID, int pnk){
-        r1.lock();
-        try {
-            while (!allowHorsesEnter) {
-                horsesEnter.await();
-            }
-
-            this.horses[this.horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
-
-            if(horsesInPaddock == nHorses){
-                this.allowSpectatorsEnter = true;
-                this.allowHorsesEnter = false;
-                spectatorsEnter.signal();
-            }
-            else{
-                horsesEnter.signal();
-            }
-
-        }catch(InterruptedException ie){
-
-        }finally{
-            r1.unlock();
-        }
-    }
 
     public HorseInPaddock[] goCheckHorses(){
         r1.lock();
@@ -144,13 +118,5 @@ public class Paddock implements Paddock_Horses, Paddock_Spectators {
         }
     }
 
-    public class HorseInPaddock {
-        public int horseID;
-        public int pnk;
 
-        HorseInPaddock(int horseID, int pnk) {
-            this.horseID = horseID;
-            this.pnk = pnk;
-        }
-    }
 }

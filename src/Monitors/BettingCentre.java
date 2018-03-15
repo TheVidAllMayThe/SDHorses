@@ -25,5 +25,4 @@ public class BettingCentre implements BettingCentre_Broker, BettingCentre_Specta
         BettingCentre.currentNumberOfSpectators = 0;
     }
 
-
 }

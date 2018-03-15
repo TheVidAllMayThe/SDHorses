@@ -8,9 +8,9 @@ public interface Stable_Broker {
         try{
             canHorsesMoveToPaddock = true;
             horsesToPaddock.signal();
-            while(!isLastHorseInPaddock)
-                lastHorseNotInPaddock.await();
-            isLastHorseInPaddock = false;
+            while(!isLastSpectatorInPaddock)
+                lastSpectatorInPaddock.await();
+            isLastSpectatorInPaddock = false;
         }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
         finally {
             r1.unlock();
