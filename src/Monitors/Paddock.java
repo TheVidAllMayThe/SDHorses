@@ -27,8 +27,8 @@ public class Paddock{
         try {
             horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
             if(horsesInPaddock == Parameters.getNumberOfHorses()){
-                allowSpectators = true;
-                spectatorsCond.signal();
+                ControlCentreAndWatchingStand.allowSpectators = true;
+                ControlCentreAndWatchingStand.spectatorsCond.signal();
             }
 
             while(!allowHorses){
@@ -46,6 +46,29 @@ public class Paddock{
         }
     }
 
+    //Spectators methods
+    public static void goCheckHorses(){
+        r1.lock();
+        try{
+            if(++spectatorsInPaddock = Parameters.getNumberOfSpectators()){
+                Stable.isLastSpectatorInPaddock = true;
+                Stable.lastSpectatorInPaddock.signal();
+            }
+
+            while(!allowSpectators){
+                spectatorsCond.await();
+            }
+
+            if(--spectatorsInPaddock == 0){
+                allowSpectators = false;
+            }
+
+        }catch(InterruptedException ie){
+        
+        }finally{
+            r1.unlock();
+        }
+    }
     public HorseInPaddock[] goCheckHorses(){
         r1.lock();
         try {

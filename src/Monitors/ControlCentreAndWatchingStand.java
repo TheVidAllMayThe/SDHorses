@@ -19,13 +19,15 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
 
     static public ReentrantLock r1= new ReentrantLock(false);
 
-    static public Condition resultsForBroker = r1.newCondition();
+    static public Condition brokerCond = r1.newCondition();
     static public boolean lastHorseFinished = false;
 
-    static public Condition spectatorWaitingForResult = r1.newCondition();
-    public static boolean resultsReported = false;
+    static public Condition spectatorCond = r1.newCondition();
+    public static boolean allowSpectators = false;
 
     static public int[] winnerHorses;
+    static public int nSpectators = 0;
+    static public int numberOfWinners = 0;
 
 
     //Broker Methods
@@ -36,9 +38,12 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
             RaceTrack.horseCond.signal();
 
             while(!lastHorseFinished){
-                resultsForBroker.await();
+                brokerCond.await();
             }
 
+            for(int i=0; i < Parameters.getNumberOfHorses(); i++){
+                RaceTrack.whoseTurn[i] = false;
+            }
             lastHorseFinished = false;
         }catch(IllegalMonitorStateException | InterruptedException e){
             e.printStackTrace();
@@ -64,8 +69,8 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
             for (HorsePos horse : winnerHorsesTmp)
                 winnerHorses[i++] = horse.getHorseID();
 
-            resultsReported = true;
-            spectatorWaitingForResult.signal();
+            allowSpectator = true;
+            spectatorCond.signal();
         } catch (IllegalMonitorStateException e) {
             e.printStackTrace();
         } finally {
@@ -84,7 +89,6 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
                     break;
                 }
 
-            canBrokerLeave = false;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -99,18 +103,60 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         Stable.horsesToPaddock.signal();
     }
 
-    public int watchRace(){
+    //Spectators methods
+    static public void waitForNextRace(){
         r1.lock();
-        int returnValue = -1;
         try{
-            while(!resultsReported){
-                spectatorWaitingForResult.await();
+            nSpectators++;
+            while(!allowSpectators){
+                spectatorsCond.await();
             }
-            returnValue = horsesThatWon[0];
-        }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
-        finally {
+            if(--nSpectators == 0){
+                allowSpectators = false;
+            }
+        }catch(InterruptedException e){
+        
+        }finally{
             r1.unlock();
         }
-        return returnValue;
+    }
+
+    static public void watchRace(){
+        r1.lock();
+        try{
+            nSpectators++;
+            while(!allowSpectators){
+                spectatorsCond.await();
+            }
+            if(--nSpectators == 0){
+                allowSpectators = false;
+            }
+        catch(InterruptedException ie){
+        
+        }finally{
+            r1.unlock();
+        }
+    }
+    
+    static public boolean haveIWon(int horseIndex){
+        boolean result = false;
+        r1.lock();
+        try{
+            for(int i=0; i < winnerHorses.length; i++){
+                if(horseIndex == winnerHorses[i]){
+                    result = true;
+                    numberOfWinners++;
+                    break;
+                }
+            }
+            return result;
+        }catch(Exception e){
+        
+        }finally{
+            r1.unlock();
+        }
+    }
+
+    static public void relaxABit(){
     }
 }

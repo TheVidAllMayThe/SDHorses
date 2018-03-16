@@ -18,21 +18,18 @@ public class BettingCentre implements BettingCentre_Spectator{
     public static boolean resolvedSpectator = true;
 
     public static boolean currentlyRefunding = true;
-    public static int numSpectators;
-    public static final Bet[] bets  = new Bet[numSpectators];
+    public static final Bet[] bets  = new Bet[Parameters.getNumberOfSpectators()];
 
-    public static int currentNumberOfSpectators;
+    public static int currentNumberOfSpectators = 0;
+    public static int potValue = 0;
+    public static int amountOfWinners = 0;
 
-    static public void initialize(int numSpectators){
-        BettingCentre.numSpectators = numSpectators;
-        BettingCentre.currentNumberOfSpectators = 0;
-    }
 
     //Broker methods
     public static void acceptTheBets() throws IllegalMonitorStateException{
         r1.lock();
         try {
-            while(currentNumberOfSpectators != numSpectators){
+            do{
                 while (!waitingOnBroker){
                     brokerCond.await();
                 }
@@ -40,7 +37,10 @@ public class BettingCentre implements BettingCentre_Spectator{
                 waitingOnBroker = false;
                 resolvedSpectator = true;
                 spectatorCond.signal();
-            }
+
+            }while(currentNumberOfSpectators != Parameters.getNumberOfSpectators());
+
+            currentNumberOfSpectators = 0;
         }catch (IllegalMonitorStateException | InterruptedException e){
             e.printStackTrace();
         } finally {
@@ -64,6 +64,45 @@ public class BettingCentre implements BettingCentre_Spectator{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }finally {
+            r1.unlock();
+        }
+    }
+
+    //Spectators methods
+    public static void placeABet(int pid, int value){
+        r1.lock();
+        try{
+            bets[currentNumberOfSpectators++] = new Bet(pid, value, horseID);
+            waitingOnBroker = true;
+            brokerCond.signal();
+            
+            while(!resolvedSpectator){
+                spectatorCond.await();
+            }
+            resolvedSpectator = false;
+            potValue += value;
+
+        }catch(InterruptedException ie){
+
+        }finally{
+            r1.unlock();
+        }
+    }
+
+    public static int goCollectTheGains(){
+        r1.lock();
+        try{
+            waitingOnBroker = true;
+            brokerCond.signal();
+
+            while(!resolvedSpectator){
+                spectatorCond.await();
+            }
+            resolvedSpectator = false;
+            return potValue/ControlCentreAndWatchingStand.numberOfWinners;
+        }catch(InterruptedException ie){
+        
+        }finally{
             r1.unlock();
         }
     }

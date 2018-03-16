@@ -3,43 +3,46 @@ package Threads;
 import Monitors.ControlCentreAndWatchingStand;
 import Monitors.Interfaces.*;
 
-public class Spectator extends Thread{
-    private final Paddock_Spectators paddock;
-    private int numberOfRaces;
-    private final ControlCenterAndWatchingStand_Spectator controlCenter;
-    private final BettingCentre_Spectator bettingCenter;
-    private String status;
+import java.util.concurrent.ThreadLocalRandom;
 
-    public Spectator(int numberOfRaces, ControlCenterAndWatchingStand_Spectator controlCenter, BettingCentre_Spectator bettingCenter, Paddock_Spectators paddock){
-        this.numberOfRaces = numberOfRaces;
-        this.controlCenter = controlCenter;
-        this.bettingCenter = bettingCenter;
-        this.paddock = paddock;
+public class Spectator extends Thread{
+    private String state;
+    private int budget;
+    private int pid;
+    
+    public Spectator(int budget){
+        this.budget = budget;
     }
 
     @Override
     public void run(){
-        for(int i=0; i < this.numberOfRaces; i++){
-            this.state = "waiting for a race to start";
-            controlCenter.waitForNextRace();
+        pid = (int)Thread.currentThread().getID(); 
+        int amountToBet = budget/4;
+        int horse;
+        for(int i=0; i < Parameters.getNumberOfRaces(); i++){
+            state = "waiting for a race to start";
+            ControlCentreAndWatchingStand.waitForNextRace();
 
-            controlCenter.goCheckHorses();
-            this.state = "appraising the horses";
-            padock.goCheckHorses();
+            state = "appraising the horses";
+            Paddock.goCheckHorses();
 
-            this.state = "placing a bet";
-            bettingCenter.placeABet();
+            //Must decide on amount and horse somehow, for now placeholder a quarter of what he has and bets on random
+            state = "placing a bet";
+            if(amountToBet > budget) amountToBet = budget;
+            horse = ThreadLocalRandom.current().nextInt(0, Parameters.getNumberOfHorses() + 1);
+            BettingCenter.placeABet(pid, amountToBet, horse);
+            budget -= amountToBet;
 
-            this.state = "watching a race"
-            controlCenter.goWatchTheRace();
+            state = "watching a race"
+            ControlCentreAndWatchingStand.goWatchTheRace();
 
-            if(controlCenter.haveIWon()){
-                this.state = "collecting the gains";
-                bettingCenter.goCollectTheGains();
+            if(ControlCentreAndWatchingStand.haveIWon(horse)){
+                state = "collecting the gains";
+                budget += BettingCenter.goCollectTheGains();
             }
         }
 
-        this.state = "celebrating";
-        controlCenter.relaxABit();
+        state = "celebrating";
+        ControlCentreAndWatchingStand.relaxABit();
     }
 }

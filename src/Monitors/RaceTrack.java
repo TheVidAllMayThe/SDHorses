@@ -13,13 +13,10 @@ public class RaceTrack {
     public static ReentrantLock r1 = new ReentrantLock(true);
 
     public static Condition horsesCond = r1.newCondition();
-
-    public static Condition resultsForBroker = r1.newCondition();
-    public static boolean lastHorseFinished = false;
-    
+    public static boolean[] whoseTurn = new Boolean[Parameters.getNumberOfHorses()];
+ 
     public static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
     public static int numHorses = 0;
-    public static boolean[] whoseTurn = new Boolean[Parameters.getNumberOfHorses()];
 
     //Horses methods
     public static int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
@@ -67,7 +64,12 @@ public class RaceTrack {
         try{
             if(horses[horsePos].getPos() > Parameters.getRaceLength()) {
                 returnVal = true;
+                if(--numHorses == 0){
+                    ControlCentreAndWatchingStand.lastHorseFinished = true;
+                    ControlCentreAndWatchingStand.brokerCond.signal();
+                }
             }
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -77,6 +79,4 @@ public class RaceTrack {
 
         return returnVal;
     }
-
-
 }
