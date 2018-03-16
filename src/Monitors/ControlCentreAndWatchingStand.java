@@ -22,9 +22,6 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
     static public Condition resultsForBroker = r1.newCondition();
     static public boolean lastHorseFinished = false;
 
-    static public Condition raceStarted = r1.newCondition();
-    static public boolean canRace = false;
-
     static public Condition spectatorWaitingForResult = r1.newCondition();
     public static boolean resultsReported = false;
 
@@ -35,11 +32,13 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
     public static void startTheRace(){
         r1.lock();
         try{
-            canRace = true;
-            raceStarted.signal();
+            RaceTrack.whoseTurn[0] = true;
+            RaceTrack.horseCond.signal();
+
             while(!lastHorseFinished){
                 resultsForBroker.await();
             }
+
             lastHorseFinished = false;
         }catch(IllegalMonitorStateException | InterruptedException e){
             e.printStackTrace();

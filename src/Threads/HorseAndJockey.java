@@ -40,7 +40,10 @@ public class HorseAndJockey extends Thread {
             state = "at the finish line";
         }
 
-        this.state = "at the stable";
+        state = "at the stable";
         Stable.proceedToStable();
+
+        state = "at the paddock";
+        Paddock.proceedToPaddock(pID,pnk);
     }
 }

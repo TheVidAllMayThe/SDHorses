@@ -36,6 +36,7 @@ public class Stable {
         }
     }
 
+    //Horses methods
     public static void proceedToStable(){
         r1.lock();
         numHorses++;
@@ -43,8 +44,7 @@ public class Stable {
             while(!canHorsesMoveToPaddock)
                 horsesToPaddock.wait();
 
-
-            if(numHorses == Parameters.getNumberOfHorses()){ //If it is the las horse to leave the Stable then the following horses will have to wait
+            if(numHorses == Parameters.getNumberOfHorses()){
                 numHorses = 0;
                 canHorsesMoveToPaddock = false;
             }
