@@ -11,7 +11,7 @@ public class Broker extends Thread{
     private String state;
     @Override
     public void run(){
-
+        state = "opening the event";
         for(int i = 0; i < Parameters.getNumberOfHorses(); i++){
 
             state = "announcing next race";
@@ -26,16 +26,13 @@ public class Broker extends Thread{
             state = "supervising the race";
             ControlCentreAndWatchingStand.reportResults();
 
-            Boolean anyWinners = ControlCentreAndWatchingStand.areThereAnyWinners();
-
-            if(anyWinners){
+            if(ControlCentreAndWatchingStand.areThereAnyWinners()){
                 state = "settling accounts";
                 BettingCentre.honorBets();
             }
-
         }
-
+        
         this.state = "playing host at the bar";
-
+        ControlCentreAndWatchingStand.entertainTheGuests();
     }
 }

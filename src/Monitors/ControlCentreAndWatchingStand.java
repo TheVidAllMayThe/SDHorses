@@ -16,28 +16,37 @@ import static Monitors.RaceTrack.lastHorseFinished;
 
 
 public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingStand_Broker, ControlCenterAndWatchingStand_Spectator{
+
     static public ReentrantLock r1= new ReentrantLock(false);
-    static public boolean canBrokerLeave = false;
-    static public Condition brokerLeave = r1.newCondition();
+
+    static public Condition resultsForBroker = r1.newCondition();
+    static public boolean lastHorseFinished = false;
+
+    static public Condition raceStarted = r1.newCondition();
+    static public boolean canRace = false;
+
     static public Condition spectatorWaitingForResult = r1.newCondition();
     public static boolean resultsReported = false;
+
     static public int[] winnerHorses;
 
 
-
-    public int watchRace(){
+    //Broker Methods
+    public static void startTheRace(){
         r1.lock();
-        int returnValue = -1;
         try{
-            while(!resultsReported){
-                spectatorWaitingForResult.await();
+            canRace = true;
+            raceStarted.signal();
+            while(!lastHorseFinished){
+                resultsForBroker.await();
             }
-            returnValue = horsesThatWon[0];
-        }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
-        finally {
+            lastHorseFinished = false;
+        }catch(IllegalMonitorStateException | InterruptedException e){
+            e.printStackTrace();
+        } finally{
             r1.unlock();
         }
-        return returnValue;
+
     }
 
     public static void reportResults() {
@@ -45,7 +54,8 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         try {
             ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>(Arrays.asList(RaceTrack.horses));
             HorsePos min = Collections.min(winnerHorsesTmp);
-            winnerHorsesTmp.remove(min);
+            //Hey David Almeida, 76377: Acho que esta linha estava aqui mal. Reve isto bitte
+            //winnerHorsesTmp.remove(min);
             for (HorsePos horse : winnerHorsesTmp)
                 if (horse.compareTo(min) > 0)
                     winnerHorsesTmp.remove(horse);
@@ -65,26 +75,9 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         r1.unlock();
     }
 
-    public static void startTheRace(){
-        r1.lock();
-
-        try{
-            canRace = true;
-            raceStarted.signal();
-            while(!lastHorseFinished)
-                resultsForBroker.await();
-            lastHorseFinished = false;
-        }catch(IllegalMonitorStateException | InterruptedException e){
-            e.printStackTrace();
-        } finally{
-            r1.unlock();
-        }
-
-    }
-
     static public boolean areThereAnyWinners() {
-        r1.lock();
         boolean returnValue = false;
+        r1.lock();
         try {
             for (Bet bet : BettingCentre.bets)
                 if (Arrays.asList(winnerHorses).contains(bet.getHorseID())) {
@@ -102,5 +95,23 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         return returnValue;
     }
 
+    static public void entertainTheGuests(){
+        Stable.canHorseMoveToStable = true;
+        Stable.horsesToPaddock.signal();
+    }
 
+    public int watchRace(){
+        r1.lock();
+        int returnValue = -1;
+        try{
+            while(!resultsReported){
+                spectatorWaitingForResult.await();
+            }
+            returnValue = horsesThatWon[0];
+        }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
+        finally {
+            r1.unlock();
+        }
+        return returnValue;
+    }
 }
