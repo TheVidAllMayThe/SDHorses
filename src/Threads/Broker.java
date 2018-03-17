@@ -5,6 +5,8 @@ import Monitors.BettingCentre;
 import Monitors.ControlCentreAndWatchingStand;
 import Monitors.Stable;
 
+import java.util.ArrayList;
+
 public class Broker extends Thread{
 
 
@@ -21,18 +23,22 @@ public class Broker extends Thread{
             BettingCentre.acceptTheBets();
 
             state = "supervising the race";
+            RaceTrack.startTheRace();
             ControlCentreAndWatchingStand.startTheRace();
 
             state = "supervising the race";
-            ControlCentreAndWatchingStand.reportResults();
+            ArrayList<HorsePos> list = RaceTrack.reportResults();
+            ControlCentreAndWatchingStand.reportResults(list);
 
-            if(ControlCentreAndWatchingStand.areThereAnyWinners()){
+            Bet[] bets = BettingCentre.areThereAnyWinners();
+            if(ControlCentreAndWatchingStand.areThereAnyWinners(bets)){
                 state = "settling accounts";
                 BettingCentre.honorBets();
             }
         }
         
         this.state = "playing host at the bar";
+        Stable.entertainTheGuests();
         ControlCentreAndWatchingStand.entertainTheGuests();
     }
 }

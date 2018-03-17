@@ -10,12 +10,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static Monitors.RaceTrack.*;
-import static Monitors.RaceTrack.lastHorseFinished;
+import static Monitors.RaceTrack.*; import static Monitors.RaceTrack.lastHorseFinished;
 
 
-public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingStand_Broker, ControlCenterAndWatchingStand_Spectator{
+public class ControlCentreAndWatchingStand{
 
     static public ReentrantLock r1= new ReentrantLock(false);
 
@@ -34,16 +32,10 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
     public static void startTheRace(){
         r1.lock();
         try{
-            RaceTrack.whoseTurn[0] = true;
-            RaceTrack.horseCond.signal();
-
             while(!lastHorseFinished){
                 brokerCond.await();
             }
 
-            for(int i=0; i < Parameters.getNumberOfHorses(); i++){
-                RaceTrack.whoseTurn[i] = false;
-            }
             lastHorseFinished = false;
         }catch(IllegalMonitorStateException | InterruptedException e){
             e.printStackTrace();
@@ -53,20 +45,12 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
 
     }
 
-    public static void reportResults() {
+    public static void reportResults(ArrayList<HorsePos> list) {
         r1.lock();
         try {
-            ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>(Arrays.asList(RaceTrack.horses));
-            HorsePos min = Collections.min(winnerHorsesTmp);
-            //Hey David Almeida, 76377: Acho que esta linha estava aqui mal. Reve isto bitte
-            //winnerHorsesTmp.remove(min);
-            for (HorsePos horse : winnerHorsesTmp)
-                if (horse.compareTo(min) > 0)
-                    winnerHorsesTmp.remove(horse);
-
-            winnerHorses = new int[winnerHorsesTmp.size()];
+            winnerHorses = new int[list.size()];
             int i = 0;
-            for (HorsePos horse : winnerHorsesTmp)
+            for (HorsePos horse : list)
                 winnerHorses[i++] = horse.getHorseID();
 
             allowSpectator = true;
@@ -79,11 +63,11 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
         r1.unlock();
     }
 
-    static public boolean areThereAnyWinners() {
+    static public boolean areThereAnyWinners(Bet[] bets) {
         boolean returnValue = false;
         r1.lock();
         try {
-            for (Bet bet : BettingCentre.bets)
+            for (Bet bet : bets)
                 if (Arrays.asList(winnerHorses).contains(bet.getHorseID())) {
                     returnValue = true;
                     break;
@@ -99,8 +83,6 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
     }
 
     static public void entertainTheGuests(){
-        Stable.canHorseMoveToStable = true;
-        Stable.horsesToPaddock.signal();
     }
 
     //Spectators methods
@@ -158,5 +140,18 @@ public class ControlCentreAndWatchingStand implements ControlCenterAndWatchingSt
     }
 
     static public void relaxABit(){
+    }
+
+    //Horses methods
+    static public void makeAMove(){
+        r1.lock()
+        try{
+            lastHorseFinished = true;
+            brokerCond.signal();
+        catch(Exception e){
+        
+        }finally{
+            r1.unlock();
+        }
     }
 }

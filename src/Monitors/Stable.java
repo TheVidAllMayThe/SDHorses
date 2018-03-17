@@ -36,6 +36,18 @@ public class Stable {
         }
     }
 
+    public static void entertainTheGuests(){
+        r1.lock();
+        try{
+            canHorsesMoveToPaddock = true;
+            horsesToPaddock.signal();
+        }catch(Exception e){
+        
+        }finally{
+            r1.unlock();
+        }
+    }
+
     //Horses methods
     public static void proceedToStable(){
         r1.lock();

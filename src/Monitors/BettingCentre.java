@@ -47,6 +47,17 @@ public class BettingCentre implements BettingCentre_Spectator{
             r1.unlock();
         }
     }
+    
+    public static Bet[] areThereAnyWinners(){
+        r1.lock();
+        try{
+            return bets;
+        }catch(Exception e){
+        
+        }finally{
+            r1.unlock();
+        }
+    }
 
     public static void honorBets(){
         r1.lock();

@@ -35,12 +35,24 @@ public class Paddock{
                 horsesCond.await();
             }
 
-            if (--horsesInPaddock == 0){
-                allowHorses = false;
-            }
         }catch(InterruptedException ie){
             ie.printStackTrace();
 
+        }finally{
+            r1.unlock();
+        }
+    }
+
+    public static void proceedToStartLine(){
+        r1.lock();
+        try{
+            if(--horsesInPaddock == 0){
+                allowHorses = false;
+                allowSpectators = true;
+                spectatorsCond.signal();
+            }
+        }catch(Exception e){
+        
         }finally{
             r1.unlock();
         }
