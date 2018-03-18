@@ -18,6 +18,7 @@ public class Broker extends Thread{
 
             state = "announcing next race";
             Stable.summonHorsesToPaddock();
+            ControlCentreAndWatchingStand.summonHorsesToPaddock();
 
             state = "waiting for bets";
             BettingCentre.acceptTheBets();

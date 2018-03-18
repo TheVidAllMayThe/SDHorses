@@ -12,9 +12,6 @@ public class Stable {
     public static Condition horsesToPaddock = r1.newCondition();
     public static boolean canHorsesMoveToPaddock = false;
 
-    public static Condition lastSpectatorInPaddock = r1.newCondition();
-    public static boolean isLastSpectatorInPaddock = false;
-
     public static int numHorses = 0;
 
     //Broker methods
@@ -22,13 +19,7 @@ public class Stable {
         r1.lock();
         try{
             canHorsesMoveToPaddock = true;
-            horsesToPaddock.signal();
-            
-            while(!isLastSpectatorInPaddock){
-                lastSpectatorInPaddock.await();
-            }
-            
-            isLastSpectatorInPaddock = false;
+            horsesToPaddock.signal();    
         }catch (IllegalMonitorStateException | InterruptedException e){
             e.printStackTrace();
         }finally {

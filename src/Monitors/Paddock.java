@@ -19,21 +19,16 @@ public class Paddock{
 
     static public final HorseInPaddock horses[] = new HorseInPaddock[Parameters.getNumberOfHorses()];
     static public int horsesInPaddock = 0;
-    static public int spectatorsInPaddock = 0;
 
     //Horses methods
     public static void proceedToPaddock(int horseID, int pnk){
         r1.lock();
         try {
             horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
-            if(horsesInPaddock == Parameters.getNumberOfHorses()){
-                ControlCentreAndWatchingStand.allowSpectators = true;
-                ControlCentreAndWatchingStand.spectatorsCond.signal();
-            }
-
             while(!allowHorses){
                 horsesCond.await();
             }
+            horsesInPaddock--;
 
         }catch(InterruptedException ie){
             ie.printStackTrace();
@@ -62,11 +57,6 @@ public class Paddock{
     public static void goCheckHorses(){
         r1.lock();
         try{
-            if(++spectatorsInPaddock = Parameters.getNumberOfSpectators()){
-                Stable.isLastSpectatorInPaddock = true;
-                Stable.lastSpectatorInPaddock.signal();
-            }
-
             while(!allowSpectators){
                 spectatorsCond.await();
             }
@@ -77,57 +67,6 @@ public class Paddock{
 
         }catch(InterruptedException ie){
         
-        }finally{
-            r1.unlock();
-        }
-    }
-    public HorseInPaddock[] goCheckHorses(){
-        r1.lock();
-        try {
-            while (!allowSpectatorsEnter){
-                spectatorsEnter.await();
-            }
-
-            this.spectatorsInPaddock++;
-
-            if(spectatorsInPaddock == nSpectators){
-                allowHorsesLeave = true;
-                allowSpectatorsEnter = false;
-                horsesCond.signal();
-                brokerLeave.signal();
-            }
-            else{
-                spectatorsEnter.signal();
-            }
-
-
-        }catch(InterruptedException ie){
-
-        }finally{
-            r1.unlock();
-        }
-        return horses;
-    }
-
-
-    public void goPlaceBet(){
-        r1.lock();
-        try{
-            while(!allowSpectatorsLeave){
-                spectatorsLeave.await();
-            }
-
-            this.spectatorsInPaddock--;
-
-            if(spectatorsInPaddock == 0){
-                allowSpectatorsLeave = false;
-            }
-            else{
-                spectatorsLeave.signal();
-            }
-
-        }catch(InterruptedException ie){
-
         }finally{
             r1.unlock();
         }

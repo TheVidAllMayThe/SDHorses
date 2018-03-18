@@ -27,6 +27,7 @@ public class HorseAndJockey extends Thread {
             Stable.proceedToStable();
 
             state = "at the paddock";
+            ControlCentreAndWatchingStand.proceedToPaddock();
             Paddock.proceedToPaddock(pID, pnk);
 
             state = "at the start line";

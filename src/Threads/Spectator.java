@@ -24,6 +24,7 @@ public class Spectator extends Thread{
             ControlCentreAndWatchingStand.waitForNextRace();
 
             state = "appraising the horses";
+            ControlCentreAndWatchingStand.goCheckHorses();
             Paddock.goCheckHorses();
 
             //Must decide on amount and horse somehow, for now placeholder a quarter of what he has and bets on random
