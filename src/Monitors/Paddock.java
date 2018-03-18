@@ -2,7 +2,6 @@ package Monitors;
 
 import Monitors.AuxiliaryClasses.HorseInPaddock;
 import Monitors.AuxiliaryClasses.Parameters;
-import Monitors.Interfaces.Paddock_Spectators;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -19,6 +18,7 @@ public class Paddock{
 
     static public final HorseInPaddock horses[] = new HorseInPaddock[Parameters.getNumberOfHorses()];
     static public int horsesInPaddock = 0;
+    static public int spectatorsInPaddock = 0;
 
     //Horses methods
     public static void proceedToPaddock(int horseID, int pnk){
@@ -61,7 +61,8 @@ public class Paddock{
                 spectatorsCond.await();
             }
 
-            if(--spectatorsInPaddock == 0){
+            if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
+                spectatorsInPaddock = 0;
                 allowSpectators = false;
             }
 

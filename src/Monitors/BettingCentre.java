@@ -1,13 +1,13 @@
 package Monitors;
 
+import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.AuxiliaryClasses.Bet;
-import Monitors.Interfaces.BettingCentre_Spectator;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class BettingCentre implements BettingCentre_Spectator{
+public class BettingCentre{
     
     public static final Lock r1 = new ReentrantLock(false);
 
@@ -22,7 +22,6 @@ public class BettingCentre implements BettingCentre_Spectator{
 
     public static int currentNumberOfSpectators = 0;
     public static int potValue = 0;
-    public static int amountOfWinners = 0;
 
 
     //Broker methods
@@ -49,14 +48,16 @@ public class BettingCentre implements BettingCentre_Spectator{
     }
     
     public static Bet[] areThereAnyWinners(){
+        Bet[] result = null;
         r1.lock();
         try{
-            return bets;
+            result = bets;
         }catch(Exception e){
         
         }finally{
             r1.unlock();
         }
+        return result;
     }
 
     public static void honorBets(){
@@ -80,7 +81,7 @@ public class BettingCentre implements BettingCentre_Spectator{
     }
 
     //Spectators methods
-    public static void placeABet(int pid, int value){
+    public static void placeABet(int pid, int value, int horseID){
         r1.lock();
         try{
             bets[currentNumberOfSpectators++] = new Bet(pid, value, horseID);
@@ -100,7 +101,8 @@ public class BettingCentre implements BettingCentre_Spectator{
         }
     }
 
-    public static int goCollectTheGains(){
+    public static double goCollectTheGains(){
+        double result = 0.0;
         r1.lock();
         try{
             waitingOnBroker = true;
@@ -110,11 +112,12 @@ public class BettingCentre implements BettingCentre_Spectator{
                 spectatorCond.await();
             }
             resolvedSpectator = false;
-            return potValue/ControlCentreAndWatchingStand.numberOfWinners;
+            result = potValue/ControlCentreAndWatchingStand.numberOfWinners;
         }catch(InterruptedException ie){
         
         }finally{
             r1.unlock();
         }
+        return result;
     }
 }

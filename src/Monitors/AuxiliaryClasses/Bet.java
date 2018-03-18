@@ -3,7 +3,7 @@ package Monitors.AuxiliaryClasses;
 public class Bet{
     private int spectatorID;
     private int betAmount;
-    private int horseID:
+    private int horseID;
 
 
     public Bet(int pID, int betAmount, int horseID) {

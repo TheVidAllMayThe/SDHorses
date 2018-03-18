@@ -20,7 +20,7 @@ public class Stable {
         try{
             canHorsesMoveToPaddock = true;
             horsesToPaddock.signal();    
-        }catch (IllegalMonitorStateException | InterruptedException e){
+        }catch (IllegalMonitorStateException e){
             e.printStackTrace();
         }finally {
             r1.unlock();

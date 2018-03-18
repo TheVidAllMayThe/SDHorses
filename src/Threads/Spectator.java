@@ -1,7 +1,9 @@
 package Threads;
 
+import Monitors.AuxiliaryClasses.Parameters;
+import Monitors.BettingCentre;
 import Monitors.ControlCentreAndWatchingStand;
-import Monitors.Interfaces.*;
+import Monitors.Paddock;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,10 +18,10 @@ public class Spectator extends Thread{
 
     @Override
     public void run(){
-        pid = (int)Thread.currentThread().getID(); 
+        pid = (int)Thread.currentThread().getId();
         int amountToBet = budget/4;
         int horse;
-        for(int i=0; i < Parameters.getNumberOfRaces(); i++){
+        for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
             state = "waiting for a race to start";
             ControlCentreAndWatchingStand.waitForNextRace();
 
@@ -31,15 +33,15 @@ public class Spectator extends Thread{
             state = "placing a bet";
             if(amountToBet > budget) amountToBet = budget;
             horse = ThreadLocalRandom.current().nextInt(0, Parameters.getNumberOfHorses() + 1);
-            BettingCenter.placeABet(pid, amountToBet, horse);
+            BettingCentre.placeABet(pid, amountToBet, horse);
             budget -= amountToBet;
 
-            state = "watching a race"
+            state = "watching a race";
             ControlCentreAndWatchingStand.goWatchTheRace();
 
             if(ControlCentreAndWatchingStand.haveIWon(horse)){
                 state = "collecting the gains";
-                budget += BettingCenter.goCollectTheGains();
+                budget += BettingCentre.goCollectTheGains();
             }
         }
 

@@ -2,7 +2,7 @@ package Threads;
 
 
 import Monitors.AuxiliaryClasses.Parameters;
-import Monitors.Interfaces.RaceTrack_Horse;
+import Monitors.ControlCentreAndWatchingStand;
 import Monitors.Paddock;
 import Monitors.RaceTrack;
 import Monitors.Stable;
@@ -16,7 +16,7 @@ public class HorseAndJockey extends Thread {
     private String state;
 
     public HorseAndJockey() {
-        pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLenght()/4);
+        pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLength()/4);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class HorseAndJockey extends Thread {
             boolean[] finishLineCrossed;
             do {
                 RaceTrack.makeAMove(horsePos, ThreadLocalRandom.current().nextInt(1, pnk));
-                finishLineCrossed = RaceTrack.HasFinishLineBeenCrossed(horsePos);
+                finishLineCrossed = RaceTrack.hasFinishLineBeenCrossed(horsePos);
             }while(finishLineCrossed[0]); 
             if (finishLineCrossed[1]) ControlCentreAndWatchingStand.makeAMove();
 

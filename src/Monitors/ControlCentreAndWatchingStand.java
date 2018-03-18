@@ -1,16 +1,13 @@
 package Monitors;
 
-
+import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.AuxiliaryClasses.Bet;
 import Monitors.AuxiliaryClasses.HorsePos;
-import Monitors.Interfaces.ControlCenterAndWatchingStand_Spectator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import static Monitors.RaceTrack.*; import static Monitors.RaceTrack.lastHorseFinished;
 
 
 public class ControlCentreAndWatchingStand{
@@ -20,7 +17,7 @@ public class ControlCentreAndWatchingStand{
     static public Condition brokerCond = r1.newCondition();
     static public boolean lastHorseFinished = false;
 
-    static public Condition spectatorCond = r1.newCondition();
+    static public Condition spectatorsCond = r1.newCondition();
     public static boolean allowSpectators = false;
 
     static public int[] winnerHorses;
@@ -68,14 +65,13 @@ public class ControlCentreAndWatchingStand{
             for (HorsePos horse : list)
                 winnerHorses[i++] = horse.getHorseID();
 
-            allowSpectator = true;
-            spectatorCond.signal();
+            allowSpectators = true;
+            spectatorsCond.signal();
         } catch (IllegalMonitorStateException e) {
             e.printStackTrace();
         } finally {
             r1.unlock();
         }
-        r1.unlock();
     }
 
     static public boolean areThereAnyWinners(Bet[] bets) {
@@ -103,11 +99,11 @@ public class ControlCentreAndWatchingStand{
     //Spectators methods
     static public void goCheckHorses(){
         r1.lock();
-        try{
-            if(++nSpectatorsInPaddock == Parameters.getNumberOfSpectators()){
-                brokerCond.signal(); 
+        try {
+            if (++nSpectatorsInPaddock == Parameters.getNumberOfSpectators()) {
+                brokerCond.signal();
             }
-        catch(Exception e){
+        }catch(Exception e){
         
         }finally{
             r1.unlock();
@@ -131,17 +127,17 @@ public class ControlCentreAndWatchingStand{
         }
     }
 
-    static public void watchRace(){
+    static public void goWatchTheRace(){
         r1.lock();
-        try{
+        try {
             nSpectators++;
-            while(!allowSpectators){
+            while (!allowSpectators) {
                 spectatorsCond.await();
             }
-            if(--nSpectators == 0){
+            if (--nSpectators == 0) {
                 allowSpectators = false;
             }
-        catch(InterruptedException ie){
+        }catch(InterruptedException ie){
         
         }finally{
             r1.unlock();
@@ -159,27 +155,27 @@ public class ControlCentreAndWatchingStand{
                     break;
                 }
             }
-            return result;
         }catch(Exception e){
         
         }finally{
             r1.unlock();
         }
+        return result;
     }
 
     static public void relaxABit(){
     }
 
     //Horses methods
-    static publid void proceedToPaddock(){
+    static public void proceedToPaddock(){
         r1.lock();
-        try{
-            if(++nHorsesInPaddock == Parameters.getNumberOfHorses){
+        try {
+            if (++nHorsesInPaddock == Parameters.getNumberOfHorses()) {
                 allowSpectators = true;
                 spectatorsCond.signal();
                 nHorsesInPaddock = 0;
             }
-        catch(Exception e){
+        }catch(Exception e){
         
         }finally{
             r1.unlock();
@@ -187,11 +183,11 @@ public class ControlCentreAndWatchingStand{
     }
     
     static public void makeAMove(){
-        r1.lock()
-        try{
+        r1.lock();
+        try {
             lastHorseFinished = true;
             brokerCond.signal();
-        catch(Exception e){
+        }catch(Exception e){
         
         }finally{
             r1.unlock();
