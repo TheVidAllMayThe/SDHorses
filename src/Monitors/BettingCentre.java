@@ -53,7 +53,7 @@ public class BettingCentre{
         try{
             result = bets;
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -95,7 +95,7 @@ public class BettingCentre{
             potValue += value;
 
         }catch(InterruptedException ie){
-
+            ie.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -114,7 +114,7 @@ public class BettingCentre{
             resolvedSpectator = false;
             result = potValue/ControlCentreAndWatchingStand.numberOfWinners;
         }catch(InterruptedException ie){
-        
+            ie.printStackTrace();
         }finally{
             r1.unlock();
         }

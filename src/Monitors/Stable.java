@@ -33,7 +33,7 @@ public class Stable {
             canHorsesMoveToPaddock = true;
             horsesToPaddock.signal();
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }

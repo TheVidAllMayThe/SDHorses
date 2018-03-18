@@ -47,7 +47,7 @@ public class Paddock{
                 spectatorsCond.signal();
             }
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -67,7 +67,7 @@ public class Paddock{
             }
 
         }catch(InterruptedException ie){
-        
+            ie.printStackTrace();
         }finally{
             r1.unlock();
         }

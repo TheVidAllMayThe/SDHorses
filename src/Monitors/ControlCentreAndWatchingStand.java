@@ -16,7 +16,6 @@ public class ControlCentreAndWatchingStand{
 
     static public Condition brokerCond = r1.newCondition();
     static public boolean lastHorseFinished = false;
-
     static public Condition spectatorsCond = r1.newCondition();
     public static boolean allowSpectators = false;
 
@@ -35,7 +34,7 @@ public class ControlCentreAndWatchingStand{
             }
             nSpectatorsInPaddock = 0;
         }catch(InterruptedException e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -104,7 +103,7 @@ public class ControlCentreAndWatchingStand{
                 brokerCond.signal();
             }
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -121,7 +120,7 @@ public class ControlCentreAndWatchingStand{
                 allowSpectators = false;
             }
         }catch(InterruptedException e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -138,7 +137,7 @@ public class ControlCentreAndWatchingStand{
                 allowSpectators = false;
             }
         }catch(InterruptedException ie){
-        
+            ie.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -148,15 +147,15 @@ public class ControlCentreAndWatchingStand{
         boolean result = false;
         r1.lock();
         try{
-            for(int i=0; i < winnerHorses.length; i++){
-                if(horseIndex == winnerHorses[i]){
+            for (int winnerHorse : winnerHorses) {
+                if (horseIndex == winnerHorse) {
                     result = true;
                     numberOfWinners++;
                     break;
                 }
             }
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -176,7 +175,7 @@ public class ControlCentreAndWatchingStand{
                 nHorsesInPaddock = 0;
             }
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -188,7 +187,7 @@ public class ControlCentreAndWatchingStand{
             lastHorseFinished = true;
             brokerCond.signal();
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }

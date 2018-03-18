@@ -14,7 +14,6 @@ public class RaceTrack {
 
     public static Condition horsesCond = r1.newCondition();
     public static Boolean[] whoseTurn = new Boolean[Parameters.getNumberOfHorses()];
- 
     public static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
     public static int numHorses = 0;
 
@@ -25,7 +24,7 @@ public class RaceTrack {
             whoseTurn[0] = true;
             horsesCond.signal();
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -42,7 +41,7 @@ public class RaceTrack {
                     winnerHorsesTmp.remove(horse);
             result = winnerHorsesTmp;
         }catch(Exception e){
-        
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
