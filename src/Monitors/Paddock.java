@@ -8,17 +8,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Paddock{
-    static public final Lock r1 = new ReentrantLock(false);
+    private static final Lock r1 = new ReentrantLock(false);
 
-    static public final Condition horsesCond = r1.newCondition();
-    static public Boolean allowHorses = false;
+    private static final Condition horsesCond = r1.newCondition();
+    private static Boolean allowHorses = false;
 
-    static public final Condition spectatorsCond = r1.newCondition();
-    static public Boolean allowSpectators = false;
+    private static final Condition spectatorsCond = r1.newCondition();
+    private static Boolean allowSpectators = false;
 
-    static public final HorseInPaddock horses[] = new HorseInPaddock[Parameters.getNumberOfHorses()];
-    static public int horsesInPaddock = 0;
-    static public int spectatorsInPaddock = 0;
+    private static final HorseInPaddock horses[] = new HorseInPaddock[Parameters.getNumberOfHorses()];
+    private static int horsesInPaddock = 0;
+    private static int spectatorsInPaddock = 0;
 
     //Horses methods
     public static void proceedToPaddock(int horseID, int pnk){
@@ -61,10 +61,13 @@ public class Paddock{
                 spectatorsCond.await();
             }
 
+
             if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
                 spectatorsInPaddock = 0;
                 allowSpectators = false;
             }
+
+            spectatorsCond.signal();
 
         }catch(InterruptedException ie){
             ie.printStackTrace();

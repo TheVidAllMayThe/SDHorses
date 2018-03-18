@@ -20,28 +20,36 @@ public class Broker extends Thread{
         for(int i = 0; i < Parameters.getNumberOfHorses(); i++){
 
             state = "announcing next race";
+            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+
             Stable.summonHorsesToPaddock();
             ControlCentreAndWatchingStand.summonHorsesToPaddock();
 
             state = "waiting for bets";
+            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
             BettingCentre.acceptTheBets();
 
+
             state = "supervising the race";
+            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
             RaceTrack.startTheRace();
             ControlCentreAndWatchingStand.startTheRace();
 
             state = "supervising the race";
+            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
             ArrayList<HorsePos> list = RaceTrack.reportResults();
             ControlCentreAndWatchingStand.reportResults(list);
 
             Bet[] bets = BettingCentre.areThereAnyWinners();
             if(ControlCentreAndWatchingStand.areThereAnyWinners(bets)){
                 state = "settling accounts";
+                System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
                 BettingCentre.honorBets();
             }
         }
         
         this.state = "playing host at the bar";
+        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
         Stable.entertainTheGuests();
         ControlCentreAndWatchingStand.entertainTheGuests();
     }

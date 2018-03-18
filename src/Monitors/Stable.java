@@ -6,20 +6,18 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Stable {
-    
-    public static ReentrantLock r1 = new ReentrantLock();
 
-    public static Condition horsesToPaddock = r1.newCondition();
-    public static boolean canHorsesMoveToPaddock = false;
-
-    public static int numHorses = 0;
+    private static ReentrantLock r1 = new ReentrantLock();
+    private static Condition horsesToPaddock = r1.newCondition();
+    private static boolean canHorsesMoveToPaddock = false;
+    private static int numHorses = 0;
 
     //Broker methods
     public static void summonHorsesToPaddock(){
         r1.lock();
         try{
             canHorsesMoveToPaddock = true;
-            horsesToPaddock.signal();    
+            horsesToPaddock.signal();
         }catch (IllegalMonitorStateException e){
             e.printStackTrace();
         }finally {
@@ -42,15 +40,17 @@ public class Stable {
     //Horses methods
     public static void proceedToStable(){
         r1.lock();
-        numHorses++;
+
         try{
             while(!canHorsesMoveToPaddock)
-                horsesToPaddock.wait();
+                horsesToPaddock.await();
 
-            if(numHorses == Parameters.getNumberOfHorses()){
+            if(++numHorses == Parameters.getNumberOfHorses()){
                 numHorses = 0;
                 canHorsesMoveToPaddock = false;
             }
+            horsesToPaddock.signal();
+
         }catch (IllegalMonitorStateException | InterruptedException e){
             e.printStackTrace();
         } finally {

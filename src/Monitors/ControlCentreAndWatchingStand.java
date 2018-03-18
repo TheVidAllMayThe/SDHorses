@@ -12,27 +12,25 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ControlCentreAndWatchingStand{
 
-    static public ReentrantLock r1= new ReentrantLock(false);
-
-    static public Condition brokerCond = r1.newCondition();
-    static public boolean lastHorseFinished = false;
-    static public Condition spectatorsCond = r1.newCondition();
-    public static boolean allowSpectators = false;
-
-    static public int[] winnerHorses;
-    static public int nSpectators = 0;
+    private static ReentrantLock r1= new ReentrantLock(false);
+    private static Condition brokerCond = r1.newCondition();
+    private static boolean lastHorseFinished = false;
+    private static Condition spectatorsCond = r1.newCondition();
+    private static boolean allowSpectators = false;
+    private static int[] winnerHorses;
+    private static int nSpectators = 0;
     static public int numberOfWinners = 0;
-    static public int nHorsesInPaddock = 0;
-    static public int nSpectatorsInPaddock = 0;
+    private static int nHorsesInPaddock = 0;
+
 
     //Broker Methods
     public static void summonHorsesToPaddock(){
         r1.lock();
         try{
-            while(nSpectatorsInPaddock != Parameters.getNumberOfSpectators()){ 
+            while(nSpectators != Parameters.getNumberOfSpectators()){
                 brokerCond.await();
             }
-            nSpectatorsInPaddock = 0;
+            nSpectators = 0;
         }catch(InterruptedException e){
             e.printStackTrace();
         }finally{
@@ -96,29 +94,34 @@ public class ControlCentreAndWatchingStand{
     }
 
     //Spectators methods
+    /*
     static public void goCheckHorses(){
         r1.lock();
         try {
             if (++nSpectatorsInPaddock == Parameters.getNumberOfSpectators()) {
-                brokerCond.signal();
+
             }
         }catch(Exception e){
             e.printStackTrace();
         }finally{
             r1.unlock();
         }
-    }
+    }*/
     
     static public void waitForNextRace(){
         r1.lock();
         try{
-            nSpectators++;
+
             while(!allowSpectators){
                 spectatorsCond.await();
             }
-            if(--nSpectators == 0){
+            if(++nSpectators == Parameters.getNumberOfSpectators()){
                 allowSpectators = false;
+                brokerCond.signal();
+
             }
+
+            spectatorsCond.signal();
         }catch(InterruptedException e){
             e.printStackTrace();
         }finally{
