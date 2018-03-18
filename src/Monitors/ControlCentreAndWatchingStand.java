@@ -93,20 +93,6 @@ public class ControlCentreAndWatchingStand{
     static public void entertainTheGuests(){
     }
 
-    //Spectators methods
-    /*
-    static public void goCheckHorses(){
-        r1.lock();
-        try {
-            if (++nSpectatorsInPaddock == Parameters.getNumberOfSpectators()) {
-
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally{
-            r1.unlock();
-        }
-    }*/
     
     static public void waitForNextRace(){
         r1.lock();

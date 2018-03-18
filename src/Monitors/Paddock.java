@@ -19,21 +19,15 @@ public class Paddock{
     private static final HorseInPaddock horses[] = new HorseInPaddock[Parameters.getNumberOfHorses()];
     private static int horsesInPaddock = 0;
     private static int spectatorsInPaddock = 0;
+    private static int maxHorses = Parameters.getNumberOfHorses();
 
     //Horses methods
     public static void proceedToPaddock(int horseID, int pnk){
         r1.lock();
         try {
             horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
-            while(!allowHorses){
-                horsesCond.await();
-            }
-            horsesInPaddock--;
 
-        }catch(InterruptedException ie){
-            ie.printStackTrace();
-
-        }finally{
+        } finally{
             r1.unlock();
         }
     }
@@ -41,11 +35,18 @@ public class Paddock{
     public static void proceedToStartLine(){
         r1.lock();
         try{
-            if(--horsesInPaddock == 0){
+            while(!allowHorses){
+                horsesCond.await();
+            }
+            if(horsesInPaddock==Parameters.getNumberOfHorses()){
+                horsesInPaddock = 0;
                 allowHorses = false;
                 allowSpectators = true;
                 spectatorsCond.signal();
             }
+
+            horsesCond.signal();
+
         }catch(Exception e){
             e.printStackTrace();
         }finally{
@@ -57,13 +58,18 @@ public class Paddock{
     public static void goCheckHorses(){
         r1.lock();
         try{
+
+            if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
+                allowHorses = true;
+                horsesCond.signal();
+                allowSpectators = false;
+            }
+
             while(!allowSpectators){
                 spectatorsCond.await();
             }
 
-
-            if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
-                spectatorsInPaddock = 0;
+            if(--spectatorsInPaddock == 0){
                 allowSpectators = false;
             }
 

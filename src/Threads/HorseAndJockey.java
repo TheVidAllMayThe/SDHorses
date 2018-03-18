@@ -12,8 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class HorseAndJockey extends Thread {
 
     private int pnk;
-    private int pID;
-    private String state;
 
     public HorseAndJockey() {
         pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLength()/4);
@@ -21,7 +19,8 @@ public class HorseAndJockey extends Thread {
 
     @Override
     public void run() {
-        pID = (int)Thread.currentThread().getId();
+        int pID = (int) Thread.currentThread().getId();
+        String state;
         for (int i = 0; i < Parameters.getNumberOfRaces(); i++) {
             state = "at the stable";
             System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
@@ -32,9 +31,9 @@ public class HorseAndJockey extends Thread {
             ControlCentreAndWatchingStand.proceedToPaddock();
             Paddock.proceedToPaddock(pID, pnk);
 
+            Paddock.proceedToStartLine();
             state = "at the start line";
             System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
-            Paddock.proceedToStartLine();
             int horsePos = RaceTrack.proceedToStartLine(pID);
 
             state = "running";
@@ -51,9 +50,11 @@ public class HorseAndJockey extends Thread {
         }
 
         state = "at the stable";
+        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
         Stable.proceedToStable();
 
         state = "at the paddock";
+        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
         Paddock.proceedToPaddock(pID,pnk);
     }
 }

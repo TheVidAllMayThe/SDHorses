@@ -13,10 +13,10 @@ import java.util.ArrayList;
 public class Broker extends Thread{
 
 
-    private String state;
     @Override
     public void run(){
-        state = "opening the event";
+        String state = "opening the event";
+        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
         for(int i = 0; i < Parameters.getNumberOfHorses(); i++){
 
             state = "announcing next race";
@@ -48,7 +48,7 @@ public class Broker extends Thread{
             }
         }
         
-        this.state = "playing host at the bar";
+        state = "playing host at the bar";
         System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
         Stable.entertainTheGuests();
         ControlCentreAndWatchingStand.entertainTheGuests();
