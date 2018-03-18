@@ -12,8 +12,8 @@ public class Spectator extends Thread{
     private int budget;
     private int pid;
     
-    public Spectator(int budget){
-        this.budget = budget;
+    public Spectator(){
+        this.budget = Parameters.getBudget();
     }
 
     @Override
