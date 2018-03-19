@@ -3,6 +3,7 @@ package Monitors;
 import Monitors.AuxiliaryClasses.HorsePos;
 import Monitors.AuxiliaryClasses.Parameters;
 
+import javax.net.ssl.HostnameVerifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +22,10 @@ public class RaceTrack {
     public static void startTheRace(){
         r1.lock();
         try{
+            for(int i = 0; i < Parameters.getNumberOfHorses(); i++)
+                if(horses[i] == null)
+                    horses[i] = new HorsePos(-1,0,false);
+
             horses[0].setMyTurn(true);
             horsesCond.signal();
         }catch(Exception e){
@@ -54,8 +59,10 @@ public class RaceTrack {
         int returnValue = -1;
         r1.lock();
         try{
-
-            horses[numHorses] = new HorsePos(pID, 0, false);
+            if(horses[numHorses] == null)
+                horses[numHorses] = new HorsePos(pID, 0, false);
+            else
+                horses[numHorses].setHorseID(pID);
             returnValue = numHorses++;
 
             while(!horses[returnValue].isMyTurn()){
@@ -78,14 +85,15 @@ public class RaceTrack {
             horses[horsePos].addPos(moveAmount);
             horses[horsePos].setMyTurn(false);
 
-            if(numHorsesFinished+1 != Parameters.getNumberOfHorses())
-                for(int i = horsePos + 1; i != horsePos; i++){
-                    i = i%Parameters.getNumberOfHorses();
-                    if(!horses[i].isFinished()){
+            if(numHorsesFinished+1 != Parameters.getNumberOfHorses()) {
+                for (int i = horsePos + 1; i != horsePos; i++) {
+                    i = i % Parameters.getNumberOfHorses();
+                    if (!horses[i].isFinished()) {
                         horses[i].setMyTurn(true);
                         break;
                     }
                 }
+            }
             else horses[horsePos].setMyTurn(true);
 
 

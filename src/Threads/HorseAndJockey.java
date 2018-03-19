@@ -14,7 +14,7 @@ public class HorseAndJockey extends Thread {
     private int pnk;
 
     public HorseAndJockey() {
-        pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLength()/4);
+        pnk = ThreadLocalRandom.current().nextInt(2, Parameters.getRaceLength()/4);
     }
 
     @Override

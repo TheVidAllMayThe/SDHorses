@@ -10,6 +10,12 @@ public class HorsePos implements Comparable<HorsePos>{
         this.myTurn = myTurn;
     }
 
+    public void setHorseID(int horseID) {
+        this.horseID = horseID;
+    }
+
+
+
     public boolean isFinished() {
         return finished;
     }
