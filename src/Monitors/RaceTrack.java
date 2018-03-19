@@ -76,7 +76,7 @@ public class RaceTrack {
             horses[horsePos].addPos(moveAmount);
             whoseTurn[horsePos] = false;
             whoseTurn[(horsePos + 1) % Parameters.getNumberOfHorses()] = true;
-            horsesCond.signal();
+            horsesCond.signalAll();
 
         }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
         finally {
@@ -97,11 +97,10 @@ public class RaceTrack {
                     }
                     whoseTurn[horsePos] = false;
                     whoseTurn[(horsePos + 1) % Parameters.getNumberOfHorses()] = true;
-                    horsesCond.signal();
+                    horsesCond.signalAll();
                 }
                 whoseTurn[horsePos] = false;
             }
-
         }catch (Exception e){
             e.printStackTrace();
         }
