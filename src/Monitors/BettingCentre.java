@@ -15,7 +15,7 @@ public class BettingCentre{
     public static boolean waitingOnBroker = false;
 
     public static final Condition spectatorCond = r1.newCondition();
-    public static boolean resolvedSpectator = true;
+    public static boolean resolvedSpectator = false;
 
     public static boolean currentlyRefunding = true;
     public static final Bet[] bets  = new Bet[Parameters.getNumberOfSpectators()];

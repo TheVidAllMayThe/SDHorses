@@ -10,12 +10,13 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RaceTrack {
-    public static ReentrantLock r1 = new ReentrantLock(true);
+    public static ReentrantLock r1 = new ReentrantLock();
 
     public static Condition horsesCond = r1.newCondition();
     public static boolean[] whoseTurn = new boolean[Parameters.getNumberOfHorses()];
     public static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
     public static int numHorses = 0;
+    public static boolean finished = false;
 
     //Broker methods
     public static void startTheRace(){
@@ -36,9 +37,10 @@ public class RaceTrack {
         try{
             ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>(Arrays.asList(horses));
             HorsePos min = Collections.min(winnerHorsesTmp);
-            for(HorsePos horse: winnerHorsesTmp)
-                if (horse.compareTo(min) > 0)
-                    winnerHorsesTmp.remove(horse);
+            for(int i=0; i < winnerHorsesTmp.size(); i++){
+                if (winnerHorsesTmp.get(i).compareTo(min) > 0)
+                    winnerHorsesTmp.remove(i);
+            }
             result = winnerHorsesTmp;
         }catch(Exception e){
             e.printStackTrace();
@@ -70,7 +72,7 @@ public class RaceTrack {
     public static void makeAMove(int horsePos, int moveAmount){
         r1.lock();
         try{
-            while (!whoseTurn[horsePos]){
+            while (!finished && !whoseTurn[horsePos]){
                 horsesCond.await();
             }
             horses[horsePos].addPos(moveAmount);
@@ -88,18 +90,20 @@ public class RaceTrack {
         boolean returnVal = false;
         r1.lock();
         try{
-            if(horses[horsePos].getPos() >= Parameters.getRaceLength()) {
-                --numHorses;
-                returnVal = true;
-                while(numHorses > 0){
-                    while(!whoseTurn[horsePos]){
-                        horsesCond.await();
+            if(finished = true) returnVal = true;
+            else{
+                for(int i = 0; i < numHorses; i++){
+                    if(horses[i].getPos() >= Parameters.getRaceLength()){
+                        finished = true;
+                        returnVal = true;
+                        break;
                     }
-                    whoseTurn[horsePos] = false;
-                    whoseTurn[(horsePos + 1) % Parameters.getNumberOfHorses()] = true;
-                    horsesCond.signalAll();
+                } 
+            }
+            if(returnVal){
+                if(--numHorses==0){
+                    for(int i=0; i < Parameters.getNumberOfHorses(); i++) whoseTurn[i] = false;
                 }
-                whoseTurn[horsePos] = false;
             }
         }catch (Exception e){
             e.printStackTrace();

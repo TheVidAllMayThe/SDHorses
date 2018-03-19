@@ -105,7 +105,6 @@ public class ControlCentreAndWatchingStand{
             if(++nSpectators == Parameters.getNumberOfSpectators()){
                 allowSpectators = false;
                 brokerCond.signal();
-
             }
 
             spectatorsCond.signal();

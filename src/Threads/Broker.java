@@ -17,8 +17,8 @@ public class Broker extends Thread{
     public void run(){
         String state = "opening the event";
         System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
-        for(int i = 0; i < Parameters.getNumberOfHorses(); i++){
-
+        for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
+            System.out.println("---------------------- " + i + " ------------------");
             state = "announcing next race";
             System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
 
