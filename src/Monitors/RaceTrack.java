@@ -10,19 +10,19 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RaceTrack {
-    public static ReentrantLock r1 = new ReentrantLock();
-
-    public static Condition horsesCond = r1.newCondition();
-    public static boolean[] whoseTurn = new boolean[Parameters.getNumberOfHorses()];
-    public static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
-    public static int numHorses = 0;
+    private static ReentrantLock r1 = new ReentrantLock();
+    private static Condition horsesCond = r1.newCondition();
+    private static boolean canRace = false;
+    private static boolean[] whoseTurn = new boolean[Parameters.getNumberOfHorses()];
+    private static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
+    private static int numHorses = 0;
     public static boolean finished = false;
 
     //Broker methods
     public static void startTheRace(){
         r1.lock();
         try{
-            whoseTurn[0] = true;
+            horses[0].setMyTurn(true);
             horsesCond.signal();
         }catch(Exception e){
             e.printStackTrace();
@@ -52,13 +52,14 @@ public class RaceTrack {
 
     //Horses methods
     public static int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
-        int idx = -1;
+        int returnValue = -1;
         r1.lock();
         try{
-            idx = numHorses++;
-            horses[idx] = new HorsePos(pID, 0);
-            
-            while(!whoseTurn[idx]){
+
+            horses[numHorses] = new HorsePos(pID, 0, false);
+            returnValue = numHorses++;
+
+            while(!horses[returnValue].isMyTurn()){
                 horsesCond.await();
             }
 
@@ -66,45 +67,44 @@ public class RaceTrack {
         finally {
             r1.unlock();
         }
-        return idx;
+        return returnValue;
     }
 
-    public static void makeAMove(int horsePos, int moveAmount){
+    public static void makeAMove(int horsePos, int moveAmount) {
         r1.lock();
-        try{
-            while (!finished && !whoseTurn[horsePos]){
+        try {
+            while (!horses[horsePos].isMyTurn()) {
                 horsesCond.await();
             }
             horses[horsePos].addPos(moveAmount);
-            whoseTurn[horsePos] = false;
-            whoseTurn[(horsePos + 1) % Parameters.getNumberOfHorses()] = true;
-            horsesCond.signalAll();
+            horses[horsePos].setMyTurn(false);
 
-        }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
-        finally {
+            for(int i = horsePos + 1; i != horsePos; i++){
+                i = i%Parameters.getNumberOfHorses();
+                if(!horses[i].isFinished()){
+                    horses[i].setMyTurn(true);
+                    break;
+                }
+            }
+
+
+        } catch (IllegalMonitorStateException | InterruptedException e) {
+            e.printStackTrace();
             r1.unlock();
         }
     }
 
     public static boolean hasFinishLineBeenCrossed(int horsePos){ 
         boolean returnVal = false;
-        r1.lock();
+
         try{
-            if(finished = true) returnVal = true;
-            else{
-                for(int i = 0; i < numHorses; i++){
-                    if(horses[i].getPos() >= Parameters.getRaceLength()){
-                        finished = true;
-                        returnVal = true;
-                        break;
-                    }
-                } 
+            if (horses[horsePos].getPos() >= Parameters.getRaceLength()) {
+                returnVal = true;
+                horses[horsePos].setFinished(true);
             }
-            if(returnVal){
-                if(--numHorses==0){
-                    for(int i=0; i < Parameters.getNumberOfHorses(); i++) whoseTurn[i] = false;
-                }
-            }
+
+            horsesCond.signalAll();
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -114,4 +114,5 @@ public class RaceTrack {
 
         return returnVal;
     }
+
 }
