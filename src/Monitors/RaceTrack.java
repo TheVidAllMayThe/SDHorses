@@ -13,7 +13,7 @@ public class RaceTrack {
     public static ReentrantLock r1 = new ReentrantLock(true);
 
     public static Condition horsesCond = r1.newCondition();
-    public static Boolean[] whoseTurn = new Boolean[Parameters.getNumberOfHorses()];
+    public static boolean[] whoseTurn = new boolean[Parameters.getNumberOfHorses()];
     public static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
     public static int numHorses = 0;
 
@@ -50,11 +50,13 @@ public class RaceTrack {
 
     //Horses methods
     public static int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
+        int idx = -1;
         r1.lock();
         try{
-            horses[numHorses++] = new HorsePos(pID, 0);
+            idx = numHorses++;
+            horses[idx] = new HorsePos(pID, 0);
             
-            while(!whoseTurn[numHorses-1]){
+            while(!whoseTurn[idx]){
                 horsesCond.await();
             }
 
@@ -62,20 +64,19 @@ public class RaceTrack {
         finally {
             r1.unlock();
         }
-        return numHorses - 1;
+        return idx;
     }
 
     public static void makeAMove(int horsePos, int moveAmount){
         r1.lock();
         try{
-            horses[horsePos].addPos(moveAmount);
-            whoseTurn[horsePos] = false;
-            whoseTurn[(horsePos + 1) % numHorses] = true;
-            horsesCond.signal();
-
             while (!whoseTurn[horsePos]){
                 horsesCond.await();
             }
+            horses[horsePos].addPos(moveAmount);
+            whoseTurn[horsePos] = false;
+            whoseTurn[(horsePos + 1) % Parameters.getNumberOfHorses()] = true;
+            horsesCond.signal();
 
         }catch (IllegalMonitorStateException | InterruptedException e){e.printStackTrace();}
         finally {
@@ -83,16 +84,22 @@ public class RaceTrack {
         }
     }
 
-    public static boolean[] hasFinishLineBeenCrossed(int horsePos){ //first boolean is if horse finished, last bool is if all finished
-        boolean[] returnVal = {false, false};
+    public static boolean hasFinishLineBeenCrossed(int horsePos){ 
+        boolean returnVal = false;
         r1.lock();
         try{
-            if(horses[horsePos].getPos() > Parameters.getRaceLength()) {
-                returnVal[0] = true;
-                if(--numHorses == 0){
-                    whoseTurn[(horsePos + 1) % numHorses] = false;
-                    returnVal[1] = true;
+            if(horses[horsePos].getPos() >= Parameters.getRaceLength()) {
+                --numHorses;
+                returnVal = true;
+                while(numHorses > 0){
+                    while(!whoseTurn[horsePos]){
+                        horsesCond.await();
+                    }
+                    whoseTurn[horsePos] = false;
+                    whoseTurn[(horsePos + 1) % Parameters.getNumberOfHorses()] = true;
+                    horsesCond.signal();
                 }
+                whoseTurn[horsePos] = false;
             }
 
         }catch (Exception e){

@@ -21,6 +21,7 @@ public class ControlCentreAndWatchingStand{
     private static int nSpectators = 0;
     static public int numberOfWinners = 0;
     private static int nHorsesInPaddock = 0;
+    private static int nHorsesFinishedRace = 0;
 
 
     //Broker Methods
@@ -173,8 +174,11 @@ public class ControlCentreAndWatchingStand{
     static public void makeAMove(){
         r1.lock();
         try {
-            lastHorseFinished = true;
-            brokerCond.signal();
+            if(++nHorsesFinishedRace == Parameters.getNumberOfHorses()){
+                nHorsesFinishedRace = 0;
+                lastHorseFinished = true;
+                brokerCond.signal();
+            }
         }catch(Exception e){
             e.printStackTrace();
         }finally{

@@ -38,12 +38,10 @@ public class HorseAndJockey extends Thread {
 
             state = "running";
             System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
-            boolean[] finishLineCrossed;
             do {
                 RaceTrack.makeAMove(horsePos, ThreadLocalRandom.current().nextInt(1, pnk));
-                finishLineCrossed = RaceTrack.hasFinishLineBeenCrossed(horsePos);
-            }while(finishLineCrossed[0]); 
-            if (finishLineCrossed[1]) ControlCentreAndWatchingStand.makeAMove();
+            }while(!RaceTrack.hasFinishLineBeenCrossed(horsePos));
+            ControlCentreAndWatchingStand.makeAMove();
 
             state = "at the finish line";
             System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);

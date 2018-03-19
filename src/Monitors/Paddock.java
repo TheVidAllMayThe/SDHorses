@@ -38,8 +38,7 @@ public class Paddock{
             while(!allowHorses){
                 horsesCond.await();
             }
-            if(horsesInPaddock==Parameters.getNumberOfHorses()){
-                horsesInPaddock = 0;
+            if(--horsesInPaddock==0){
                 allowHorses = false;
                 allowSpectators = true;
                 spectatorsCond.signal();
