@@ -12,11 +12,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class RaceTrack {
     private static ReentrantLock r1 = new ReentrantLock();
     private static Condition horsesCond = r1.newCondition();
-    private static boolean canRace = false;
-    private static boolean[] whoseTurn = new boolean[Parameters.getNumberOfHorses()];
+
     private static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
     private static int numHorses = 0;
-    public static boolean finished = false;
+    private static int numHorsesFinished = 0;
 
     //Broker methods
     public static void startTheRace(){
@@ -79,13 +78,15 @@ public class RaceTrack {
             horses[horsePos].addPos(moveAmount);
             horses[horsePos].setMyTurn(false);
 
-            for(int i = horsePos + 1; i != horsePos; i++){
-                i = i%Parameters.getNumberOfHorses();
-                if(!horses[i].isFinished()){
-                    horses[i].setMyTurn(true);
-                    break;
+            if(numHorsesFinished+1 != Parameters.getNumberOfHorses())
+                for(int i = horsePos + 1; i != horsePos; i++){
+                    i = i%Parameters.getNumberOfHorses();
+                    if(!horses[i].isFinished()){
+                        horses[i].setMyTurn(true);
+                        break;
+                    }
                 }
-            }
+            else horses[horsePos].setMyTurn(true);
 
 
         } catch (IllegalMonitorStateException | InterruptedException e) {
@@ -101,6 +102,7 @@ public class RaceTrack {
             if (horses[horsePos].getPos() >= Parameters.getRaceLength()) {
                 returnVal = true;
                 horses[horsePos].setFinished(true);
+                numHorsesFinished++;
             }
 
             horsesCond.signalAll();
