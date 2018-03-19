@@ -27,7 +27,7 @@ public class RaceTrack {
                     horses[i] = new HorsePos(-1,0,false);
 
             horses[0].setMyTurn(true);
-            horsesCond.signal();
+            horsesCond.signalAll();
         }catch(Exception e){
             e.printStackTrace();
         }finally{
