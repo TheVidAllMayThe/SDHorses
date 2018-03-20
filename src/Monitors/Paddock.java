@@ -26,6 +26,14 @@ public class Paddock{
         r1.lock();
         try {
             horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
+            if (horsesInPaddock == Parameters.getNumberOfHorses()) {
+                allowSpectators = true;
+                spectatorsCond.signal();
+            }
+            while (!allowHorses) {
+                horsesCond.await();
+            }
+        }catch(InterruptedException ie){
 
         } finally{
             r1.unlock();
@@ -35,9 +43,7 @@ public class Paddock{
     public static void proceedToStartLine(){
         r1.lock();
         try{
-            while(!allowHorses){
-                horsesCond.await();
-            }
+
             if(--horsesInPaddock==0){
                 allowHorses = false;
                 allowSpectators = true;
@@ -57,18 +63,12 @@ public class Paddock{
     public static void goCheckHorses(){
         r1.lock();
         try{
-
-            if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
-                allowHorses = true;
-                horsesCond.signal();
-                allowSpectators = false;
-            }
-
             while(!allowSpectators){
                 spectatorsCond.await();
             }
-
-            if(--spectatorsInPaddock == 0){
+            if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
+                allowHorses = true;
+                horsesCond.signal();
                 allowSpectators = false;
             }
 
