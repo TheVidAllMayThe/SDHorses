@@ -30,7 +30,6 @@ public class HorseAndJockey extends Thread {
             System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
             ControlCentreAndWatchingStand.proceedToPaddock();
             Paddock.proceedToPaddock(pID, pnk);
-
             Paddock.proceedToStartLine();
             state = "at the start line";
             System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);

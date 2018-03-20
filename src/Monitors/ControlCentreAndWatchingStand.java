@@ -126,6 +126,7 @@ public class ControlCentreAndWatchingStand{
                 allowSpectators = false;
                 nSpectators = 0;
             }
+            spectatorsCond.signal();
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }finally{

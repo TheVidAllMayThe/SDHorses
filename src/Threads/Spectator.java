@@ -44,6 +44,7 @@ public class Spectator extends Thread{
             System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
             ControlCentreAndWatchingStand.goWatchTheRace();
 
+
             if(ControlCentreAndWatchingStand.haveIWon(horse)){
                 state = "collecting the gains";
                 System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);

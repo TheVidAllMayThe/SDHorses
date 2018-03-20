@@ -15,11 +15,10 @@ public class Paddock{
 
     private static final Condition spectatorsCond = r1.newCondition();
     private static Boolean allowSpectators = false;
-
     private static final HorseInPaddock horses[] = new HorseInPaddock[Parameters.getNumberOfHorses()];
     private static int horsesInPaddock = 0;
     private static int spectatorsInPaddock = 0;
-    private static int maxHorses = Parameters.getNumberOfHorses();
+
 
     //Horses methods
     public static void proceedToPaddock(int horseID, int pnk){
@@ -33,8 +32,9 @@ public class Paddock{
             while (!allowHorses) {
                 horsesCond.await();
             }
-        }catch(InterruptedException ie){
 
+        }catch(InterruptedException ie){
+            ie.printStackTrace();
         } finally{
             r1.unlock();
         }
@@ -46,7 +46,6 @@ public class Paddock{
 
             if(--horsesInPaddock==0){
                 allowHorses = false;
-                allowSpectators = true;
                 spectatorsCond.signal();
             }
 
@@ -66,10 +65,12 @@ public class Paddock{
             while(!allowSpectators){
                 spectatorsCond.await();
             }
+
             if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
                 allowHorses = true;
                 horsesCond.signal();
                 allowSpectators = false;
+                spectatorsInPaddock = 0;
             }
 
             spectatorsCond.signal();
