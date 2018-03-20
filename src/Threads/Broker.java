@@ -16,41 +16,44 @@ public class Broker extends Thread{
     @Override
     public void run(){
         String state = "opening the event";
-        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+        print(state);
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
             System.out.println("---------------------- " + i + " ------------------");
             state = "announcing next race";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
 
             Stable.summonHorsesToPaddock();
             ControlCentreAndWatchingStand.summonHorsesToPaddock();
 
             state = "waiting for bets";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
             BettingCentre.acceptTheBets();
 
 
             state = "supervising the race";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
             RaceTrack.startTheRace();
             ControlCentreAndWatchingStand.startTheRace();
 
             state = "supervising the race";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
-            ArrayList<HorsePos> list = RaceTrack.reportResults();
+            print(state);
+            int[] list = RaceTrack.reportResults();
             ControlCentreAndWatchingStand.reportResults(list);
 
-            Bet[] bets = BettingCentre.areThereAnyWinners();
-            if(ControlCentreAndWatchingStand.areThereAnyWinners(bets)){
+            if(BettingCentre.areThereAnyWinners(list)){
                 state = "settling accounts";
-                System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+                print(state);
                 BettingCentre.honorBets();
             }
         }
         
         state = "playing host at the bar";
-        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+        print(state);
         Stable.entertainTheGuests();
         ControlCentreAndWatchingStand.entertainTheGuests();
+    }
+
+    private void print(String state){
+        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
     }
 }

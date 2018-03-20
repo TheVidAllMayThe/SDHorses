@@ -35,22 +35,29 @@ public class RaceTrack {
         }
     }
 
-    public static ArrayList<HorsePos> reportResults(){
-        ArrayList<HorsePos> result = null;
+    public static int[] reportResults(){
+
+        int[] result = null;
         r1.lock();
         try{
-            ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>(Arrays.asList(horses));
-            HorsePos min = Collections.min(winnerHorsesTmp);
-            for(int i=0; i < winnerHorsesTmp.size(); i++){
-                if (winnerHorsesTmp.get(i).compareTo(min) > 0)
-                    winnerHorsesTmp.remove(i);
+            ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>();
+
+            HorsePos min = Collections.min(Arrays.asList(horses));
+
+            for(HorsePos horse : horses){
+                if (horse.compareTo(min) == 0)
+                    winnerHorsesTmp.add(horse);
             }
-            result = winnerHorsesTmp;
+
+            result = new int[winnerHorsesTmp.size()];
+
+            for(int i = 0; i < result.length; i++)
+                result[i] = winnerHorsesTmp.get(i).getHorseID();
+
 
             horses = new HorsePos[Parameters.getNumberOfHorses()];
             numHorses = 0;
             numHorsesFinished = 0;
-
 
         }catch(Exception e){
             e.printStackTrace();

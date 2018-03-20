@@ -9,19 +9,19 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BettingCentre{
     
-    public static final Lock r1 = new ReentrantLock(false);
+    private static final Lock r1 = new ReentrantLock();
 
-    public static final Condition brokerCond = r1.newCondition();
-    public static boolean waitingOnBroker = false;
+    private static final Condition brokerCond = r1.newCondition();
+    private static boolean waitingOnBroker = false;
 
-    public static final Condition spectatorCond = r1.newCondition();
-    public static boolean resolvedSpectator = false;
+    private static final Condition spectatorCond = r1.newCondition();
+    private static boolean resolvedSpectator = false;
 
-    public static boolean currentlyRefunding = true;
-    public static final Bet[] bets  = new Bet[Parameters.getNumberOfSpectators()];
-
-    public static int currentNumberOfSpectators = 0;
-    public static int potValue = 0;
+    private static boolean currentlyRefunding = true;
+    private static final Bet[] bets  = new Bet[Parameters.getNumberOfSpectators()];
+    private static int numWinners = 0;
+    private static int currentNumberOfSpectators = 0;
+    private static int potValue = 0;
 
 
     //Broker methods
@@ -48,17 +48,41 @@ public class BettingCentre{
         }
     }
     
-    public static Bet[] areThereAnyWinners(){
-        Bet[] result = null;
+    public static int[] areThereAnyWinners(){
+        int[] result = new int[bets.length];
         r1.lock();
         try{
-            result = bets;
+            for(int i = 0; i < bets.length; i++)
+                result[i] = bets[i].getHorseID();
         }catch(Exception e){
             e.printStackTrace();
         }finally{
             r1.unlock();
         }
         return result;
+    }
+
+    static public boolean areThereAnyWinners(int[] winnerList) {
+        boolean returnValue = false;
+
+        r1.lock();
+        try {
+            for (Bet bet: bets){
+                for (int winner : winnerList){
+                    if (bet.getHorseID() == winner) {
+                        returnValue = true;
+                        numWinners++;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            r1.unlock();
+        }
+
+        return returnValue;
     }
 
     public static void honorBets(){
@@ -74,6 +98,8 @@ public class BettingCentre{
                 spectatorCond.signal();
             }
             currentlyRefunding = true;
+            numWinners = 0;
+            potValue = 0;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }finally {
@@ -116,7 +142,7 @@ public class BettingCentre{
                 spectatorCond.await();
             }
             resolvedSpectator = false;
-            result = potValue/ControlCentreAndWatchingStand.numberOfWinners;
+            result = potValue/numWinners;
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }finally{

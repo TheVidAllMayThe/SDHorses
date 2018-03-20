@@ -58,10 +58,10 @@ public class HorsePos implements Comparable<HorsePos>{
 
     @Override
     public int compareTo(HorsePos horse){
-        if (horse.numSteps<this.numSteps)
+        if (horse.numSteps < this.numSteps)
             return -1;
 
-        else if (horse.numSteps>this.numSteps)
+        else if (horse.numSteps > this.numSteps)
             return 1;
 
         else {

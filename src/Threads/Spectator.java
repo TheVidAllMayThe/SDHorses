@@ -25,35 +25,41 @@ public class Spectator extends Thread{
 
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
             state = "waiting for a race to start";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
             ControlCentreAndWatchingStand.waitForNextRace();
 
             state = "appraising the horses";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
-            Paddock.goCheckHorses();
+            print(state);
+            int[] horses = Paddock.goCheckHorses();
 
             //Must decide on amount and horse somehow, for now placeholder a quarter of what he has and bets on random
             state = "placing a bet";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
             if(amountToBet > budget) amountToBet = budget;
-            horse = ThreadLocalRandom.current().nextInt(0, Parameters.getNumberOfHorses() + 1);
+            horse = horses[ThreadLocalRandom.current().nextInt(0, Parameters.getNumberOfHorses())];
             BettingCentre.placeABet(pid, amountToBet, horse);
             budget -= amountToBet;
 
             state = "watching a race";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
-            ControlCentreAndWatchingStand.goWatchTheRace();
+            print(state);
 
+            System.out.println("Before Watching the race");
+            ControlCentreAndWatchingStand.goWatchTheRace();
+            System.out.println("Finished watching the race");
 
             if(ControlCentreAndWatchingStand.haveIWon(horse)){
                 state = "collecting the gains";
-                System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+                print(state);
                 budget += BettingCentre.goCollectTheGains();
             }
         }
 
         state = "celebrating";
-        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+        print(state);
         ControlCentreAndWatchingStand.relaxABit();
+    }
+    
+    private void print(String state){
+        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
     }
 }

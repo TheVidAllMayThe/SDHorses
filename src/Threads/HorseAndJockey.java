@@ -23,35 +23,38 @@ public class HorseAndJockey extends Thread {
         String state;
         for (int i = 0; i < Parameters.getNumberOfRaces(); i++) {
             state = "at the stable";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
             Stable.proceedToStable();
 
             state = "at the paddock";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
             ControlCentreAndWatchingStand.proceedToPaddock();
             Paddock.proceedToPaddock(pID, pnk);
             Paddock.proceedToStartLine();
             state = "at the start line";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
             int horsePos = RaceTrack.proceedToStartLine(pID);
 
             state = "running";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
             do {
                 RaceTrack.makeAMove(horsePos, ThreadLocalRandom.current().nextInt(1, pnk));
             }while(!RaceTrack.hasFinishLineBeenCrossed(horsePos));
             ControlCentreAndWatchingStand.makeAMove();
 
             state = "at the finish line";
-            System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+            print(state);
         }
 
         state = "at the stable";
-        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+        print(state);
         Stable.proceedToStable();
 
         state = "at the paddock";
-        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+        print(state);
         Paddock.proceedToPaddock(pID,pnk);
+    }
+    private void print(String state){
+        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
     }
 }

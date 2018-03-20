@@ -59,8 +59,10 @@ public class Paddock{
     }
 
     //Spectators methods
-    public static void goCheckHorses(){
+    public static int[] goCheckHorses(){
+        int[] result = new int[Parameters.getNumberOfHorses()];
         r1.lock();
+
         try{
             while(!allowSpectators){
                 spectatorsCond.await();
@@ -73,12 +75,15 @@ public class Paddock{
                 spectatorsInPaddock = 0;
             }
 
-            spectatorsCond.signal();
+            for(int i= 0; i<result.length; i++)
+                result[i] = horses[i].horseID;
 
+            spectatorsCond.signal();
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }finally{
             r1.unlock();
         }
+        return result;
     }
 }

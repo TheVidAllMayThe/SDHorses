@@ -1,11 +1,7 @@
 package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
-import Monitors.AuxiliaryClasses.Bet;
-import Monitors.AuxiliaryClasses.HorsePos;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,7 +15,6 @@ public class ControlCentreAndWatchingStand{
     private static boolean allowSpectators = false;
     private static int[] winnerHorses;
     private static int nSpectators = 0;
-    static public int numberOfWinners = 0;
     private static int nHorsesInPaddock = 0;
     private static int nHorsesFinishedRace = 0;
 
@@ -55,14 +50,10 @@ public class ControlCentreAndWatchingStand{
 
     }
 
-    public static void reportResults(ArrayList<HorsePos> list) {
+    public static void reportResults(int[] list) {
         r1.lock();
         try {
-            winnerHorses = new int[list.size()];
-            int i = 0;
-            for (HorsePos horse : list)
-                winnerHorses[i++] = horse.getHorseID();
-
+            winnerHorses = list;
             allowSpectators = true;
             spectatorsCond.signal();
         } catch (IllegalMonitorStateException e) {
@@ -72,24 +63,7 @@ public class ControlCentreAndWatchingStand{
         }
     }
 
-    static public boolean areThereAnyWinners(Bet[] bets) {
-        boolean returnValue = false;
-        r1.lock();
-        try {
-            for (Bet bet : bets)
-                if (Arrays.asList(winnerHorses).contains(bet.getHorseID())) {
-                    returnValue = true;
-                    break;
-                }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            r1.unlock();
-        }
-
-        return returnValue;
-    }
 
     static public void entertainTheGuests(){
     }
@@ -122,10 +96,12 @@ public class ControlCentreAndWatchingStand{
             while (!allowSpectators) {
                 spectatorsCond.await();
             }
+
             if (++nSpectators == Parameters.getNumberOfSpectators()) {
                 allowSpectators = false;
                 nSpectators = 0;
             }
+
             spectatorsCond.signal();
         }catch(InterruptedException ie){
             ie.printStackTrace();
@@ -134,14 +110,13 @@ public class ControlCentreAndWatchingStand{
         }
     }
     
-    static public boolean haveIWon(int horseIndex){
+    static public boolean haveIWon(int horseID){
         boolean result = false;
         r1.lock();
         try{
             for (int winnerHorse : winnerHorses) {
-                if (horseIndex == winnerHorse) {
+                if (horseID == winnerHorse) {
                     result = true;
-                    numberOfWinners++;
                     break;
                 }
             }
