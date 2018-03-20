@@ -17,7 +17,9 @@ public class ControlCentreAndWatchingStand{
     private static int nSpectators = 0;
     private static int nHorsesInPaddock = 0;
     private static int nHorsesFinishedRace = 0;
-
+    private static boolean allowSpectatorsToWatch = false;
+    private static int nSpectatorsWatching = 0;
+    private static Condition spectatorsCondRace = r1.newCondition();
 
     //Broker Methods
     public static void summonHorsesToPaddock(){
@@ -54,8 +56,8 @@ public class ControlCentreAndWatchingStand{
         r1.lock();
         try {
             winnerHorses = list;
-            allowSpectators = true;
-            spectatorsCond.signal();
+            allowSpectatorsToWatch = true;
+            spectatorsCondRace.signal();
         } catch (IllegalMonitorStateException e) {
             e.printStackTrace();
         } finally {
@@ -80,8 +82,8 @@ public class ControlCentreAndWatchingStand{
                 allowSpectators = false;
                 brokerCond.signal();
             }
+            else spectatorsCond.signal();
 
-            spectatorsCond.signal();
         }catch(InterruptedException e){
             e.printStackTrace();
         }finally{
@@ -93,16 +95,16 @@ public class ControlCentreAndWatchingStand{
         r1.lock();
         try {
 
-            while (!allowSpectators) {
-                spectatorsCond.await();
+            while (!allowSpectatorsToWatch) {
+                spectatorsCondRace.await();
             }
 
             if (++nSpectators == Parameters.getNumberOfSpectators()) {
-                allowSpectators = false;
+                allowSpectatorsToWatch = false;
                 nSpectators = 0;
             }
+            else spectatorsCondRace.signal();
 
-            spectatorsCond.signal();
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }finally{
