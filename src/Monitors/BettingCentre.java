@@ -29,13 +29,14 @@ public class BettingCentre{
         r1.lock();
         try {
             do{
+                resolvedSpectator = true;
+                waitingOnBroker = false;
+                spectatorCond.signal();
+
                 while (!waitingOnBroker){
                     brokerCond.await();
                 }
 
-                waitingOnBroker = false;
-                resolvedSpectator = true;
-                spectatorCond.signal();
 
             }while(currentNumberOfSpectators != Parameters.getNumberOfSpectators());
 
@@ -84,13 +85,16 @@ public class BettingCentre{
     public static void placeABet(int pid, int value, int horseID){
         r1.lock();
         try{
-            bets[currentNumberOfSpectators++] = new Bet(pid, value, horseID);
-            waitingOnBroker = true;
-            brokerCond.signal();
+
+
             
             while(!resolvedSpectator){
                 spectatorCond.await();
             }
+
+            waitingOnBroker = true;
+            brokerCond.signal();
+            bets[currentNumberOfSpectators++] = new Bet(pid, value, horseID);
             resolvedSpectator = false;
             potValue += value;
 

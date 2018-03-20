@@ -118,12 +118,13 @@ public class ControlCentreAndWatchingStand{
     static public void goWatchTheRace(){
         r1.lock();
         try {
-            nSpectators++;
+
             while (!allowSpectators) {
                 spectatorsCond.await();
             }
-            if (--nSpectators == 0) {
+            if (++nSpectators == Parameters.getNumberOfSpectators()) {
                 allowSpectators = false;
+                nSpectators = 0;
             }
         }catch(InterruptedException ie){
             ie.printStackTrace();

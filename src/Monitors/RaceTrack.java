@@ -46,6 +46,12 @@ public class RaceTrack {
                     winnerHorsesTmp.remove(i);
             }
             result = winnerHorsesTmp;
+
+            horses = new HorsePos[Parameters.getNumberOfHorses()];
+            numHorses = 0;
+            numHorsesFinished = 0;
+
+
         }catch(Exception e){
             e.printStackTrace();
         }finally{
