@@ -11,8 +11,7 @@ public class ControlCentreAndWatchingStand{
     private static ReentrantLock r1= new ReentrantLock(false);
     private static Condition brokerCond = r1.newCondition();
     private static boolean lastHorseFinished = false;
-    private static Condition spectatorsCond = r1.newCondition();
-    private static boolean allowSpectators = false;
+    private static Condition spectatorsCond = r1.newCondition(); private static boolean allowSpectators = false;
     private static int[] winnerHorses;
     private static int nSpectators = 0;
     private static int nHorsesInPaddock = 0;
@@ -39,7 +38,7 @@ public class ControlCentreAndWatchingStand{
     public static void startTheRace(){
         r1.lock();
         try{
-            while(!lastHorseFinished){
+            while(!lastHorseFinished && Parameters.getNumberOfHorses() > 0){
                 brokerCond.await();
             }
 

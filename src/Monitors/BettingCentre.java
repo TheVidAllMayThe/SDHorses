@@ -28,7 +28,7 @@ public class BettingCentre{
     public static void acceptTheBets() throws IllegalMonitorStateException{
         r1.lock();
         try {
-            do{
+            while(currentNumberOfSpectators != Parameters.getNumberOfSpectators()){
                 resolvedSpectator = true;
                 waitingOnBroker = false;
                 spectatorCond.signal();
@@ -37,8 +37,7 @@ public class BettingCentre{
                     brokerCond.await();
                 }
 
-
-            }while(currentNumberOfSpectators != Parameters.getNumberOfSpectators());
+            }
 
             currentNumberOfSpectators = 0;
         }catch (IllegalMonitorStateException | InterruptedException e){

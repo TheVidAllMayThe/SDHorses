@@ -14,7 +14,7 @@ public class HorseAndJockey extends Thread {
     private int pnk;
 
     public HorseAndJockey() {
-        pnk = ThreadLocalRandom.current().nextInt(2, Parameters.getRaceLength()/4);
+        pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLength() + 1);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class HorseAndJockey extends Thread {
             state = "running";
             print(state);
             do {
-                RaceTrack.makeAMove(horsePos, ThreadLocalRandom.current().nextInt(1, pnk));
+                RaceTrack.makeAMove(horsePos, ThreadLocalRandom.current().nextInt(1, pnk + 1));
             }while(!RaceTrack.hasFinishLineBeenCrossed(horsePos));
             ControlCentreAndWatchingStand.makeAMove();
 

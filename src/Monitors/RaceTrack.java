@@ -26,7 +26,7 @@ public class RaceTrack {
                 if(horses[i] == null)
                     horses[i] = new HorsePos(-1,0,false);
 
-            horses[0].setMyTurn(true);
+            if(Parameters.getNumberOfHorses() > 0) horses[0].setMyTurn(true);
             horsesCond.signalAll();
         }catch(Exception e){
             e.printStackTrace();
@@ -40,20 +40,21 @@ public class RaceTrack {
         int[] result = null;
         r1.lock();
         try{
-            ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>();
+            if(Parameters.getNumberOfHorses() > 0){
+                ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>();
 
-            HorsePos min = Collections.min(Arrays.asList(horses));
+                HorsePos min = Collections.min(Arrays.asList(horses));
 
-            for(HorsePos horse : horses){
-                if (horse.compareTo(min) == 0)
-                    winnerHorsesTmp.add(horse);
+                for(HorsePos horse : horses){
+                    if (horse.compareTo(min) == 0)
+                        winnerHorsesTmp.add(horse);
+                }
+
+                result = new int[winnerHorsesTmp.size()];
+
+                for(int i = 0; i < result.length; i++)
+                    result[i] = winnerHorsesTmp.get(i).getHorseID();
             }
-
-            result = new int[winnerHorsesTmp.size()];
-
-            for(int i = 0; i < result.length; i++)
-                result[i] = winnerHorsesTmp.get(i).getHorseID();
-
 
             horses = new HorsePos[Parameters.getNumberOfHorses()];
             numHorses = 0;
