@@ -12,7 +12,9 @@ import Threads.Spectator;
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see Broker, HorseAndJockey, Spectator
+* @see Broker
+* @see HorseAndJockey
+* @see Spectator
 */
 
 public class HorseRace {

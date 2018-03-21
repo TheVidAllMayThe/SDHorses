@@ -17,7 +17,8 @@ import java.util.concurrent.locks.ReentrantLock;
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see Broker, Spectator
+* @see Broker
+* @see Spectator
 */
 
 public class BettingCentre{
@@ -33,6 +34,7 @@ public class BettingCentre{
     private static boolean currentlyRefunding = true;
     private static final Bet[] bets  = new Bet[Parameters.getNumberOfSpectators()];
     private static int numWinners = 0;
+    private static int potWinners = 0;
     private static int currentNumberOfSpectators = 0;
     private static int potValue = 0;
 
@@ -78,6 +80,7 @@ public class BettingCentre{
                     if (bet.getHorseID() == winner) {
                         returnValue = true;
                         numWinners++;
+                        potWinners += bet.getBetAmount();
                         break;
                     }
                 }
@@ -109,6 +112,7 @@ public class BettingCentre{
             currentNumberOfSpectators = 0;
             numWinners = 0;
             potValue = 0;
+            potWinners = 0;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }finally {
@@ -144,7 +148,7 @@ public class BettingCentre{
      *
      * @return  int  reward amount
      */
-    public static int goCollectTheGains(){
+    public static int goCollectTheGains(int spectatorID){
         int result = 0;
         r1.lock();
         try{
@@ -157,7 +161,16 @@ public class BettingCentre{
             waitingOnBroker = true;
             resolvedSpectator = false;
             brokerCond.signal();
-            result = potValue/numWinners;
+            
+            Bet bet;
+            for(int i=0; i<bets.length; i++){
+                if(bets[i].getSpectatorID() == spectatorID){
+                    bet = bets[i];
+                }
+            
+            }
+            //Spectator gets percentage of total pot according to how much he bet compared to other winners
+            result = (bet.getBetAmount()/potWinners)*potAmount;
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }finally{
