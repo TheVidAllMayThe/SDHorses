@@ -15,7 +15,6 @@ public class HorseAndJockey extends Thread {
     private int pID;
 
     public HorseAndJockey(int id) {
-        pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLength() + 1);
         this.pID = id;
     }
 
@@ -23,6 +22,7 @@ public class HorseAndJockey extends Thread {
     public void run() {
         String state;
         for (int i = 0; i < Parameters.getNumberOfRaces(); i++) {
+            pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLength() + 1);
             state = "at the stable";
             print(state);
             Stable.proceedToStable();

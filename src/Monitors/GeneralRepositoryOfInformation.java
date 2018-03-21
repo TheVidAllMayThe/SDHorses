@@ -1,8 +1,12 @@
 package Monitors;
 
-import java.util.PrintWriter;
+import Monitors.AuxiliaryClasses.Parameters;
 
-public class GeneralRepositoryOfInformation {
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+
+public class GeneralRepositoryOfInformation{
+    private static PrintWriter writer; 
     private static String brokerState;
     private static String[] spectatorsState;
     private static String[] horsesState;
@@ -15,12 +19,28 @@ public class GeneralRepositoryOfInformation {
     private static double[] horseProbability;
     private static int[] horseIteration;
     private static int[] horseTrackPosition;
-    private static int[] horseStanding;
+    private static int[] horsesStanding;
  
-    public static void log(){
-        PrintWriter writer = new PrintWriter("log.txt", "UTF-8");
+    public static void log() throws FileNotFoundException{
+        if(writer == null) writer = new PrintWriter("log.txt");
+        String line1 = brokerState + " ";
+        String line2 = raceNumber + " " + raceDistance + " ";
+
+        for(int i=0; i<Parameters.getNumberOfSpectators(); i++){
+            line1 += spectatorsState[i] + " " + spectatorsBudget[i] + " ";
+            line2 += spectatorsHorse[i] + " " + spectatorsBet[i] + " ";
+        }
         
-        writer.println("The second line");
+        line1 += raceNumber + " ";
+
+        for(int i=0; i<Parameters.getNumberOfHorses(); i++){
+            line1 += horsesState[i] + " " + horsesPnk[i] + " ";
+            line2 += horseProbability[i] + " " + horseIteration[i] + " " + horseTrackPosition[i] + " " + horsesStanding + " ";
+        }
+
+        writer.println(line1);
+        writer.println(line2);
+
         writer.close();
     }    
 }
