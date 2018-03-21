@@ -35,9 +35,7 @@ public class BettingCentre{
 
     private static final Bet[] bets  = new Bet[Parameters.getNumberOfSpectators()];
     private static int numWinners = 0;
-    private static int potWinners = 0;
     private static int currentNumberOfSpectators = 0;
-    private static int potValue = 0;
 
 
     /**
@@ -81,7 +79,6 @@ public class BettingCentre{
                     if (bet.getHorseID() == winner) {
                         returnValue = true;
                         numWinners++;
-                        potWinners += bet.getBetAmount();
                         break;
                     }
                 }
@@ -112,8 +109,6 @@ public class BettingCentre{
             }
             currentNumberOfSpectators = 0;
             numWinners = 0;
-            potValue = 0;
-            potWinners = 0;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }finally {
@@ -124,7 +119,7 @@ public class BettingCentre{
     /**
      * Spectator waits in line, places a bet and then wakes the broker.
      */
-    public static void placeABet(int pid, int value, int horseID){
+    public static void placeABet(int pid, double value, int horseID, double odds){
         r1.lock();
         try{  
             while(!resolvedSpectator){
@@ -132,10 +127,9 @@ public class BettingCentre{
             }
 
             waitingOnBroker = true;
-            brokerCond.signal();
-            bets[currentNumberOfSpectators++] = new Bet(pid, value, horseID);
+            bets[currentNumberOfSpectators++] = new Bet(pid, value, horseID, odds);
             resolvedSpectator = false;
-            potValue += value;
+            brokerCond.signal();
 
         }catch(InterruptedException ie){
             ie.printStackTrace();
@@ -149,8 +143,8 @@ public class BettingCentre{
      *
      * @return  int  reward amount
      */
-    public static int goCollectTheGains(int spectatorID){
-        int result = 0;
+    public static double goCollectTheGains(int spectatorID){
+        double result = 0;
         r1.lock();
         try{
 
@@ -167,11 +161,11 @@ public class BettingCentre{
             for (Bet bet1 : bets) {
                 if (bet1.getSpectatorID() == spectatorID) {
                     bet = bet1;
-                    result = (bet.getBetAmount() / potWinners) * potValue;
+                    result = bet.getBetAmount() * bet.getOdds();
+                    break;
                 }
 
             }
-            //Spectator gets percentage of total pot according to how much he bet compared to other winners
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }finally{

@@ -12,14 +12,15 @@ import java.util.concurrent.ThreadLocalRandom;
 public class HorseAndJockey extends Thread {
 
     private int pnk;
+    private int pID;
 
-    public HorseAndJockey() {
+    public HorseAndJockey(int id) {
         pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLength() + 1);
+        this.pID = id;
     }
 
     @Override
     public void run() {
-        int pID = (int) Thread.currentThread().getId();
         String state;
         for (int i = 0; i < Parameters.getNumberOfRaces(); i++) {
             state = "at the stable";

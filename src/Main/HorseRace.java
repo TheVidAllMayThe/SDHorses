@@ -23,7 +23,7 @@ public class HorseRace {
     public static void main(String[] args){
         //Simulation variables
         Random rng = new Random();
-        Parameters.initialize(rng.nextInt(1000),rng.nextInt(1000)+ 1,rng.nextInt(1000) + 1, rng.nextInt(100) + 1);
+        Parameters.initialize(rng.nextInt(400),rng.nextInt(1000)+ 1,rng.nextInt(1000) + 1, rng.nextInt(100) + 1);
         
         Thread[] threads = new Thread[Parameters.getNumberOfHorses() + Parameters.getNumberOfSpectators() + 1];
 
@@ -32,7 +32,7 @@ public class HorseRace {
         threads[i].start();
 
         for(i = 1; i<Parameters.getNumberOfHorses() + 1; i++){
-            threads[i] = new HorseAndJockey();
+            threads[i] = new HorseAndJockey(i-1);
             threads[i].start();
         }
 

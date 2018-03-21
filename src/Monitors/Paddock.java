@@ -6,6 +6,7 @@ import Monitors.AuxiliaryClasses.Parameters;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Paddock{
     private static final Lock r1 = new ReentrantLock(false);
@@ -28,8 +29,13 @@ public class Paddock{
             if (horsesInPaddock == Parameters.getNumberOfHorses()) {
                 allowSpectators = true;
                 int total_pnk = 0;
-                for (HorseInPaddock horse : horses) total_pnk += horse.pnk;
-                for (HorseInPaddock horse : horses) horse.odds = pnk / total_pnk / (1 - (pnk / total_pnk));
+                for (HorseInPaddock horse : horses) total_pnk += horse.getPnk();
+                for (HorseInPaddock horse : horses){
+                    if(Parameters.getNumberOfHorses() > 1){
+                        horse.setOdds(pnk / total_pnk / (1 - (pnk / total_pnk)));
+                    }
+                    else horse.setOdds(1.0);
+                }
                 spectatorsCond.signal();
             }
             while (!allowHorses) {
@@ -62,8 +68,8 @@ public class Paddock{
     }
 
     //Spectators methods
-    public static int[] goCheckHorses(){
-        int[] result = new int[Parameters.getNumberOfHorses()];
+    public static HorseInPaddock goCheckHorses(){
+        HorseInPaddock result = null;
         r1.lock();
 
         try{
@@ -78,8 +84,7 @@ public class Paddock{
                 spectatorsInPaddock = 0;
             }
 
-            for(int i= 0; i<result.length; i++)
-                result[i] = horses[i].horseID;
+            result = horses[ThreadLocalRandom.current().nextInt(horses.length)];
 
             spectatorsCond.signal();
         }catch(InterruptedException ie){

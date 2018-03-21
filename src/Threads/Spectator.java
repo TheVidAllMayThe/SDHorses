@@ -1,6 +1,7 @@
 package Threads;
 
 import Monitors.AuxiliaryClasses.Parameters;
+import Monitors.AuxiliaryClasses.HorseInPaddock;
 import Monitors.BettingCentre;
 import Monitors.ControlCentreAndWatchingStand;
 import Monitors.Paddock;
@@ -17,18 +18,18 @@ import java.util.concurrent.ThreadLocalRandom;
 */
 
 public class Spectator extends Thread{
-    private int budget;
+    private double budget;
 
     public Spectator(){
-        this.budget = ThreadLocalRandom.current().nextInt(1000);
+        this.budget = ThreadLocalRandom.current().nextDouble(1000);
     }
 
     @Override
     public void run(){
 
         int pid = (int) Thread.currentThread().getId();
-        int amountToBet;
-        int horse;
+        double amountToBet;
+        HorseInPaddock horse;
 
         String state;
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
@@ -38,14 +39,13 @@ public class Spectator extends Thread{
 
             state = "appraising the horses";
             print(state);
-            int[] horses = Paddock.goCheckHorses();
+            horse = Paddock.goCheckHorses();
 
             state = "placing a bet";
             print(state);
 
-            amountToBet = ThreadLocalRandom.current().nextInt(0, this.budget+1);
-            horse = horses[ThreadLocalRandom.current().nextInt(0, Parameters.getNumberOfHorses())];
-            BettingCentre.placeABet(pid, amountToBet, horse);
+            amountToBet = ThreadLocalRandom.current().nextDouble(0, this.budget);
+            BettingCentre.placeABet(pid, amountToBet, horse.getHorseID(), horse.getOdds());
             budget -= amountToBet;
 
             state = "watching a race";
@@ -53,7 +53,7 @@ public class Spectator extends Thread{
 
             ControlCentreAndWatchingStand.goWatchTheRace();
 
-            if(ControlCentreAndWatchingStand.haveIWon(horse)){
+            if(ControlCentreAndWatchingStand.haveIWon(horse.getHorseID())){
                 state = "collecting the gains";
                 print(state);
                 budget += BettingCentre.goCollectTheGains(pid);
