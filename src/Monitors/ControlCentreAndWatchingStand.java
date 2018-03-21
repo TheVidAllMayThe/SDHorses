@@ -38,7 +38,7 @@ public class ControlCentreAndWatchingStand{
     public static void startTheRace(){
         r1.lock();
         try{
-            while(!lastHorseFinished && Parameters.getNumberOfHorses() > 0){
+            while(!lastHorseFinished){
                 brokerCond.await();
             }
 

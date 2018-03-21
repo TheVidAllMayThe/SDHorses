@@ -9,7 +9,7 @@ public class HorseRace {
     public static void main(String[] args){
         //Simulation variables
         Random rng = new Random();
-        Parameters.initialize(rng.nextInt(100),rng.nextInt(100),rng.nextInt(100), rng.nextInt(100) + 1);
+        Parameters.initialize(rng.nextInt(100),rng.nextInt(100)+ 1,rng.nextInt(100) + 1, rng.nextInt(100) + 1);
         
         Thread[] threads = new Thread[Parameters.getNumberOfHorses() + Parameters.getNumberOfSpectators() + 1];
 
