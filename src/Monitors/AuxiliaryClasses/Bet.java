@@ -1,12 +1,14 @@
 package Monitors.AuxiliaryClasses;
 
+import Threads.Horse;
+import Threads.Spectator;
+
 /**
- * The Bet class is used to facilitate the storage of parameters related with each bet made by a spectator.
+ * The {@link Bet} class holds all the information regarding a {@link Bet}.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0
  * @since   2018-03-21
- * @see Monitors.BettingCentre;
  */
 
 public class Bet{
@@ -19,10 +21,10 @@ public class Bet{
     /**
      * Spectator checks if he won his bet.
      *
-     * @param   pID ID of the spectator who's making the bet.
-     * @param   betAmount Amount of money that the spectator wishes to bet.
-     * @param horseID ID of the horse in  which the spectator wishes to bet.
-     * @param   odds    double of odd of the horse.
+     * @param   pID ID of the {@link Spectator} who's making the bet.
+     * @param   betAmount Amount of money that the {@link Spectator} wishes to bet.
+     * @param horseID ID of the {@link Horse} in  which the {@link Spectator} wishes to bet.
+     * @param   odds  Odds of the bet.
      */
     public Bet(int pID, double betAmount, int horseID, double odds) {
         this.spectatorID = pID;
@@ -31,29 +33,21 @@ public class Bet{
         this.odds = odds;
     }
 
-    /**
-     *
-     * @return Returns the ID of the Spectator thread that made the bet
-     */
+
     public int getSpectatorID() {
         return spectatorID;
     }
 
-    /**
-     *
-     * @return Returns the amount of money put on the bet
-     */
+
     public double getBetAmount() {
         return betAmount;
     }
 
-    /**
-     *
-     * @return Returns the ID of the horse that the spectator chose to bet
-     */
+
     public int getHorseID() {
         return horseID;
     }
+
 
     public double getOdds() {
         return odds;

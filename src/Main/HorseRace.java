@@ -4,18 +4,18 @@ import java.util.Random;
 
 import Monitors.AuxiliaryClasses.Parameters;
 import Threads.Broker;
-import Threads.HorseAndJockey;
+import Threads.Horse;
 import Threads.Spectator;
 
 /**
 * The Main.HorseRace program creates one thread of type Broker and several
-* of type HorseAndJockey and Spectator and runs them.
+* of type Horse and Spectator and runs them.
 *
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
 * @see Broker
-* @see HorseAndJockey
+* @see Horse
 * @see Spectator
 */
 
@@ -32,7 +32,7 @@ public class HorseRace {
         threads[i].start();
 
         for(i = 1; i<Parameters.getNumberOfHorses() + 1; i++){
-            threads[i] = new HorseAndJockey(i-1);
+            threads[i] = new Horse(i-1);
             threads[i].start();
         }
 

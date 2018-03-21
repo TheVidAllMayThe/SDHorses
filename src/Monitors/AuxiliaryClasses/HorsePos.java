@@ -1,5 +1,15 @@
 package Monitors.AuxiliaryClasses;
 
+import Threads.Horse;
+
+/**
+ * The {@link HorsePos} class holds all the necessary information about a {@link Horse} that's racing or that has finished a race.
+ *
+ * @author  David Almeida, Manuel Xarez
+ * @version 1.0
+ * @since   2018-03-21
+ */
+
 public class HorsePos implements Comparable<HorsePos>{
     private int horseID;
     private int pos;
@@ -25,9 +35,15 @@ public class HorsePos implements Comparable<HorsePos>{
     private boolean finished;
 
 
-    public HorsePos(int horseID, int pos, boolean myTurn) {
+    /**
+     *
+     * @param horseID ID of the Thread invoking the constructor.
+     * @param myTurn Set to true if it's the starting {@link Horse}.
+     */
+
+    public HorsePos(int horseID, boolean myTurn) {
         this.horseID = horseID;
-        this.pos = pos;
+        this.pos = 0;
         this.numSteps = 0;
         this.myTurn = myTurn;
         this.myTurn = false;
@@ -50,9 +66,11 @@ public class HorsePos implements Comparable<HorsePos>{
         return pos;
     }
 
-    public int getNumSteps() {
-        return numSteps;
-    }
+    /**
+     *
+     * @param horse {@link HorsePos} object to be compared.
+     * @return Returns -1 if the position of the {@link HorsePos} passed as argument is lower, 0 if its equal and 1 if its greater.
+     */
 
     @Override
     public int compareTo(HorsePos horse){

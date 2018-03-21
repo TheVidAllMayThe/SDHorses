@@ -2,15 +2,15 @@ package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
 import Threads.Broker;
-import Threads.HorseAndJockey;
+import Threads.Horse;
 import Threads.Spectator;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
-* The ControlCentreAndWatchingStand class is a monitor that contains all the
-* necessary methods to be used in mutual exclusive access by Broker, Horses and Spectators to itself.
+* The ControlCentreAndWatchingStand class is a monitor that contains
+* necessary methods to be used in mutual exclusive access by Broker, Horses and Spectators.
 * <p>
 * This is where the broker mostly operates and the spectators watch the race.
 * 
@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 * @since   2018-03-21
 * @see Main.HorseRace
 * @see Broker
-* @see HorseAndJockey
+* @see Horse
 * @see Spectator
 */
 
@@ -75,7 +75,7 @@ public class ControlCentreAndWatchingStand{
     /**
      * Broker declares the horses who won and wakes up the spectators watching the race.  
      *
-     * @param   list  An integer array containing the ID of the horses who won the race 
+     * @param   list  An integer array containing the ID of the horses who won the race.
      */
 
     public static void reportResults(int[] list) {
@@ -95,6 +95,7 @@ public class ControlCentreAndWatchingStand{
     /**
      * Last function of broker lifecycle.
      */
+
     static public void entertainTheGuests(){
     }
 
@@ -151,7 +152,7 @@ public class ControlCentreAndWatchingStand{
      * Spectator checks if he won his bet.  
      *
      * @param   horseID  ID of the horse whom the spectator bet on. 
-     * @return  boolean  wether spectator won.
+     * @return  boolean  weather spectator won.
      */
     static public boolean haveIWon(int horseID){
         boolean result = false;
@@ -197,8 +198,9 @@ public class ControlCentreAndWatchingStand{
     }
     
     /**
-     * Horse announces in the ControlCentre that he finished the race.
+     * The last Horse announces in the ControlCentre that he finished the race waking up the broker.
      */
+
     static public void makeAMove(){
         r1.lock();
         try {

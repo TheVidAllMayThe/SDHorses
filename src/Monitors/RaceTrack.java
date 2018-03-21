@@ -2,13 +2,28 @@ package Monitors;
 
 import Monitors.AuxiliaryClasses.HorsePos;
 import Monitors.AuxiliaryClasses.Parameters;
-
+import Threads.Horse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+
+
+/**
+ * The {@link RaceTrack} class is a monitor that contains
+ * necessary methods to be used in mutual exclusive access by multiple Horses and by the Broker.
+ * <p>
+ * This is where the Horses compete with each other to reach the end of the race.
+ *
+ * @author  David Almeida, Manuel Xarez
+ * @version 1.0
+ * @since   2018-03-21
+ * @see Main.HorseRace
+ * @see Horse
+ * @see HorsePos
+ */
 
 public class RaceTrack {
     private static ReentrantLock r1 = new ReentrantLock();
@@ -19,12 +34,16 @@ public class RaceTrack {
     private static int numHorsesFinished = 0;
 
     //Broker methods
+
+    /**
+     * The Broker allows the first horse to start running
+     */
     public static void startTheRace(){
         r1.lock();
         try{
             for(int i = 0; i < Parameters.getNumberOfHorses(); i++)
                 if(horses[i] == null)
-                    horses[i] = new HorsePos(-1,0,false);
+                    horses[i] = new HorsePos(-1, false);
 
             horses[0].setMyTurn(true);
             horsesCond.signalAll();
@@ -34,6 +53,11 @@ public class RaceTrack {
             r1.unlock();
         }
     }
+
+    /**
+     * The broker enters the racetrack to see which Horses have won the race
+     * @return Array containing the ID's of the winning Horses.
+     */
 
     public static int[] reportResults(){
 
@@ -67,12 +91,18 @@ public class RaceTrack {
     }
 
     //Horses methods
+
+    /**
+     * The Horses write their information on the array {@link #horses}, and then wait for their turn to proceed.
+     * @param pID Id of the calling Thread.
+     * @return Returns the position of the horse in the array {@link #horses}.
+     */
     public static int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
         int returnValue = -1;
         r1.lock();
         try{
             if(horses[numHorses] == null)
-                horses[numHorses] = new HorsePos(pID, 0, false);
+                horses[numHorses] = new HorsePos(pID, false);
             else
                 horses[numHorses].setHorseID(pID);
             returnValue = numHorses++;
@@ -88,6 +118,12 @@ public class RaceTrack {
         return returnValue;
     }
 
+
+    /**
+     * The Horse increases its position in the race.
+     * @param horsePos Index of the Horse in the array {@link #horses}.
+     * @param moveAmount Amount to be increased in the position of the Horse.
+     */
     public static void makeAMove(int horsePos, int moveAmount) {
         r1.lock();
         try {
@@ -115,6 +151,11 @@ public class RaceTrack {
         }
     }
 
+    /**
+     * Determines if the finish line has been crossed by the calling Thread.
+     * @param horsePos Index of the Horse in the array {@link #horses}.
+     * @return Returns true if the Position of the horse in equal or greater than the race length.
+     */
     public static boolean hasFinishLineBeenCrossed(int horsePos){ 
         boolean returnVal = false;
 

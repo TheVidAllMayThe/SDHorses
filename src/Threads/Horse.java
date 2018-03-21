@@ -9,12 +9,12 @@ import Monitors.Stable;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class HorseAndJockey extends Thread {
+public class Horse extends Thread {
 
     private int pnk;
     private int pID;
 
-    public HorseAndJockey(int id) {
+    public Horse(int id) {
         this.pID = id;
     }
 

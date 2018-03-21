@@ -1,5 +1,11 @@
 package Monitors.AuxiliaryClasses;
 
+import Main.HorseRace;
+
+/**
+ * Class containing the Parameters of the {@link HorseRace}.
+ */
+
 public class Parameters {
     private static int numberOfRaces, numberOfHorses, numberOfSpectators, raceLength;
     private static boolean set = false;

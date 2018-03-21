@@ -1,6 +1,7 @@
 package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
+import Threads.Horse;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 * @since   2018-03-21
 * @see Main.HorseRace
  *@see Threads.Broker
- *@see Threads.HorseAndJockey
+ *@see Horse
 */
 
 public class Stable {

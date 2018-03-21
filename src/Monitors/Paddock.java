@@ -1,12 +1,29 @@
 package Monitors;
 
+
 import Monitors.AuxiliaryClasses.HorseInPaddock;
 import Monitors.AuxiliaryClasses.Parameters;
+import Threads.Horse;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * The Paddock class is a monitor that contains
+ * necessary methods to be used in mutual exclusive access by Horses and Spectators.
+ * <p>
+ * This is where the Horses are paraded for the spectators.
+ *
+ * @author  David Almeida, Manuel Xarez
+ * @version 1.0
+ * @since   2018-03-21
+ * @see Main.HorseRace
+ * @see Threads.Broker
+ * @see Horse
+ * @see Threads.Spectator
+ */
 
 public class Paddock{
     private static final Lock r1 = new ReentrantLock(false);
@@ -22,6 +39,13 @@ public class Paddock{
 
 
     //Horses methods
+
+    /**
+     * The Horses enter the paddock and add their information to the {@link #horsesInPaddock} array, then they wait until all the spectators have reached the paddock.
+     *
+     * @param horseID ID of the calling thread.
+     * @param pnk Max step size.
+     */
     public static void proceedToPaddock(int horseID, int pnk){
         r1.lock();
         try {
@@ -49,6 +73,10 @@ public class Paddock{
         }
     }
 
+    /**
+     * The last horse to leave the Paddock awakes the spectators.
+     */
+
     public static void proceedToStartLine(){
         r1.lock();
         try{
@@ -68,6 +96,11 @@ public class Paddock{
     }
 
     //Spectators methods
+
+    /**
+     * Function in which the Spectator enters the paddock. The last Spectator to enter wakes up the Horses. In this function the spectator determines in which horse they will bet.
+     * @return Returns the Horse in which the spectator will bet.
+     */
     public static HorseInPaddock goCheckHorses(){
         HorseInPaddock result = null;
         r1.lock();

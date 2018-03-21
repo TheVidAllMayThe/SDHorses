@@ -3,6 +3,7 @@ package Monitors;
 import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.AuxiliaryClasses.Bet;
 import Threads.Broker;
+import Threads.Horse;
 import Threads.Spectator;
 
 import java.util.concurrent.locks.Condition;
@@ -10,10 +11,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
-* The BettingCentre class is a monitor that contains all the
-* necessary methods to be used in mutual exclusive access by Broker and Spectators.
+* The {@link BettingCentre} class is a monitor that contains all the
+* necessary methods to be used in mutual exclusive access by the {@link Broker} and {@link Spectator}.
 * <p>
-* This is where the bets are handled.
+* This is where the {@link Bet}s are handled.
 *
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
@@ -24,23 +25,20 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BettingCentre{
     
-    private static final Lock r1 = new ReentrantLock();
-
-    private static final Condition brokerCond = r1.newCondition();
-    private static boolean waitingOnBroker = false;
-
-    private static final Condition spectatorCond = r1.newCondition();
-    private static boolean resolvedSpectator = false;
-
-
     private static final Bet[] bets  = new Bet[Parameters.getNumberOfSpectators()];
+    private static final Lock r1 = new ReentrantLock();
+    private static final Condition brokerCond = r1.newCondition();
+    private static final Condition spectatorCond = r1.newCondition();
+    private static boolean waitingOnBroker = false;
+    private static boolean resolvedSpectator = false;
     private static int numWinners = 0;
     private static int currentNumberOfSpectators = 0;
 
 
     /**
-     * Broker accepts a bet, wakes next spectator in line and waits for the next one until all bets are taken.
+     * {@link Broker} accepts a {@link Bet}, wakes next {@link Spectator} in line and waits for the next one until all {@link Bet}s are taken.
      */
+
     public static void acceptTheBets() throws IllegalMonitorStateException{
         r1.lock();
         try {
@@ -64,11 +62,12 @@ public class BettingCentre{
     }
     
     /**
-     * Broker verifies if anyone won a bet.
+     * {@link Broker} verifies if any {@link Spectator} won a {@link Bet}.
      *
-     * @param   winnerList  integer array containing the ID of all the horses who won.
-     * @return  boolean     wether any spectator won a bet.
+     * @param   winnerList  Integer array containing the ID of all the {@link Horse}s who won.
+     * @return  boolean     Returns true if any {@link Spectator} won a {@link Bet}.
      */
+
     static public boolean areThereAnyWinners(int[] winnerList) {
         boolean returnValue = false;
 
@@ -93,7 +92,7 @@ public class BettingCentre{
     }
 
     /**
-     * Broker honors a bet, wakes next spectator in line and waits for the next spectator claiming a reward until all rewards are given.
+     * {@link Broker} honors a {@link Bet}, wakes next {@link Spectator} in line and waits for the next {@link Spectator} claiming a reward until all rewards are given.
      */
     public static void honorBets(){
         r1.lock();
@@ -116,9 +115,16 @@ public class BettingCentre{
         }
     }
 
+
     /**
-     * Spectator waits in line, places a bet and then wakes the broker.
+     * {@link Spectator} waits in line, places a {@link Bet} and then wakes the {@link Broker}.
+     *
+     * @param pid ID of the thread calling the method.
+     * @param value Amount to bet.
+     * @param horseID ID of the {@link Horse} in which to bet.
+     * @param odds Odds of the {@link Horse} in which to bet.
      */
+
     public static void placeABet(int pid, double value, int horseID, double odds){
         r1.lock();
         try{  
@@ -139,9 +145,9 @@ public class BettingCentre{
     }
 
     /**
-     * Spectator waits in line, claims his reward and then wakes the broker.
      *
-     * @return  int  reward amount
+     * @param spectatorID ID of the thread calling the method.
+     * @return Returns the reward amount.
      */
     public static double goCollectTheGains(int spectatorID){
         double result = 0;
