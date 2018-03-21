@@ -2,6 +2,7 @@ package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.AuxiliaryClasses.Bet;
+import Threads.Broker;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -16,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see HorseRace, Broker, Spectator
+* @see Broker, Spectator
 */
 
 public class BettingCentre{
@@ -144,7 +145,7 @@ public class BettingCentre{
      * @return  int  reward amount
      */
     public static int goCollectTheGains(){
-        double result = 0.0;
+        int result = 0;
         r1.lock();
         try{
 

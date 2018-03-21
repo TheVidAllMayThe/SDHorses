@@ -71,6 +71,7 @@ public class ControlCentreAndWatchingStand{
      *
      * @param   list  An integer array containing the ID of the horses who won the race 
      */
+
     public static void reportResults(int[] list) {
         r1.lock();
         try {
