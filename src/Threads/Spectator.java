@@ -13,13 +13,11 @@ import java.util.concurrent.ThreadLocalRandom;
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see HorseRace
+* @see Main.HorseRace
 */
 
 public class Spectator extends Thread{
-    private String state;
     private int budget;
-    private int pid;
 
     public Spectator(){
         this.budget = ThreadLocalRandom.current().nextInt(1000);
@@ -28,10 +26,11 @@ public class Spectator extends Thread{
     @Override
     public void run(){
 
-        pid = (int)Thread.currentThread().getId();
+        int pid = (int) Thread.currentThread().getId();
         int amountToBet;
         int horse;
 
+        String state;
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
             state = "waiting for a race to start";
             print(state);

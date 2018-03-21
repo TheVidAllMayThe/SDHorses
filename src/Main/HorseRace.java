@@ -46,6 +46,7 @@ public class HorseRace {
                 threads[i].join();
             }
         }catch(InterruptedException ie){
+            ie.printStackTrace();
         }
     }
 }

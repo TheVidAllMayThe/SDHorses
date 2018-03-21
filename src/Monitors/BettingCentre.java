@@ -32,7 +32,7 @@ public class BettingCentre{
     private static final Condition spectatorCond = r1.newCondition();
     private static boolean resolvedSpectator = false;
 
-    private static boolean currentlyRefunding = true;
+
     private static final Bet[] bets  = new Bet[Parameters.getNumberOfSpectators()];
     private static int numWinners = 0;
     private static int potWinners = 0;

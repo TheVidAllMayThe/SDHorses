@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see HorseRace
+* @see Main.HorseRace
 * @see Broker
 * @see HorseAndJockey
 * @see Spectator
@@ -34,7 +34,6 @@ public class ControlCentreAndWatchingStand{
     private static int nHorsesInPaddock = 0;
     private static int nHorsesFinishedRace = 0;
     private static boolean allowSpectatorsToWatch = false;
-    private static int nSpectatorsWatching = 0;
     private static Condition spectatorsCondRace = r1.newCondition();
 
     /**

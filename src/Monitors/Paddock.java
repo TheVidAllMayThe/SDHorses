@@ -28,8 +28,8 @@ public class Paddock{
             if (horsesInPaddock == Parameters.getNumberOfHorses()) {
                 allowSpectators = true;
                 int total_pnk = 0;
-                for(int i=0; i<horses.length; i++) total_pnk += horses[i].pnk;
-                for(int i=0; i<horses.length; i++) horses[i].odds = pnk/total_pnk/(1 - (pnk/total_pnk));
+                for (HorseInPaddock horse : horses) total_pnk += horse.pnk;
+                for (HorseInPaddock horse : horses) horse.odds = pnk / total_pnk / (1 - (pnk / total_pnk));
                 spectatorsCond.signal();
             }
             while (!allowHorses) {

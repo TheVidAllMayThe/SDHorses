@@ -3,7 +3,7 @@ package Monitors;
 import Monitors.AuxiliaryClasses.HorsePos;
 import Monitors.AuxiliaryClasses.Parameters;
 
-import javax.net.ssl.HostnameVerifier;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
