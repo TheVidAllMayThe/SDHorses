@@ -15,7 +15,9 @@ import java.util.concurrent.locks.ReentrantLock;
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see HorseRace, Broker, Horses
+* @see Main.HorseRace
+ *@see Threads.Broker
+ *@see Threads.HorseAndJockey
 */
 
 public class Stable {

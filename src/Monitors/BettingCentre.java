@@ -3,6 +3,7 @@ package Monitors;
 import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.AuxiliaryClasses.Bet;
 import Threads.Broker;
+import Threads.Spectator;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

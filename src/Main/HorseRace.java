@@ -1,3 +1,5 @@
+package Main;
+
 import java.util.Random;
 
 import Monitors.AuxiliaryClasses.Parameters;
@@ -6,7 +8,7 @@ import Threads.HorseAndJockey;
 import Threads.Spectator;
 
 /**
-* The HorseRace program creates one thread of type Broker and several 
+* The Main.HorseRace program creates one thread of type Broker and several
 * of type HorseAndJockey and Spectator and runs them.
 *
 * @author  David Almeida, Manuel Xarez

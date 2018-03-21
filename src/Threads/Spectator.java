@@ -20,7 +20,7 @@ public class Spectator extends Thread{
     private String state;
     private int budget;
     private int pid;
-    
+
     public Spectator(){
         this.budget = ThreadLocalRandom.current().nextInt(1000);
     }
@@ -57,7 +57,7 @@ public class Spectator extends Thread{
             if(ControlCentreAndWatchingStand.haveIWon(horse)){
                 state = "collecting the gains";
                 print(state);
-                budget += BettingCentre.goCollectTheGains();
+                budget += BettingCentre.goCollectTheGains(pid);
             }
         }
 

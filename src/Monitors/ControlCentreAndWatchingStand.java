@@ -1,6 +1,9 @@
 package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
+import Threads.Broker;
+import Threads.HorseAndJockey;
+import Threads.Spectator;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
