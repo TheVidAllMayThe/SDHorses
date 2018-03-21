@@ -5,6 +5,17 @@ import Monitors.AuxiliaryClasses.Parameters;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+* The ControlCentreAndWatchingStand class is a monitor that contains all the
+* necessary methods to be used in mutual exclusive access by Broker, Horses and Spectators to itself.
+* <p>
+* This is where the broker mostly operates and the spectators watch the race.
+* 
+* @author  David Almeida, Manuel Xarez
+* @version 1.0
+* @since   2018-03-21
+* @see HorseRace, Broker, Horses, Spectator
+*/
 
 public class ControlCentreAndWatchingStand{
 
@@ -20,7 +31,9 @@ public class ControlCentreAndWatchingStand{
     private static int nSpectatorsWatching = 0;
     private static Condition spectatorsCondRace = r1.newCondition();
 
-    //Broker Methods
+    /**
+     * Broker waits for all spectator threads to have reached the ControlCentre before proceeding.
+     */
     public static void summonHorsesToPaddock(){
         r1.lock();
         try{
@@ -35,10 +48,12 @@ public class ControlCentreAndWatchingStand{
         }
     }
 
+    /**
+     * Broker waits for all horse threads to have reached the finish line before proceeding.
+     */
     public static void startTheRace(){
         r1.lock();
-        try{
-            while(!lastHorseFinished){
+        try{ while(!lastHorseFinished){
                 brokerCond.await();
             }
 
@@ -51,6 +66,11 @@ public class ControlCentreAndWatchingStand{
 
     }
 
+    /**
+     * Broker declares the horses who won and wakes up the spectators watching the race.  
+     *
+     * @param   list  An integer array containing the ID of the horses who won the race 
+     */
     public static void reportResults(int[] list) {
         r1.lock();
         try {
@@ -65,11 +85,17 @@ public class ControlCentreAndWatchingStand{
     }
 
 
-
+    /**
+     * Last function of broker lifecycle.
+     */
     static public void entertainTheGuests(){
     }
 
     
+    /**
+     * Spectator waits for next race of the day, last spectator waiting wakes the broker 
+     * who's ready to start the race.
+     */
     static public void waitForNextRace(){
         r1.lock();
         try{
@@ -90,6 +116,9 @@ public class ControlCentreAndWatchingStand{
         }
     }
 
+    /**
+     * Spectator waits while watching the race. 
+     */
     static public void goWatchTheRace(){
         r1.lock();
         try {
@@ -111,6 +140,12 @@ public class ControlCentreAndWatchingStand{
         }
     }
     
+    /**
+     * Spectator checks if he won his bet.  
+     *
+     * @param   horseID  ID of the horse whom the spectator bet on. 
+     * @return  boolean  wether spectator won.
+     */
     static public boolean haveIWon(int horseID){
         boolean result = false;
         r1.lock();
@@ -129,10 +164,16 @@ public class ControlCentreAndWatchingStand{
         return result;
     }
 
+    /**
+     * Last function of Spectator lifecycle.  
+     */
     static public void relaxABit(){
     }
 
-    //Horses methods
+    /**
+     * Horse proceeds to paddock, last horse awakes spectators 
+     * that are waiting for the horses to enter the paddock.
+     */
     static public void proceedToPaddock(){
         r1.lock();
         try {
@@ -148,6 +189,9 @@ public class ControlCentreAndWatchingStand{
         }
     }
     
+    /**
+     * Horse announces in the ControlCentre that he finished the race.
+     */
     static public void makeAMove(){
         r1.lock();
         try {

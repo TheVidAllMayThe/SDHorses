@@ -7,6 +7,18 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+* The BettingCentre class is a monitor that contains all the
+* necessary methods to be used in mutual exclusive access by Broker and Spectators.
+* <p>
+* This is where the bets are handled.
+*
+* @author  David Almeida, Manuel Xarez
+* @version 1.0
+* @since   2018-03-21
+* @see HorseRace, Broker, Spectator
+*/
+
 public class BettingCentre{
     
     private static final Lock r1 = new ReentrantLock();
@@ -24,7 +36,9 @@ public class BettingCentre{
     private static int potValue = 0;
 
 
-    //Broker methods
+    /**
+     * Broker accepts a bet, wakes next spectator in line and waits for the next one until all bets are taken.
+     */
     public static void acceptTheBets() throws IllegalMonitorStateException{
         r1.lock();
         try {
@@ -47,20 +61,12 @@ public class BettingCentre{
         }
     }
     
-    public static int[] areThereAnyWinners(){
-        int[] result = new int[bets.length];
-        r1.lock();
-        try{
-            for(int i = 0; i < bets.length; i++)
-                result[i] = bets[i].getHorseID();
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally{
-            r1.unlock();
-        }
-        return result;
-    }
-
+    /**
+     * Broker verifies if anyone won a bet.
+     *
+     * @param   winnerList  integer array containing the ID of all the horses who won.
+     * @return  boolean     wether any spectator won a bet.
+     */
     static public boolean areThereAnyWinners(int[] winnerList) {
         boolean returnValue = false;
 
@@ -84,6 +90,9 @@ public class BettingCentre{
         return returnValue;
     }
 
+    /**
+     * Broker honors a bet, wakes next spectator in line and waits for the next spectator claiming a reward until all rewards are given.
+     */
     public static void honorBets(){
         r1.lock();
         try{
@@ -106,7 +115,9 @@ public class BettingCentre{
         }
     }
 
-    //Spectators methods
+    /**
+     * Spectator waits in line, places a bet and then wakes the broker.
+     */
     public static void placeABet(int pid, int value, int horseID){
         r1.lock();
         try{  
@@ -127,7 +138,12 @@ public class BettingCentre{
         }
     }
 
-    public static double goCollectTheGains(){
+    /**
+     * Spectator waits in line, claims his reward and then wakes the broker.
+     *
+     * @return  int  reward amount
+     */
+    public static int goCollectTheGains(){
         double result = 0.0;
         r1.lock();
         try{

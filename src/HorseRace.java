@@ -5,11 +5,21 @@ import Threads.Broker;
 import Threads.HorseAndJockey;
 import Threads.Spectator;
 
+/**
+* The HorseRace program creates one thread of type Broker and several 
+* of type HorseAndJockey and Spectator and runs them.
+*
+* @author  David Almeida, Manuel Xarez
+* @version 1.0
+* @since   2018-03-21
+* @see Broker, HorseAndJockey, Spectator
+*/
+
 public class HorseRace {
     public static void main(String[] args){
         //Simulation variables
         Random rng = new Random();
-        Parameters.initialize(rng.nextInt(100),rng.nextInt(100)+ 1,rng.nextInt(100) + 1, rng.nextInt(100) + 1);
+        Parameters.initialize(rng.nextInt(1000),rng.nextInt(1000)+ 1,rng.nextInt(1000) + 1, rng.nextInt(100) + 1);
         
         Thread[] threads = new Thread[Parameters.getNumberOfHorses() + Parameters.getNumberOfSpectators() + 1];
 
