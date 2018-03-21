@@ -49,11 +49,8 @@ public class HorseAndJockey extends Thread {
         state = "at the stable";
         print(state);
         Stable.proceedToStable();
-
-        state = "at the paddock";
-        print(state);
-        Paddock.proceedToPaddock(pID,pnk);
     }
+
     private void print(String state){
         System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
     }

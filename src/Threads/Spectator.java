@@ -13,14 +13,14 @@ public class Spectator extends Thread{
     private int pid;
     
     public Spectator(){
-        this.budget = Parameters.getBudget();
+        this.budget = ThreadLocalRandom.current().nextInt(1000);
     }
 
     @Override
     public void run(){
 
         pid = (int)Thread.currentThread().getId();
-        int amountToBet = budget/4;
+        int amountToBet;
         int horse;
 
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
@@ -35,7 +35,8 @@ public class Spectator extends Thread{
             //Must decide on amount and horse somehow, for now placeholder a quarter of what he has and bets on random
             state = "placing a bet";
             print(state);
-            if(amountToBet > budget) amountToBet = budget;
+
+            amountToBet = ThreadLocalRandom.current().nextInt(0, this.budget);
             horse = horses[ThreadLocalRandom.current().nextInt(0, Parameters.getNumberOfHorses())];
             BettingCentre.placeABet(pid, amountToBet, horse);
             budget -= amountToBet;
