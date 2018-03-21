@@ -40,6 +40,7 @@ public class ControlCentreAndWatchingStand{
      * Broker waits for all spectator threads to have reached the ControlCentre before proceeding.
      */
     public static void summonHorsesToPaddock(){
+
         r1.lock();
         try{
             while(nSpectators != Parameters.getNumberOfSpectators()){
