@@ -14,8 +14,6 @@ public class HorsePos implements Comparable<HorsePos>{
         this.horseID = horseID;
     }
 
-
-
     public boolean isFinished() {
         return finished;
     }
