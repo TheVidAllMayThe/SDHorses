@@ -88,16 +88,16 @@ public class BettingCentre{
     public static void honorBets(){
         r1.lock();
         try{
-            while(currentlyRefunding){
+            while(currentNumberOfSpectators != numWinners){
+                waitingOnBroker = false;
+                resolvedSpectator = true;
+                spectatorCond.signal();
                 while(!waitingOnBroker){
                     brokerCond.await();
                 }
                 
-                waitingOnBroker = false;
-                resolvedSpectator = true;
-                spectatorCond.signal();
             }
-            currentlyRefunding = true;
+            currentNumberOfSpectators = 0;
             numWinners = 0;
             potValue = 0;
         } catch (InterruptedException e) {
@@ -110,10 +110,7 @@ public class BettingCentre{
     //Spectators methods
     public static void placeABet(int pid, int value, int horseID){
         r1.lock();
-        try{
-
-
-            
+        try{  
             while(!resolvedSpectator){
                 spectatorCond.await();
             }
@@ -135,13 +132,15 @@ public class BettingCentre{
         double result = 0.0;
         r1.lock();
         try{
-            waitingOnBroker = true;
-            brokerCond.signal();
 
             while(!resolvedSpectator){
                 spectatorCond.await();
             }
+
+            currentNumberOfSpectators++;
+            waitingOnBroker = true;
             resolvedSpectator = false;
+            brokerCond.signal();
             result = potValue/numWinners;
         }catch(InterruptedException ie){
             ie.printStackTrace();

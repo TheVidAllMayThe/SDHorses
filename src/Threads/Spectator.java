@@ -43,9 +43,7 @@ public class Spectator extends Thread{
             state = "watching a race";
             print(state);
 
-            System.out.println("Before Watching the race");
             ControlCentreAndWatchingStand.goWatchTheRace();
-            System.out.println("Finished watching the race");
 
             if(ControlCentreAndWatchingStand.haveIWon(horse)){
                 state = "collecting the gains";
