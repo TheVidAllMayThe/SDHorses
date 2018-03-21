@@ -163,14 +163,14 @@ public class BettingCentre{
             brokerCond.signal();
             
             Bet bet;
-            for(int i=0; i<bets.length; i++){
-                if(bets[i].getSpectatorID() == spectatorID){
-                    bet = bets[i];
+            for (Bet bet1 : bets) {
+                if (bet1.getSpectatorID() == spectatorID) {
+                    bet = bet1;
+                    result = (bet.getBetAmount() / potWinners) * potValue;
                 }
-            
+
             }
             //Spectator gets percentage of total pot according to how much he bet compared to other winners
-            result = (bet.getBetAmount()/potWinners)*potAmount;
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }finally{
