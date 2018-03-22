@@ -16,9 +16,8 @@ public class Broker extends Thread{
         ControlCentreAndWatchingStand.openingTheEvents();
 
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
-            System.out.println((i+1)+"/"+Parameters.getNumberOfRaces());
             Stable.summonHorsesToPaddock();
-            ControlCentreAndWatchingStand.summonHorsesToPaddock();
+            ControlCentreAndWatchingStand.summonHorsesToPaddock(i);
             BettingCentre.acceptTheBets();
             RaceTrack.startTheRace();
             ControlCentreAndWatchingStand.startTheRace();

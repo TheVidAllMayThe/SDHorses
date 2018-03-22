@@ -1,6 +1,7 @@
 package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
+import Monitors.GeneralRepositoryOfInformation;
 import Threads.Broker;
 import Threads.Horse;
 import Threads.Spectator;
@@ -24,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 */
 
 public class ControlCentreAndWatchingStand{
-private static ReentrantLock r1= new ReentrantLock(false); private static Condition brokerCond = r1.newCondition();
+    private static ReentrantLock r1= new ReentrantLock(false); private static Condition brokerCond = r1.newCondition();
     private static boolean lastHorseFinished = false;
     private static Condition spectatorsCond = r1.newCondition(); private static boolean allowSpectators = false;
     private static int[] winnerHorses;
@@ -42,11 +43,14 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     /**
      * Broker waits for all spectator threads to have reached the ControlCentre before proceeding.
      */
-    public static void summonHorsesToPaddock(){
+    public static void summonHorsesToPaddock(int numRace){
 
         r1.lock();
         try{
             ((Broker)Thread.currentThread()).setState("ANNOUNCING_NEXT_RACE");
+            GeneralRepositoryOfInformation.setBrokerState("ANRA");
+            GeneralRepositoryOfInformation.setRaceNumber(numRace);
+            GeneralRepositoryOfInformation.setRaceDistance(Parameters.getRaceLength());
             while(nSpectators != Parameters.getNumberOfSpectators()){
                 brokerCond.await();
             }
@@ -65,6 +69,7 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
         r1.lock();
         try{ 
             ((Broker)Thread.currentThread()).setState("SUPERVISING_THE_RACE");
+            GeneralRepositoryOfInformation.setBrokerState("STRA");
             while(!lastHorseFinished){
                 brokerCond.await();
             }
@@ -87,6 +92,7 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
         r1.lock();
         try { 
             ((Broker)Thread.currentThread()).setState("SUPERVISING_THE_RACE");
+            GeneralRepositoryOfInformation.setBrokerState("STRA");
             winnerHorses = list;
             allowSpectatorsToWatch = true;
             spectatorsCondRace.signal();
@@ -103,6 +109,7 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
      */
     static public void entertainTheGuests(){ 
         ((Broker)Thread.currentThread()).setState("PLAYING_HOST_AT_THE_BAR");
+        GeneralRepositoryOfInformation.setBrokerState("PHAB");
     }
 
     
@@ -113,7 +120,11 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     static public void waitForNextRace(){
         r1.lock();
         try{
-            ((Spectator)Thread.currentThread()).setState("WAITING_FOR_A_RACE_TO_START");
+            Spectator sInst = (Spectator)Thread.currentThread();
+            sInst.setState("WAITING_FOR_A_RACE_TO_START");
+            GeneralRepositoryOfInformation.setSpectatorsState("WRS",sInst.getID());
+            GeneralRepositoryOfInformation.setSpectatorsBudget(sInst.getBudget(),sInst.getID());
+
             while(!allowSpectators){
                 spectatorsCond.await();
             }
@@ -136,7 +147,9 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     static public void goWatchTheRace(){
         r1.lock();
         try {
-            ((Spectator)Thread.currentThread()).setState("WATCHING_A_RACE");
+            Spectator sInst = (Spectator)Thread.currentThread();
+            sInst.setState("WATCHING_A_RACE");
+            GeneralRepositoryOfInformation.setSpectatorsState("WAR", sInst.getID());
             while (!allowSpectatorsToWatch) {
                 spectatorsCondRace.await();
             }
@@ -164,7 +177,9 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
         boolean result = false;
         r1.lock();
         try{
-            ((Spectator)Thread.currentThread()).setState("WATCHING_A_RACE");
+            Spectator sInst = (Spectator)Thread.currentThread();
+            sInst.setState("WATCHING_A_RACE");
+            GeneralRepositoryOfInformation.setSpectatorsState("WAR", sInst.getID());
             for (int winnerHorse : winnerHorses) {
                 if (horseID == winnerHorse) {
                     result = true;
@@ -183,7 +198,9 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
      * Last function of Spectator lifecycle.  
      */
     static public void relaxABit(){ 
-        ((Spectator)Thread.currentThread()).setState("CELEBRATING");
+        Spectator sInst = (Spectator)Thread.currentThread();
+        sInst.setState("CELEBRATING");
+        GeneralRepositoryOfInformation.setSpectatorsState("CEL", sInst.getID());
     }
 
     /**

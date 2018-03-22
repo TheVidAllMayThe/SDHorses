@@ -101,6 +101,10 @@ public class RaceTrack {
         r1.lock();
         try{
             ((Horse)Thread.currentThread()).setState("AT_THE_START_LINE");
+            GeneralRepositoryOfInformation.setHorsesState("ASL", pID);
+            GeneralRepositoryOfInformation.setHorseTrackPosition(0, pID);
+            GeneralRepositoryOfInformation.setHorseIteration(0,pID);
+            GeneralRepositoryOfInformation.setHorsesStanding('F',pID);
             if(horses[numHorses] == null)
                 horses[numHorses] = new HorsePos(pID, false);
             else
@@ -127,11 +131,15 @@ public class RaceTrack {
     public static void makeAMove(int horsePos, int moveAmount) {
         r1.lock();
         try {
-            ((Horse)Thread.currentThread()).setState("RUNNING");
+            Horse hInst = (Horse)Thread.currentThread();
+            hInst.setState("RUNNING");
+            GeneralRepositoryOfInformation.setHorsesState("RUN", hInst.getID());
             while (!horses[horsePos].isMyTurn()) {
                 horsesCond.await();
             }
             horses[horsePos].addPos(moveAmount);
+            GeneralRepositoryOfInformation.setHorseIteration(horses[horsePos].getNumSteps(), hInst.getID());
+            GeneralRepositoryOfInformation.setHorseTrackPosition(horses[horsePos].getPos(), hInst.getID());
             horses[horsePos].setMyTurn(false);
 
             if(numHorsesFinished+1 != Parameters.getNumberOfHorses()) {
@@ -160,14 +168,18 @@ public class RaceTrack {
     public static boolean hasFinishLineBeenCrossed(int horsePos){ 
         boolean returnVal = false;
         try{
+            Horse hInst = (Horse)Thread.currentThread();
             if (horses[horsePos].getPos() >= Parameters.getRaceLength()) {
-                ((Horse)Thread.currentThread()).setState("AT_THE_FINISH_LINE");
+                hInst.setState("AT_THE_FINISH_LINE");
+                GeneralRepositoryOfInformation.setHorsesState("AFL", hInst.getID());
                 returnVal = true;
                 horses[horsePos].setFinished(true);
+                GeneralRepositoryOfInformation.setHorsesStanding('T', hInst.getID());
                 numHorsesFinished++;
             }
             else{
-                ((Horse)Thread.currentThread()).setState("RUNNING");
+                hInst.setState("RUNNING");
+                GeneralRepositoryOfInformation.setHorsesState("RUN", hInst.getID());
             }
 
             horsesCond.signalAll();
