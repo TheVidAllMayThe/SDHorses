@@ -36,28 +36,16 @@ public class Spectator extends Thread{
 
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
             ControlCentreAndWatchingStand.waitForNextRace();
-            print();
             horse = Paddock.goCheckHorses();
-            print();
             amountToBet = ThreadLocalRandom.current().nextDouble(0, this.budget);
             BettingCentre.placeABet(pid, amountToBet, horse.getHorseID(), horse.getOdds());
-            print();
             budget -= amountToBet;
-
             ControlCentreAndWatchingStand.goWatchTheRace();
-            print();
             if(ControlCentreAndWatchingStand.haveIWon(horse.getHorseID())){
-                print();
                 budget += BettingCentre.goCollectTheGains(pid);
-                print();
             }
         }
         ControlCentreAndWatchingStand.relaxABit();
-        print();
-    }
-
-    private void print(){
-        System.out.println(getClass().getSimpleName() + " pID = " + id + ": " + state);
     }
 
     public void setState(String state){

@@ -53,7 +53,6 @@ public class Paddock{
             ((Horse)Thread.currentThread()).setState("AT_THE_PADDOCK");
             horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
             if (horsesInPaddock == Parameters.getNumberOfHorses()) {
-                allowSpectators = true;
                 int total_pnk = 0;
                 for (HorseInPaddock horse : horses) total_pnk += horse.getPnk();
                 for (HorseInPaddock horse : horses){
@@ -62,8 +61,20 @@ public class Paddock{
                     }
                     else horse.setOdds(1.0);
                 }
+                allowSpectators = true;
                 spectatorsCond.signal();
             }
+        }catch(Exception ie){
+            ie.printStackTrace();
+        } finally{
+            r1.unlock();
+        }
+    }
+
+    public static void proceedToStartLine(){
+        r1.lock();
+        try{
+            
             while (!allowHorses) {
                 horsesCond.await();
             }
@@ -75,12 +86,11 @@ public class Paddock{
 
             horsesCond.signal();
         }catch(InterruptedException ie){
-            ie.printStackTrace();
-        } finally{
+
+        }finally{
             r1.unlock();
         }
     }
-
     /**
      * Function in which the Spectator enters the paddock. The last Spectator to enter wakes up the Horses. In this function the spectator determines in which horse they will bet.
      * @return Returns the Horse in which the spectator will bet.
@@ -95,14 +105,14 @@ public class Paddock{
                 spectatorsCond.await();
             }
 
+            result = horses[ThreadLocalRandom.current().nextInt(horses.length)];
+
             if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
                 allowHorses = true;
-                horsesCond.signal();
                 allowSpectators = false;
                 spectatorsInPaddock = 0;
+                horsesCond.signal();
             }
-
-            result = horses[ThreadLocalRandom.current().nextInt(horses.length)];
 
             spectatorsCond.signal();
         }catch(InterruptedException ie){

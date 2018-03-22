@@ -24,8 +24,7 @@ public class HorseRace {
         //Simulation variables
         Random rng = new Random();
 
-        //Parameters.initialize(numRaces,4, rng.nextInt(20) + 1, rng.nextInt(100) + 1);
-        Parameters.initialize(90,3, 3, 100);
+        Parameters.initialize(100,40, 40, 100);
 
         Broker brokerInst = new Broker();
         brokerInst.start();
@@ -33,7 +32,7 @@ public class HorseRace {
         Horse[] horses = new Horse[Parameters.getNumberOfHorses() * Parameters.getNumberOfRaces()];
 
         for(int i = 0; i<Parameters.getNumberOfHorses() * Parameters.getNumberOfRaces(); i++){
-            horses[i] = new Horse(i, i/4);
+            horses[i] = new Horse(i, i/Parameters.getNumberOfHorses());
             horses[i].start();
         }
 

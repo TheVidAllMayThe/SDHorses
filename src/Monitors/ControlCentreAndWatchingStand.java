@@ -24,13 +24,12 @@ import java.util.concurrent.locks.ReentrantLock;
 */
 
 public class ControlCentreAndWatchingStand{
-
-    private static ReentrantLock r1= new ReentrantLock(false);
-    private static Condition brokerCond = r1.newCondition();
+private static ReentrantLock r1= new ReentrantLock(false); private static Condition brokerCond = r1.newCondition();
     private static boolean lastHorseFinished = false;
     private static Condition spectatorsCond = r1.newCondition(); private static boolean allowSpectators = false;
     private static int[] winnerHorses;
     private static int nSpectators = 0;
+    private static int nSpectatorsRace = 0;
     private static int nHorsesInPaddock = 0;
     private static int nHorsesFinishedRace = 0;
     private static boolean allowSpectatorsToWatch = false;
@@ -142,9 +141,9 @@ public class ControlCentreAndWatchingStand{
                 spectatorsCondRace.await();
             }
 
-            if (++nSpectators == Parameters.getNumberOfSpectators()) {
+            if (++nSpectatorsRace == Parameters.getNumberOfSpectators()) {
                 allowSpectatorsToWatch = false;
-                nSpectators = 0;
+                nSpectatorsRace = 0;
             }
             else spectatorsCondRace.signal();
 
@@ -196,8 +195,8 @@ public class ControlCentreAndWatchingStand{
         try {
             if (++nHorsesInPaddock == Parameters.getNumberOfHorses()) {
                 allowSpectators = true;
-                spectatorsCond.signal();
                 nHorsesInPaddock = 0;
+                spectatorsCond.signal();
             }
         }catch(Exception e){
             e.printStackTrace();
