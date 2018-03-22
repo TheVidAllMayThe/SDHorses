@@ -23,20 +23,21 @@ public class HorseRace {
     public static void main(String[] args){
         //Simulation variables
         Random rng = new Random();
-        Parameters.initialize(rng.nextInt(400),rng.nextInt(1000)+ 1,rng.nextInt(1000) + 1, rng.nextInt(100) + 1);
+        int numRaces = rng.nextInt(20)+ 1;
+        Parameters.initialize(numRaces,4, rng.nextInt(20) + 1, rng.nextInt(100) + 1);
         
-        Thread[] threads = new Thread[Parameters.getNumberOfHorses() + Parameters.getNumberOfSpectators() + 1];
+        Thread[] threads = new Thread[Parameters.getNumberOfHorses()*numRaces + Parameters.getNumberOfSpectators() + 1];
 
         int i = 0;
         threads[i] = new Broker();
         threads[i].start();
 
-        for(i = 1; i<Parameters.getNumberOfHorses() + 1; i++){
-            threads[i] = new Horse(i-1);
+        for(i = 1; i<Parameters.getNumberOfHorses()*numRaces + 1; i++){
+            threads[i] = new Horse(i-1, (i-1)/4);
             threads[i].start();
         }
 
-        for(; i<Parameters.getNumberOfSpectators() + Parameters.getNumberOfHorses() + 1; i++){
+        for(; i<Parameters.getNumberOfSpectators() + Parameters.getNumberOfHorses()*numRaces + 1; i++){
             threads[i] = new Spectator();
             threads[i].start();
         }

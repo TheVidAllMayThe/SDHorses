@@ -26,7 +26,9 @@ public class Stable {
     private static ReentrantLock r1 = new ReentrantLock();
     private static Condition horsesToPaddock = r1.newCondition();
     private static boolean canHorsesMoveToPaddock = false;
+    private static Condition newRace = r1.newCondition();
     private static int numHorses = 0;
+    private static int raceNumber = -1;
 
     /**
      * Broker awakes the horses who are waiting to enter the paddock.
@@ -34,7 +36,9 @@ public class Stable {
     public static void summonHorsesToPaddock(){
         r1.lock();
         try{
+            raceNumber++;
             canHorsesMoveToPaddock = true;
+            newRace.signalAll();
             horsesToPaddock.signal();
         }catch (IllegalMonitorStateException e){
             e.printStackTrace();
@@ -49,7 +53,9 @@ public class Stable {
     public static void entertainTheGuests(){
         r1.lock();
         try{
+            raceNumber++;
             canHorsesMoveToPaddock = true;
+            newRace.signalAll();
             horsesToPaddock.signal();
         }catch(Exception e){
             e.printStackTrace();
@@ -61,14 +67,23 @@ public class Stable {
     /**
      * Horses wait to move to paddock. 
      */
-    public static void proceedToStable(){
+    public static void proceedToStable(int raceNum){
         r1.lock();
 
         try{
+            while(raceNum != raceNumber){
+                newRace.await();
+            }
             while(!canHorsesMoveToPaddock)
                 horsesToPaddock.await();
 
-            if(++numHorses == Parameters.getNumberOfHorses()){
+            if(raceNumber == Parameters.getNumberOfRaces()){
+                if(++numHorses == Parameters.getNumberOfHorses()*raceNumber){
+                    numHorses = 0;
+                    canHorsesMoveToPaddock = false;
+                }
+            }
+            else if(++numHorses == Parameters.getNumberOfHorses()){
                 numHorses = 0;
                 canHorsesMoveToPaddock = false;
             }
