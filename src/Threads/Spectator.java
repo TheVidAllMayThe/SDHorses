@@ -18,11 +18,13 @@ import java.util.concurrent.ThreadLocalRandom;
 */
 
 public class Spectator extends Thread{
+    private final int id;
     private double budget;
     private String state;
 
-    public Spectator(){
+    public Spectator(int id){
         this.budget = ThreadLocalRandom.current().nextDouble(1000);
+        this.id  = id;
     }
 
     @Override
@@ -32,24 +34,30 @@ public class Spectator extends Thread{
         double amountToBet;
         HorseInPaddock horse;
 
-        String state;
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
             ControlCentreAndWatchingStand.waitForNextRace();
-
+            print();
             horse = Paddock.goCheckHorses();
-
+            print();
             amountToBet = ThreadLocalRandom.current().nextDouble(0, this.budget);
             BettingCentre.placeABet(pid, amountToBet, horse.getHorseID(), horse.getOdds());
+            print();
             budget -= amountToBet;
 
             ControlCentreAndWatchingStand.goWatchTheRace();
-
+            print();
             if(ControlCentreAndWatchingStand.haveIWon(horse.getHorseID())){
+                print();
                 budget += BettingCentre.goCollectTheGains(pid);
+                print();
             }
         }
-
         ControlCentreAndWatchingStand.relaxABit();
+        print();
+    }
+
+    private void print(){
+        System.out.println(getClass().getSimpleName() + " pID = " + id + ": " + state);
     }
 
     public void setState(String state){

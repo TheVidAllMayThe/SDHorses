@@ -23,29 +23,33 @@ public class HorseRace {
     public static void main(String[] args){
         //Simulation variables
         Random rng = new Random();
-        int numRaces = rng.nextInt(20)+ 1;
-        Parameters.initialize(numRaces,4, rng.nextInt(20) + 1, rng.nextInt(100) + 1);
-        
-        Thread[] threads = new Thread[Parameters.getNumberOfHorses()*numRaces + Parameters.getNumberOfSpectators() + 1];
 
-        int i = 0;
-        threads[i] = new Broker();
-        threads[i].start();
+        //Parameters.initialize(numRaces,4, rng.nextInt(20) + 1, rng.nextInt(100) + 1);
+        Parameters.initialize(90,3, 3, 100);
 
-        for(i = 1; i<Parameters.getNumberOfHorses()*numRaces + 1; i++){
-            threads[i] = new Horse(i-1, (i-1)/4);
-            threads[i].start();
+        Broker brokerInst = new Broker();
+        brokerInst.start();
+        Spectator[] spectators = new Spectator[Parameters.getNumberOfSpectators()];
+        Horse[] horses = new Horse[Parameters.getNumberOfHorses() * Parameters.getNumberOfRaces()];
+
+        for(int i = 0; i<Parameters.getNumberOfHorses() * Parameters.getNumberOfRaces(); i++){
+            horses[i] = new Horse(i, i/4);
+            horses[i].start();
         }
 
-        for(; i<Parameters.getNumberOfSpectators() + Parameters.getNumberOfHorses()*numRaces + 1; i++){
-            threads[i] = new Spectator();
-            threads[i].start();
+        for(int i = 0; i < Parameters.getNumberOfSpectators(); i++){
+            spectators[i] = new Spectator(i);
+            spectators[i].start();
         }
 
         try{
-            for(i=0; i<threads.length; i++){
-                threads[i].join();
-            }
+            for(Spectator s: spectators)
+                s.join();
+
+            for(Spectator h: spectators)
+                h.join();
+
+            brokerInst.join();
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }
