@@ -4,6 +4,7 @@ package Monitors;
 import Monitors.AuxiliaryClasses.HorseInPaddock;
 import Monitors.AuxiliaryClasses.Parameters;
 import Threads.Horse;
+import Threads.Spectator;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -41,7 +42,7 @@ public class Paddock{
     //Horses methods
 
     /**
-     * The Horses enter the paddock and add their information to the {@link #horsesInPaddock} array, then they wait until all the spectators have reached the paddock.
+     * The Horses enter the paddock and add their information to the {@link #horsesInPaddock} array, then they wait until all the spectators have reached the paddock, at the end the last horse awakes the spectators.
      *
      * @param horseID ID of the calling thread.
      * @param pnk Max step size.
@@ -49,6 +50,7 @@ public class Paddock{
     public static void proceedToPaddock(int horseID, int pnk){
         r1.lock();
         try {
+            ((Horse)Thread.currentThread()).setState("AT_THE_PADDOCK");
             horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
             if (horsesInPaddock == Parameters.getNumberOfHorses()) {
                 allowSpectators = true;
@@ -66,36 +68,18 @@ public class Paddock{
                 horsesCond.await();
             }
 
-        }catch(InterruptedException ie){
-            ie.printStackTrace();
-        } finally{
-            r1.unlock();
-        }
-    }
-
-    /**
-     * The last horse to leave the Paddock awakes the spectators.
-     */
-
-    public static void proceedToStartLine(){
-        r1.lock();
-        try{
-
             if(--horsesInPaddock==0){
                 allowHorses = false;
                 spectatorsCond.signal();
             }
 
             horsesCond.signal();
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally{
+        }catch(InterruptedException ie){
+            ie.printStackTrace();
+        } finally{
             r1.unlock();
         }
     }
-
-    //Spectators methods
 
     /**
      * Function in which the Spectator enters the paddock. The last Spectator to enter wakes up the Horses. In this function the spectator determines in which horse they will bet.
@@ -106,6 +90,7 @@ public class Paddock{
         r1.lock();
 
         try{
+            ((Spectator)Thread.currentThread()).setState("APPRAISING_THE_HORSES");
             while(!allowSpectators){
                 spectatorsCond.await();
             }

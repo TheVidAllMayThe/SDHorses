@@ -3,6 +3,7 @@ package Monitors;
 import Monitors.AuxiliaryClasses.HorsePos;
 import Monitors.AuxiliaryClasses.Parameters;
 import Threads.Horse;
+import Threads.Broker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,8 +33,6 @@ public class RaceTrack {
     private static HorsePos[] horses = new HorsePos[Parameters.getNumberOfHorses()];
     private static int numHorses = 0;
     private static int numHorsesFinished = 0;
-
-    //Broker methods
 
     /**
      * The Broker allows the first horse to start running
@@ -101,6 +100,7 @@ public class RaceTrack {
         int returnValue = -1;
         r1.lock();
         try{
+            ((Horse)Thread.currentThread()).setState("AT_THE_START_LINE");
             if(horses[numHorses] == null)
                 horses[numHorses] = new HorsePos(pID, false);
             else
@@ -127,6 +127,7 @@ public class RaceTrack {
     public static void makeAMove(int horsePos, int moveAmount) {
         r1.lock();
         try {
+            ((Horse)Thread.currentThread()).setState("RUNNING");
             while (!horses[horsePos].isMyTurn()) {
                 horsesCond.await();
             }
@@ -158,12 +159,15 @@ public class RaceTrack {
      */
     public static boolean hasFinishLineBeenCrossed(int horsePos){ 
         boolean returnVal = false;
-
         try{
             if (horses[horsePos].getPos() >= Parameters.getRaceLength()) {
+                ((Horse)Thread.currentThread()).setState("AT_THE_FINISH_LINE");
                 returnVal = true;
                 horses[horsePos].setFinished(true);
                 numHorsesFinished++;
+            }
+            else{
+                ((Horse)Thread.currentThread()).setState("RUNNING");
             }
 
             horsesCond.signalAll();

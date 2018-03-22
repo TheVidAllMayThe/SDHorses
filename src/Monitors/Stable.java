@@ -2,6 +2,7 @@ package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
 import Threads.Horse;
+import Threads.Broker;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -69,8 +70,8 @@ public class Stable {
      */
     public static void proceedToStable(int raceNum){
         r1.lock();
-
-        try{
+        try{ 
+            ((Horse)Thread.currentThread()).setState("AT_THE_STABLE");      
             while(raceNum != raceNumber){
                 newRace.await();
             }

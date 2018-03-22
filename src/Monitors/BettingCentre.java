@@ -3,7 +3,6 @@ package Monitors;
 import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.AuxiliaryClasses.Bet;
 import Threads.Broker;
-import Threads.Horse;
 import Threads.Spectator;
 
 import java.util.concurrent.locks.Condition;
@@ -42,6 +41,7 @@ public class BettingCentre{
     public static void acceptTheBets() throws IllegalMonitorStateException{
         r1.lock();
         try {
+            ((Broker)Thread.currentThread()).setState("WAITING_FOR_BETS");      
             while(currentNumberOfSpectators != Parameters.getNumberOfSpectators()){
                 resolvedSpectator = true;
                 waitingOnBroker = false;
@@ -97,6 +97,7 @@ public class BettingCentre{
     public static void honorBets(){
         r1.lock();
         try{
+            ((Broker)Thread.currentThread()).setState("SETTLING_ACCOUNTS");
             while(currentNumberOfSpectators != numWinners){
                 waitingOnBroker = false;
                 resolvedSpectator = true;
@@ -128,6 +129,7 @@ public class BettingCentre{
     public static void placeABet(int pid, double value, int horseID, double odds){
         r1.lock();
         try{  
+            ((Spectator)Thread.currentThread()).setState("PLACING_A_BET");
             while(!resolvedSpectator){
                 spectatorCond.await();
             }
@@ -153,7 +155,7 @@ public class BettingCentre{
         double result = 0;
         r1.lock();
         try{
-
+            ((Spectator)Thread.currentThread()).setState("COLLECTING_THE_GAINS");
             while(!resolvedSpectator){
                 spectatorCond.await();
             }

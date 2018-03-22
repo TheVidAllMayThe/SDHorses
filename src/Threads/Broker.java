@@ -7,49 +7,34 @@ import Monitors.RaceTrack;
 import Monitors.Stable;
 
 public class Broker extends Thread{
-
+    private String state;
 
     @Override
     public void run(){
-        String state = "opening the event";
-        print(state);
-        for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
-            System.out.println("---------------------- " + i + " ------------------");
-            state = "announcing next race";
-            print(state);
+        ControlCentreAndWatchingStand.openingTheEvents();
 
+        for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
             Stable.summonHorsesToPaddock();
             ControlCentreAndWatchingStand.summonHorsesToPaddock();
 
-            state = "waiting for bets";
-            print(state);
             BettingCentre.acceptTheBets();
 
-
-            state = "supervising the race";
-            print(state);
             RaceTrack.startTheRace();
             ControlCentreAndWatchingStand.startTheRace();
 
-            state = "supervising the race";
-            print(state);
             int[] list = RaceTrack.reportResults();
             ControlCentreAndWatchingStand.reportResults(list);
 
             if(BettingCentre.areThereAnyWinners(list)){
-                state = "settling accounts";
-                print(state);
                 BettingCentre.honorBets();
             }
         }
         
-        state = "playing host at the bar";
-        print(state);
         Stable.entertainTheGuests();
         ControlCentreAndWatchingStand.entertainTheGuests();
     }
-
-    private void print(String state){
-        System.out.println(getClass().getSimpleName() + " pID = " + getId() + ": " + state);
+    
+    public void setState(String state){
+        this.state = state;
     }
 }

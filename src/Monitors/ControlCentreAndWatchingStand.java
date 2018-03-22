@@ -36,6 +36,10 @@ public class ControlCentreAndWatchingStand{
     private static boolean allowSpectatorsToWatch = false;
     private static Condition spectatorsCondRace = r1.newCondition();
 
+    public static void openingTheEvents(){
+        ((Broker)Thread.currentThread()).setState("OPENING_THE_EVENT");
+    }
+    
     /**
      * Broker waits for all spectator threads to have reached the ControlCentre before proceeding.
      */
@@ -43,6 +47,7 @@ public class ControlCentreAndWatchingStand{
 
         r1.lock();
         try{
+            ((Broker)Thread.currentThread()).setState("ANNOUNCING_NEXT_RACE");
             while(nSpectators != Parameters.getNumberOfSpectators()){
                 brokerCond.await();
             }
@@ -59,7 +64,9 @@ public class ControlCentreAndWatchingStand{
      */
     public static void startTheRace(){
         r1.lock();
-        try{ while(!lastHorseFinished){
+        try{ 
+            ((Broker)Thread.currentThread()).setState("SUPERVISING_THE_RACE");
+            while(!lastHorseFinished){
                 brokerCond.await();
             }
 
@@ -77,10 +84,10 @@ public class ControlCentreAndWatchingStand{
      *
      * @param   list  An integer array containing the ID of the horses who won the race.
      */
-
     public static void reportResults(int[] list) {
         r1.lock();
-        try {
+        try { 
+            ((Broker)Thread.currentThread()).setState("SUPERVISING_THE_RACE");
             winnerHorses = list;
             allowSpectatorsToWatch = true;
             spectatorsCondRace.signal();
@@ -95,8 +102,8 @@ public class ControlCentreAndWatchingStand{
     /**
      * Last function of broker lifecycle.
      */
-
-    static public void entertainTheGuests(){
+    static public void entertainTheGuests(){ 
+        ((Broker)Thread.currentThread()).setState("PLAYING_HOST_AT_THE_BAR");
     }
 
     
@@ -107,7 +114,7 @@ public class ControlCentreAndWatchingStand{
     static public void waitForNextRace(){
         r1.lock();
         try{
-
+            ((Spectator)Thread.currentThread()).setState("WAITING_FOR_A_RACE_TO_START");
             while(!allowSpectators){
                 spectatorsCond.await();
             }
@@ -130,7 +137,7 @@ public class ControlCentreAndWatchingStand{
     static public void goWatchTheRace(){
         r1.lock();
         try {
-
+            ((Spectator)Thread.currentThread()).setState("WATCHING_A_RACE");
             while (!allowSpectatorsToWatch) {
                 spectatorsCondRace.await();
             }
@@ -158,6 +165,7 @@ public class ControlCentreAndWatchingStand{
         boolean result = false;
         r1.lock();
         try{
+            ((Spectator)Thread.currentThread()).setState("WATCHING_A_RACE");
             for (int winnerHorse : winnerHorses) {
                 if (horseID == winnerHorse) {
                     result = true;
@@ -175,7 +183,8 @@ public class ControlCentreAndWatchingStand{
     /**
      * Last function of Spectator lifecycle.  
      */
-    static public void relaxABit(){
+    static public void relaxABit(){ 
+        ((Spectator)Thread.currentThread()).setState("CELEBRATING");
     }
 
     /**
@@ -200,7 +209,6 @@ public class ControlCentreAndWatchingStand{
     /**
      * The last Horse announces in the ControlCentre that he finished the race waking up the broker.
      */
-
     static public void makeAMove(){
         r1.lock();
         try {
