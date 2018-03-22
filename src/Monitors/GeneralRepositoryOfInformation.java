@@ -55,6 +55,11 @@ public class GeneralRepositoryOfInformation{
         horsesStanding = new String[Parameters.getNumberOfHorses()];
         for(int i=0; i < horsesStanding.length; i++) horsesStanding[i] = "-";
         
+        writer.println("MAN/BRK           SPECTATOR/BETTER              HORSE/JOCKEY PAIR at Race RN");
+        writer.println("  Stat  St0  Am0 St1  Am1 St2  Am2 St3  Am3 RN St0 Len0 St1 Len1 St2 Len2 St3 Len3");
+        writer.println("                                        Race RN Status");
+        writer.println("RN Dist BS0 BA0 BS1  BA1 BS2  BA2 BS3  BA3  Od0 N0 Ps0 SD0 Od1 N1 Ps1 Sd1 Od2 N2 Ps2 Sd2 Od3 N3 Ps3 St3");
+        
     }
 
     public static void close(){
@@ -140,9 +145,7 @@ public class GeneralRepositoryOfInformation{
         }finally{
             r1.unlock();
         }
-    }
-    
-    public static void setHorsesPnk(int pnk, int i){
+    } public static void setHorsesPnk(int pnk, int i){
         r1.lock();
         try{
             String temp = "" + pnk;
@@ -194,8 +197,12 @@ public class GeneralRepositoryOfInformation{
     public static void setHorseProbability(double prob, int i){
         r1.lock();
         try{
-            String temp = "" + ((int)prob);
-            for(int j=temp.length(); j<3; j++) temp = "0" + temp;
+            String temp;
+            if(prob < 0) temp = "---";
+            else{
+                temp = "" + ((int)prob);
+                for(int j=temp.length(); j<3; j++) temp = "0" + temp;
+            }
             horseProbability[i] = temp;
             log();
         }catch(Exception e){
@@ -207,8 +214,11 @@ public class GeneralRepositoryOfInformation{
     public static void setHorseIteration(int iteration, int i){
         r1.lock();
         try{
-            if(iteration < 10) horseIteration[i] = "0" + iteration;
-            horseIteration[i] = "" + iteration;
+            if(iteration < 0) horseIteration[i] = "--";
+            else{
+                if(iteration < 10) horseIteration[i] = "0" + iteration;
+                horseIteration[i] = "" + iteration;
+            }
             log();
         }catch(Exception e){
         }finally{
@@ -219,8 +229,11 @@ public class GeneralRepositoryOfInformation{
     public static void setHorseTrackPosition(int position, int i){
         r1.lock();
         try{
-            if(position < 10) horseTrackPosition[i] = "0" + position;
-            horseTrackPosition[i] = "" + position;
+            if(position < 0) horseTrackPosition[i] = "--";
+            else{
+                if(position < 10) horseTrackPosition[i] = "0" + position;
+                horseTrackPosition[i] = "" + position;
+            }
             log();
         }catch(Exception e){
         }finally{

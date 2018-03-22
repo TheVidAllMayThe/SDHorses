@@ -1,5 +1,4 @@
 package Monitors;
-
 import Monitors.AuxiliaryClasses.Parameters;
 import Threads.Horse;
 import Threads.Broker;
@@ -81,6 +80,10 @@ public class Stable {
             GeneralRepositoryOfInformation.setHorsesState("ATS",hInst.getID());
             hInst.setPnk(ThreadLocalRandom.current().nextInt(1,Parameters.getRaceLength() + 1));
             GeneralRepositoryOfInformation.setHorsesPnk(hInst.getPnk(), hInst.getID()); 
+            GeneralRepositoryOfInformation.setHorseProbability(-1, hInst.getID());
+            GeneralRepositoryOfInformation.setHorseIteration(-1, hInst.getID());
+            GeneralRepositoryOfInformation.setHorseTrackPosition(-1, hInst.getID());
+            GeneralRepositoryOfInformation.setHorsesStanding('-', hInst.getID()); 
 
             while(!canHorsesMoveToPaddock)
                 horsesToPaddock.await();
