@@ -24,7 +24,7 @@ public class HorseRace {
         //Simulation variables
         Random rng = new Random();
 
-        Parameters.initialize(100,40, 40, 100);
+        Parameters.initialize(rng.nextInt(1000)+1,rng.nextInt(10)+1, rng.nextInt(10)+1, rng.nextInt(100)+1);
 
         Broker brokerInst = new Broker();
         brokerInst.start();
