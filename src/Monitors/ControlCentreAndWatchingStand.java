@@ -9,10 +9,10 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
-* The ControlCentreAndWatchingStand class is a monitor that contains
-* necessary methods to be used in mutual exclusive access by Broker, Horses and Spectators.
+* The {@link ControlCentreAndWatchingStand} class is a monitor that contains
+* necessary methods to be used in mutual exclusive access by the {@link Broker}, {@link Spectator}s and {@link Horse}s.
 * <p>
-* This is where the broker mostly operates and the spectators watch the race.
+* This is where the {@link Broker} mostly operates and the {@link Spectator}s watch the race.
 * 
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
@@ -35,12 +35,17 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     private static boolean allowSpectatorsToWatch = false;
     private static Condition spectatorsCondRace = r1.newCondition();
 
+
+    /**
+     * Method used to set the {@link Broker} initial state.
+     */
+
     public static void openingTheEvents(){
         ((Broker)Thread.currentThread()).setState("OPENING_THE_EVENT");
     }
     
     /**
-     * Broker waits for all spectator threads to have reached the ControlCentre before proceeding.
+     * The {@link Broker} waits for all the {@link Spectator} threads to have reached the {@link ControlCentreAndWatchingStand} before proceeding.
      */
     public static void summonHorsesToPaddock(){
 
@@ -59,7 +64,7 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     }
 
     /**
-     * Broker waits for all horse threads to have reached the finish line before proceeding.
+     *  {@link Broker}  waits for all  {@link Horse} threads to have reached the finish line before proceeding.
      */
     public static void startTheRace(){
         r1.lock();
@@ -79,9 +84,9 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     }
 
     /**
-     * Broker declares the horses who won and wakes up the spectators watching the race.  
+     *  {@link Broker} declares the {@link Horse}s who won and wakes up the {@link Spectator}s watching the race.
      *
-     * @param   list  An integer array containing the ID of the horses who won the race.
+     * @param   list  An integer array containing the ID of the {@link Horse}s who won the race.
      */
     public static void reportResults(int[] list) {
         r1.lock();
@@ -99,7 +104,7 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
 
 
     /**
-     * Last function of broker lifecycle.
+     * Last function of {@link Broker} lifecycle.
      */
     static public void entertainTheGuests(){ 
         ((Broker)Thread.currentThread()).setState("PLAYING_HOST_AT_THE_BAR");
@@ -107,7 +112,7 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
 
     
     /**
-     * Spectator waits for next race of the day, last spectator waiting wakes the broker 
+     * {@link Spectator} waits for next race of the day, last {@link Spectator} waiting wakes the {@link Broker}
      * who's ready to start the race.
      */
     static public void waitForNextRace(){
@@ -131,7 +136,7 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     }
 
     /**
-     * Spectator waits while watching the race. 
+     * {@link Spectator} waits while watching the race.
      */
     static public void goWatchTheRace(){
         r1.lock();
@@ -155,10 +160,10 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     }
     
     /**
-     * Spectator checks if he won his bet.  
+     * {@link Spectator} checks if he won his bet.
      *
-     * @param   horseID  ID of the horse whom the spectator bet on. 
-     * @return  boolean  weather spectator won.
+     * @param   horseID  ID of the {@link Horse} whom the {@link Spectator} bet on.
+     * @return  True if the {@link Spectator} won.
      */
     static public boolean haveIWon(int horseID){
         boolean result = false;
@@ -180,15 +185,15 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     }
 
     /**
-     * Last function of Spectator lifecycle.  
+     * Last function of {@link Spectator} lifecycle.
      */
     static public void relaxABit(){ 
         ((Spectator)Thread.currentThread()).setState("CELEBRATING");
     }
 
     /**
-     * Horse proceeds to paddock, last horse awakes spectators 
-     * that are waiting for the horses to enter the paddock.
+     * {@link Horse} proceeds to paddock, last {@link Horse} awakes {@link Spectator}s
+     * that are waiting for the {@link Horse}s to enter the {@link Paddock}.
      */
     static public void proceedToPaddock(){
         r1.lock();
@@ -206,7 +211,7 @@ private static ReentrantLock r1= new ReentrantLock(false); private static Condit
     }
     
     /**
-     * The last Horse announces in the ControlCentre that he finished the race waking up the broker.
+     * The last {@link Horse} announces in the {@link ControlCentreAndWatchingStand} that he finished the race waking up the {@link Broker}.
      */
     static public void makeAMove(){
         r1.lock();

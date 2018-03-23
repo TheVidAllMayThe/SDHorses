@@ -14,9 +14,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The {@link RaceTrack} class is a monitor that contains
- * necessary methods to be used in mutual exclusive access by multiple Horses and by the Broker.
+ * necessary methods to be used in mutual exclusive access by multiple {@link Horse}s and by the {@link Broker}.
  * <p>
- * This is where the Horses compete with each other to reach the end of the race.
+ * This is where the {@link Horse}s compete with each other to reach the end of the race.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0
@@ -35,7 +35,7 @@ public class RaceTrack {
     private static int numHorsesFinished = 0;
 
     /**
-     * The Broker allows the first horse to start running
+     * The {@link Broker} allows the first {@link Horse} to start running.
      */
     public static void startTheRace(){
         r1.lock();
@@ -54,8 +54,8 @@ public class RaceTrack {
     }
 
     /**
-     * The broker enters the racetrack to see which Horses have won the race
-     * @return Array containing the ID's of the winning Horses.
+     * The {@link Broker} enters the {@link RaceTrack} to see which {@link Horse}s have won the race
+     * @return Array containing the ID's of the winning {@link Horse}s.
      */
 
     public static int[] reportResults(){
@@ -92,9 +92,9 @@ public class RaceTrack {
     //Horses methods
 
     /**
-     * The Horses write their information on the array {@link #horses}, and then wait for their turn to proceed.
+     * The {@link Horse}s write their information on the array {@link #horses}, and then wait for their turn to proceed.
      * @param pID Id of the calling Thread.
-     * @return Returns the position of the horse in the array {@link #horses}.
+     * @return Returns the position of the {@link Horse} in the array {@link #horses}.
      */
     public static int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
         int returnValue = -1;
@@ -120,9 +120,9 @@ public class RaceTrack {
 
 
     /**
-     * The Horse increases its position in the race.
-     * @param horsePos Index of the Horse in the array {@link #horses}.
-     * @param moveAmount Amount to be increased in the position of the Horse.
+     * The {@link Horse} increases its position in the race.
+     * @param horsePos Index of the {@link Horse} in the array {@link #horses}.
+     * @param moveAmount Amount to be increased in the position of the {@link Horse}.
      */
     public static void makeAMove(int horsePos, int moveAmount) {
         r1.lock();
@@ -154,8 +154,8 @@ public class RaceTrack {
 
     /**
      * Determines if the finish line has been crossed by the calling Thread.
-     * @param horsePos Index of the Horse in the array {@link #horses}.
-     * @return Returns true if the Position of the horse in equal or greater than the race length.
+     * @param horsePos Index of the {@link Horse} in the array {@link #horses}.
+     * @return Returns true if the position of the {@link Horse} is equal or greater than the race length.
      */
     public static boolean hasFinishLineBeenCrossed(int horsePos){ 
         boolean returnVal = false;

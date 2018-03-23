@@ -47,7 +47,6 @@ public class HorseRace {
 
             for(Spectator h: spectators)
                 h.join();
-
             brokerInst.join();
         }catch(InterruptedException ie){
             ie.printStackTrace();

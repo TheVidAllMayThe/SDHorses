@@ -9,10 +9,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
-* The Stable class is a monitor that contains all the
-* necessary methods to be used in mutual exclusive access by Broker and Horses to itself.
-* <p>
-* This is where the horses are intially or after a race.
+ * The {@link Stable} class is a monitor that contains all the
+ * necessary methods to be used in mutual exclusive access by the {@link Broker} and {@link Horse}s to itself.
+ * <p>
+* This is where the {@link Horse}s are initially and after a race.
 *
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
@@ -32,7 +32,7 @@ public class Stable {
     private static int raceNumber = -1;
 
     /**
-     * Broker awakes the horses who are waiting to enter the paddock.
+     * {@link Broker} awakes the {@link Horse}s who are waiting to enter the {@link Paddock}.
      */
     public static void summonHorsesToPaddock(){
         r1.lock();
@@ -49,7 +49,7 @@ public class Stable {
     }
 
     /**
-     * Last function of broker lifecycle, awakes horses waiting to enter paddock.
+     * Last function of {@link Broker} lifecycle, awakes {@link Horse}s waiting to enter {@link Paddock}.
      */
     public static void entertainTheGuests(){
         r1.lock();
@@ -66,8 +66,11 @@ public class Stable {
     }
 
     /**
-     * Horses wait to move to paddock. 
+     * {@link Horse}s wait to move to {@link Paddock}.
+     *
+     * @param raceNum Number of the race in which the calling {@link Horse} will participate.
      */
+
     public static void proceedToStable(int raceNum){
         r1.lock();
         try{ 
