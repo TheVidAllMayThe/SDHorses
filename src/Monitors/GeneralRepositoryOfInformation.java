@@ -7,6 +7,10 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 
 
+/**
+ * This class stores the state of all the components of the program. Every time that there's a change the program logs the new state to a file (log.txt).
+ */
+
 public class GeneralRepositoryOfInformation{
     private static ReentrantLock r1 = new ReentrantLock(false);
     private static PrintWriter writer;
