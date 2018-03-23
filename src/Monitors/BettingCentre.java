@@ -2,6 +2,7 @@ package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.AuxiliaryClasses.Bet;
+import Monitors.GeneralRepositoryOfInformation;
 import Threads.Broker;
 import Threads.Horse;
 import Threads.Spectator;
@@ -33,6 +34,7 @@ public class BettingCentre{
     private static boolean resolvedSpectator = false;
     private static int numWinners = 0;
     private static int currentNumberOfSpectators = 0;
+    private static int numHorsesFirst = 0;
 
 
     /**
@@ -43,6 +45,7 @@ public class BettingCentre{
         r1.lock();
         try {
             ((Broker)Thread.currentThread()).setState("WAITING_FOR_BETS");      
+            GeneralRepositoryOfInformation.setBrokerState("WFBE"); 
             while(currentNumberOfSpectators != Parameters.getNumberOfSpectators()){
                 resolvedSpectator = true;
                 waitingOnBroker = false;
@@ -74,6 +77,7 @@ public class BettingCentre{
 
         r1.lock();
         try {
+            numHorsesFirst = winnerList.length; 
             for (Bet bet: bets){
                 for (int winner : winnerList){
                     if (bet.getHorseID() == winner) {
@@ -130,13 +134,18 @@ public class BettingCentre{
     public static void placeABet(int pid, double value, int horseID, double odds){
         r1.lock();
         try{  
-            ((Spectator)Thread.currentThread()).setState("PLACING_A_BET");
+            Spectator sInst = (Spectator)Thread.currentThread();
+            sInst.setState("PLACING_A_BET");
+            GeneralRepositoryOfInformation.setSpectatorsState("PAB", sInst.getID());
             while(!resolvedSpectator){
                 spectatorCond.await();
             }
 
             waitingOnBroker = true;
+            sInst.setBudget(sInst.getBudget() - value);
+            GeneralRepositoryOfInformation.setSpectatorsBudget(sInst.getBudget(), sInst.getID());
             bets[currentNumberOfSpectators++] = new Bet(pid, value, horseID, odds);
+            GeneralRepositoryOfInformation.setSpectatorsBet(value, sInst.getID());
             resolvedSpectator = false;
             brokerCond.signal();
 
@@ -151,13 +160,14 @@ public class BettingCentre{
      * Called by a {@link Spectator} to collect the gain of after having won a {@link Bet}.
      *
      * @param spectatorID ID of the thread calling the method.
-     * @return Returns the reward amount.
      */
-    public static double goCollectTheGains(int spectatorID){
+    public static void goCollectTheGains(int spectatorID){
         double result = 0;
         r1.lock();
         try{
-            ((Spectator)Thread.currentThread()).setState("COLLECTING_THE_GAINS");
+            Spectator sInst = (Spectator)Thread.currentThread();
+            sInst.setState("COLLECTING_THE_GAINS");
+            GeneralRepositoryOfInformation.setSpectatorsState("CTG", spectatorID);
             while(!resolvedSpectator){
                 spectatorCond.await();
             }
@@ -171,16 +181,18 @@ public class BettingCentre{
             for (Bet bet1 : bets) {
                 if (bet1.getSpectatorID() == spectatorID) {
                     bet = bet1;
-                    result = bet.getBetAmount() * bet.getOdds();
+                    result = bet.getBetAmount() * bet.getOdds() / numHorsesFirst;
                     break;
                 }
 
             }
+            sInst.setBudget(sInst.getBudget() + result);
+            GeneralRepositoryOfInformation.setSpectatorsBudget(sInst.getBudget(), spectatorID);
+        
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }finally{
             r1.unlock();
         }
-        return result;
     }
 }

@@ -35,7 +35,6 @@ public class Horse extends Thread {
     public Horse(int id, int raceNum) {
         this.ID = id;
         this.raceNum = raceNum;
-        this.pnk = ThreadLocalRandom.current().nextInt(1, Parameters.getRaceLength() + 1);
     }
 
     @Override
@@ -53,5 +52,17 @@ public class Horse extends Thread {
 
     public void setState(String state){
         this.state = state;
+    }
+    
+    public void setPnk(int pnk){
+        this.pnk = pnk;
+    }
+
+    public int getID(){
+        return this.ID;
+    }
+
+    public int getPnk(){
+        return this.pnk;
     }
 }

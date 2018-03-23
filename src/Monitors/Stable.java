@@ -1,11 +1,11 @@
 package Monitors;
-
 import Monitors.AuxiliaryClasses.Parameters;
 import Threads.Horse;
 import Threads.Broker;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 /**
@@ -74,10 +74,20 @@ public class Stable {
     public static void proceedToStable(int raceNum){
         r1.lock();
         try{ 
-            ((Horse)Thread.currentThread()).setState("AT_THE_STABLE");      
             while(raceNum != raceNumber){
                 newRace.await();
             }
+
+            Horse hInst = (Horse)Thread.currentThread();
+            hInst.setState("AT_THE_STABLE");
+            GeneralRepositoryOfInformation.setHorsesState("ATS",hInst.getID());
+            hInst.setPnk(ThreadLocalRandom.current().nextInt(1,Parameters.getRaceLength() + 1));
+            GeneralRepositoryOfInformation.setHorsesPnk(hInst.getPnk(), hInst.getID()); 
+            GeneralRepositoryOfInformation.setHorseProbability(-1, hInst.getID());
+            GeneralRepositoryOfInformation.setHorseIteration(-1, hInst.getID());
+            GeneralRepositoryOfInformation.setHorseTrackPosition(-1, hInst.getID());
+            GeneralRepositoryOfInformation.setHorsesStanding('-', hInst.getID()); 
+
             while(!canHorsesMoveToPaddock)
                 horsesToPaddock.await();
 

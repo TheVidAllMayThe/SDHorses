@@ -2,6 +2,7 @@ package Main;
 
 import java.util.Random;
 
+import Monitors.GeneralRepositoryOfInformation;
 import Monitors.AuxiliaryClasses.Parameters;
 import Threads.Broker;
 import Threads.Horse;
@@ -23,8 +24,8 @@ public class HorseRace {
     public static void main(String[] args){
         //Simulation variables
         Random rng = new Random();
-
-        Parameters.initialize(rng.nextInt(1000)+1,rng.nextInt(10)+1, rng.nextInt(10)+1, rng.nextInt(100)+1);
+        Parameters.initialize(5,4,4, rng.nextInt(99)+1);
+        GeneralRepositoryOfInformation.initialize();
 
         Broker brokerInst = new Broker();
         brokerInst.start();
@@ -32,7 +33,7 @@ public class HorseRace {
         Horse[] horses = new Horse[Parameters.getNumberOfHorses() * Parameters.getNumberOfRaces()];
 
         for(int i = 0; i<Parameters.getNumberOfHorses() * Parameters.getNumberOfRaces(); i++){
-            horses[i] = new Horse(i, i/Parameters.getNumberOfHorses());
+            horses[i] = new Horse(i%Parameters.getNumberOfHorses(), i/Parameters.getNumberOfHorses());
             horses[i].start();
         }
 
@@ -48,6 +49,7 @@ public class HorseRace {
             for(Spectator h: spectators)
                 h.join();
             brokerInst.join();
+            GeneralRepositoryOfInformation.close();
         }catch(InterruptedException ie){
             ie.printStackTrace();
         }

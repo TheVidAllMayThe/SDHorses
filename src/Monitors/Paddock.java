@@ -52,16 +52,20 @@ public class Paddock{
     public static void proceedToPaddock(int horseID, int pnk){
         r1.lock();
         try {
-            ((Horse)Thread.currentThread()).setState("AT_THE_PADDOCK");
+            Horse hInst = (Horse)Thread.currentThread();
+            hInst.setState("AT_THE_PADDOCK");
+            GeneralRepositoryOfInformation.setHorsesState("ATP", hInst.getID());
+
             horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
             if (horsesInPaddock == Parameters.getNumberOfHorses()) {
                 int total_pnk = 0;
                 for (HorseInPaddock horse : horses) total_pnk += horse.getPnk();
                 for (HorseInPaddock horse : horses){
                     if(Parameters.getNumberOfHorses() > 1){
-                        horse.setOdds(pnk / total_pnk / (1 - (pnk / total_pnk)));
+                        horse.setOdds(horse.getPnk() / total_pnk / (1 - (horse.getPnk() / total_pnk)));
                     }
                     else horse.setOdds(1.0);
+                    GeneralRepositoryOfInformation.setHorseProbability((horse.getPnk()/total_pnk) * 100, horse.getHorseID()); 
                 }
                 allowSpectators = true;
                 spectatorsCond.signal();
@@ -106,12 +110,15 @@ public class Paddock{
         r1.lock();
 
         try{
-            ((Spectator)Thread.currentThread()).setState("APPRAISING_THE_HORSES");
+            Spectator sInst = (Spectator)Thread.currentThread();
+            sInst.setState("APPRAISING_THE_HORSES");
+            GeneralRepositoryOfInformation.setSpectatorsState("ATH", sInst.getID());
             while(!allowSpectators){
                 spectatorsCond.await();
             }
 
             result = horses[ThreadLocalRandom.current().nextInt(horses.length)];
+            GeneralRepositoryOfInformation.setSpectatorsSelection(result.getHorseID(), sInst.getID());
 
             if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
                 allowHorses = true;

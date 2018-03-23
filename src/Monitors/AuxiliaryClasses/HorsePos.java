@@ -16,21 +16,6 @@ public class HorsePos implements Comparable<HorsePos>{
     private int numSteps;
     private boolean myTurn;
 
-    public void setMyTurn(boolean myTurn) {
-        this.myTurn = myTurn;
-    }
-
-    public void setHorseID(int horseID) {
-        this.horseID = horseID;
-    }
-
-    public boolean isFinished() {
-        return finished;
-    }
-
-    public void setFinished(boolean finished) {
-        this.finished = finished;
-    }
 
     private boolean finished;
 
@@ -64,6 +49,26 @@ public class HorsePos implements Comparable<HorsePos>{
 
     public int getPos() {
         return pos;
+    }
+    
+    public int getNumSteps(){
+        return numSteps;
+    }
+
+    public void setMyTurn(boolean myTurn) {
+        this.myTurn = myTurn;
+    }
+
+    public void setHorseID(int horseID) {
+        this.horseID = horseID;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
     /**
