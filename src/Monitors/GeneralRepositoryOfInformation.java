@@ -5,11 +5,11 @@ import Monitors.AuxiliaryClasses.Parameters;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
-import java.io.File;
+
 
 public class GeneralRepositoryOfInformation{
     private static ReentrantLock r1 = new ReentrantLock(false);
-    private static PrintWriter writer; 
+    private static PrintWriter writer;
 
     private static String brokerState;
     private static String[] spectatorsState;
@@ -28,7 +28,9 @@ public class GeneralRepositoryOfInformation{
     public static void initialize(){
         try{
             writer = new PrintWriter("log.txt");
+
         }catch(FileNotFoundException fe){
+            fe.printStackTrace();
         }
 
         brokerState = "----";
@@ -47,40 +49,45 @@ public class GeneralRepositoryOfInformation{
         spectatorsBet = new String[Parameters.getNumberOfSpectators()];
         for(int i=0; i < spectatorsBet.length; i++) spectatorsBet[i] = "----";
         horseProbability = new String[Parameters.getNumberOfHorses()];
-        for(int i=0; i < horseProbability.length; i++) horseProbability[i] = "---";
+        for(int i=0; i < horseProbability.length; i++) horseProbability[i] = "----";
         horseIteration = new String[Parameters.getNumberOfHorses()];
         for(int i=0; i < horseIteration.length; i++) horseIteration[i] = "--";
         horseTrackPosition = new String[Parameters.getNumberOfHorses()];
         for(int i=0; i < horseTrackPosition.length; i++) horseTrackPosition[i] = "--";
         horsesStanding = new String[Parameters.getNumberOfHorses()];
         for(int i=0; i < horsesStanding.length; i++) horsesStanding[i] = "-";
-        
+
+
+
         writer.println("MAN/BRK           SPECTATOR/BETTER              HORSE/JOCKEY PAIR at Race RN");
         writer.println("  Stat  St0  Am0 St1  Am1 St2  Am2 St3  Am3 RN St0 Len0 St1 Len1 St2 Len2 St3 Len3");
         writer.println("                                        Race RN Status");
-        writer.println("RN Dist BS0 BA0 BS1  BA1 BS2  BA2 BS3  BA3  Od0 N0 Ps0 SD0 Od1 N1 Ps1 Sd1 Od2 N2 Ps2 Sd2 Od3 N3 Ps3 St3");
-        
+        writer.println("RN Dist BS0  BA0 BS1  BA1 BS2  BA2 BS3  BA3  Od0  N0 Ps0 SD0 Od1  N1 Ps1 Sd1 Od2  N2 Ps2 Sd2 Od3  N3 Ps3 St3");
+        writer.flush();
+
     }
 
     public static void close(){
         writer.close();
     }
  
-    public static void log(){
+    private static void log(){
         try{
-            String line1 = brokerState + " ";
-            String line2 = raceNumber + " " + raceDistance + " ";
+
+            StringBuilder line1 = new StringBuilder(String.format("  %4s ", brokerState));
+            StringBuilder line2 = new StringBuilder(String.format(" %1d  %2s  ", raceNumber, raceDistance));
+
 
             for(int i=0; i<Parameters.getNumberOfSpectators(); i++){
-                line1 += spectatorsState[i] + " " + spectatorsBudget[i] + " ";
-                line2 += spectatorsSelection[i] + " " + spectatorsBet[i] + " ";
+                line1.append(String.format("%4s %3s", spectatorsState[i], spectatorsBudget[i]));
+                line2.append(String.format(" %1s  %4s ", spectatorsSelection[i], spectatorsBet[i]));
             }
             
-            line1 += raceNumber + " ";
+            line1.append(String.format("  %1d ", raceNumber));
 
             for(int i=0; i<Parameters.getNumberOfHorses(); i++){
-                line1 += horsesState[i] + " " + horsesPnk[i] + " ";
-                line2 += horseProbability[i] + " " + horseIteration[i] + " " + horseTrackPosition[i] + " " + horsesStanding[i] + " ";
+                line1.append(String.format("%3s  %2s  ", horsesState[i], horsesPnk[i]));
+                line2.append(String.format("%4s  %2s  %2s  %1s ", horseProbability[i], horseIteration[i], horseTrackPosition[i], horsesStanding[i]));
             }
 
             writer.println(line1);
@@ -88,6 +95,7 @@ public class GeneralRepositoryOfInformation{
         }catch(Exception fe){
             fe.printStackTrace();
         }
+        writer.flush();
     }    
 
     public static void setBrokerState(String state){
@@ -96,6 +104,7 @@ public class GeneralRepositoryOfInformation{
             brokerState = state;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         } 
@@ -107,6 +116,7 @@ public class GeneralRepositoryOfInformation{
             spectatorsState[i] = state;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -118,6 +128,7 @@ public class GeneralRepositoryOfInformation{
             horsesState[i] = state;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -131,17 +142,19 @@ public class GeneralRepositoryOfInformation{
             spectatorsBudget[i] = temp;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
     }
 
-    public static void setRaceNumber(int raceNumber){
+    public static void setRaceNumber(int raceNu){
         r1.lock();
         try{
-            raceNumber = raceNumber;
+            raceNumber = raceNu;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -149,10 +162,11 @@ public class GeneralRepositoryOfInformation{
         r1.lock();
         try{
             String temp = "" + pnk;
-            for(int j=temp.length(); j<3; j++) temp = "0" + temp;
+            for(int j=temp.length(); j<2; j++) temp = "0" + temp;
             horsesPnk[i] = temp;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -165,6 +179,7 @@ public class GeneralRepositoryOfInformation{
             else raceDistance = "" + distance;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -176,6 +191,7 @@ public class GeneralRepositoryOfInformation{
             spectatorsSelection[i] = "" + horse;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -189,6 +205,7 @@ public class GeneralRepositoryOfInformation{
             spectatorsBet[i] = temp;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -197,15 +214,17 @@ public class GeneralRepositoryOfInformation{
     public static void setHorseProbability(double prob, int i){
         r1.lock();
         try{
+
             String temp;
-            if(prob < 0) temp = "---";
+            if(prob < 0) temp = "----";
             else{
                 temp = "" + ((int)prob);
-                for(int j=temp.length(); j<3; j++) temp = "0" + temp;
+                for(int j=temp.length(); j<4; j++) temp = "0" + temp;
             }
             horseProbability[i] = temp;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -221,6 +240,7 @@ public class GeneralRepositoryOfInformation{
             }
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -236,6 +256,7 @@ public class GeneralRepositoryOfInformation{
             }
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }
@@ -247,6 +268,7 @@ public class GeneralRepositoryOfInformation{
             horsesStanding[i] = "" + standing;
             log();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             r1.unlock();
         }

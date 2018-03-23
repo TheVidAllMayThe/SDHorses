@@ -19,6 +19,7 @@ public class Parameters {
         set = true;
     }
 
+
     public static int getNumberOfRaces() {
         return numberOfRaces;
     }

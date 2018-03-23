@@ -2,7 +2,6 @@ package Monitors;
 
 import Monitors.AuxiliaryClasses.Parameters;
 import Monitors.AuxiliaryClasses.Bet;
-import Monitors.GeneralRepositoryOfInformation;
 import Threads.Broker;
 import Threads.Horse;
 import Threads.Spectator;

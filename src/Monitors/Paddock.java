@@ -60,12 +60,13 @@ public class Paddock{
             if (horsesInPaddock == Parameters.getNumberOfHorses()) {
                 int total_pnk = 0;
                 for (HorseInPaddock horse : horses) total_pnk += horse.getPnk();
+
                 for (HorseInPaddock horse : horses){
                     if(Parameters.getNumberOfHorses() > 1){
-                        horse.setOdds(horse.getPnk() / total_pnk / (1 - (horse.getPnk() / total_pnk)));
+                        horse.setOdds((double) horse.getPnk() / total_pnk / (1 - (horse.getPnk() / total_pnk)));
                     }
                     else horse.setOdds(1.0);
-                    GeneralRepositoryOfInformation.setHorseProbability((horse.getPnk()/total_pnk) * 100, horse.getHorseID()); 
+                    GeneralRepositoryOfInformation.setHorseProbability(horse.getOdds() * 100, horse.getHorseID());
                 }
                 allowSpectators = true;
                 spectatorsCond.signal();

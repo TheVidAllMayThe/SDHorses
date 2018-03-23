@@ -43,10 +43,10 @@ public class Spectator extends Thread{
             ControlCentreAndWatchingStand.waitForNextRace();
             horse = Paddock.goCheckHorses();
             amountToBet = ThreadLocalRandom.current().nextDouble(0, this.budget);
-            BettingCentre.placeABet(pid, amountToBet, horse.getHorseID(), horse.getOdds());
+            BettingCentre.placeABet(id, amountToBet, horse.getHorseID(), horse.getOdds());
             ControlCentreAndWatchingStand.goWatchTheRace();
             if(ControlCentreAndWatchingStand.haveIWon(horse.getHorseID())){
-                BettingCentre.goCollectTheGains(pid);
+                BettingCentre.goCollectTheGains(id);
             }
         }
         ControlCentreAndWatchingStand.relaxABit();
