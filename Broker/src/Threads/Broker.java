@@ -25,6 +25,7 @@ public class Broker extends Thread{
         ControlCentreAndWatchingStand.openingTheEvents();
 
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
+            BettingCentre.honorBets();
             Stable.summonHorsesToPaddock();
             ControlCentreAndWatchingStand.summonHorsesToPaddock(i);
             BettingCentre.acceptTheBets();
@@ -32,9 +33,8 @@ public class Broker extends Thread{
             ControlCentreAndWatchingStand.startTheRace();
             int[] list = RaceTrack.reportResults();
             ControlCentreAndWatchingStand.reportResults(list);
-            if(BettingCentre.areThereAnyWinners(list)){
+            if(BettingCentre.areThereAnyWinners(list))
                 BettingCentre.honorBets();
-            }
         }
         
         Stable.entertainTheGuests();
