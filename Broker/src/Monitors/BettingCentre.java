@@ -46,14 +46,20 @@ public class BettingCentre{
         BettingCentre.port = port;
     }
 
-    public static void acceptTheBets(){
-
+    public static void acceptTheBets(int[] winnerList){
+        try{
+            initConnection();
+            pw.print("acceptTheBets/" + Arrays.toString(winnerList));
+            if (!in.readLine().equals("ok"))
+                System.out.println("Something wrong with acceptTheBets of broker");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
     
     static public boolean areThereAnyWinners(int[] winnerList) {
         try {
             initConnection();
-
             pw.print("areThereAnyWinners/" + Arrays.toString(winnerList));
             boolean returnValue = Boolean.valueOf(in.readLine());
             closeConnection();
@@ -70,7 +76,7 @@ public class BettingCentre{
             initConnection();
 
             pw.print("honorBets");
-            if(!in.readLine().equals("true"))
+            if(!in.readLine().equals("ok"))
                 System.out.println("Something wrong in honorBets of Broker");
 
             closeConnection();
