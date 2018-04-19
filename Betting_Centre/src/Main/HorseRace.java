@@ -54,4 +54,10 @@ public class HorseRace {
             ie.printStackTrace();
         }
     }
+
+    //Don't know where to put this piece of code yet so it's in here
+    public static void reflection(List<Object> list){
+        Method method = BettingCentre.getMethod((String) list.get(0), list.toArray());
+        method.invoke(null, list.toArray());
+    }
 }
