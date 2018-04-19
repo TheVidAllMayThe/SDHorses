@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
 
 
 /**
@@ -27,45 +28,88 @@ import java.net.UnknownHostException;
 @SuppressWarnings("JavadocReference")
 public class Stable {
 
-    private static InetAddress address;
-    private static int port;
-    private static Socket echoSocket;
-    private static PrintWriter pw;
-    private static BufferedReader in;
+    private static InetAddress targetAddress;
+    private static int targetPort;
+    private static boolean[] availablePorts;
 
 
     public static void initialize(String ip, int port){
         try {
-            address = InetAddress.getByName(ip);
+            targetAddress = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        Stable.port = port;
+        targetPort = port;
+        availablePorts = new boolean[]{true, true, true, true, true, true, true, true, true, true};
     }
 
     /**
      * {@link Broker} awakes the {@link Horse}s who are waiting to enter the {@link Paddock}.
      */
     public static void summonHorsesToPaddock(){
+        try{
+            Socket echoSocket = initConnection();
+            PrintWriter pw = new PrintWriter(echoSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 
+            LinkedList<Object> list = new LinkedList<>();
+            list.add("summonHorsesToPaddock");
+
+            pw.print(list);
+            if (!in.readLine().equals("ok"))
+                System.out.println("Something wrong with summonHorsesToPaddock");
+
+            closeConnection(echoSocket, pw, in);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     /**
      * Last function of {@link Broker} lifecycle, awakes {@link Horse}s waiting to enter {@link Paddock}.
      */
     public static void entertainTheGuests(){
+        try{
+            Socket echoSocket = initConnection();
+            PrintWriter pw = new PrintWriter(echoSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+
+            LinkedList<Object> list = new LinkedList<>();
+            list.add("entertainTheGuests");
+
+            pw.print(list);
+            if (!in.readLine().equals("ok"))
+                System.out.println("Something wrong with entertainTheGuests");
+
+            closeConnection(echoSocket, pw, in);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
     }
 
-    private static void initConnection() throws IOException {
-        echoSocket = new Socket(address, port);
-        pw = new PrintWriter(echoSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+    private static Socket initConnection() throws IOException {
+        int inputPort = -1;
+        Socket echoSocket = null;
+        for(int i=0; i < 10; i++){
+            if( availablePorts[i] ){
+                inputPort = 23040 + i;
+                availablePorts[i] = false;
+                break;
+            }
+        }
+        try{
+            echoSocket = new Socket(targetAddress, targetPort, InetAddress.getByName("localhost"), inputPort);
+        } catch (UnknownHostException e){
+            e.printStackTrace();
+        }
+        return echoSocket;
     }
 
-    private static void closeConnection() throws IOException{
+    private static void closeConnection(Socket echoSocket, PrintWriter pw, BufferedReader in) throws IOException{
         in.close();
         pw.close();
+        availablePorts[echoSocket.getPort() - 23040] = true;
         echoSocket.close();
     }
 

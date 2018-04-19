@@ -16,8 +16,6 @@ import Monitors.Stable;
  */
 
 public class Broker extends Thread{
-    private String state;
-
     @Override
     public void run(){
 
@@ -39,9 +37,5 @@ public class Broker extends Thread{
         
         Stable.entertainTheGuests();
         ControlCentreAndWatchingStand.entertainTheGuests();
-    }
-
-    public void setState(String state){
-        this.state = state;
     }
 }

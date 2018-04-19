@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.SQLOutput;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -31,27 +32,34 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BettingCentre{
 
-    private static InetAddress address;
-    private static int port;
-    private static Socket echoSocket;
-    private static PrintWriter pw;
-    private static BufferedReader in;
+    private static InetAddress targetAddress;
+    private static int targetPort;
+    private static boolean[] availablePorts;
 
     public static void initialize(String ip, int port){
         try {
-            address = InetAddress.getByName(ip);
+            targetAddress = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        BettingCentre.port = port;
+        targetPort = port;
+        availablePorts = new boolean[]{true, true, true, true, true, true, true, true, true, true};
     }
 
-    public static void acceptTheBets(int[] winnerList){
+    public static void acceptTheBets(){
         try{
-            initConnection();
-            pw.print("acceptTheBets/" + Arrays.toString(winnerList));
+            Socket echoSocket = initConnection();
+            PrintWriter pw = new PrintWriter(echoSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+
+            LinkedList<Object> list = new LinkedList<>();
+            list.add("acceptTheBets");
+
+            pw.print(list);
             if (!in.readLine().equals("ok"))
                 System.out.println("Something wrong with acceptTheBets of broker");
+
+            closeConnection(echoSocket, pw, in);
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -59,10 +67,18 @@ public class BettingCentre{
     
     static public boolean areThereAnyWinners(int[] winnerList) {
         try {
-            initConnection();
-            pw.print("areThereAnyWinners/" + Arrays.toString(winnerList));
+            Socket echoSocket = initConnection();
+            PrintWriter pw = new PrintWriter(echoSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+
+            LinkedList<Object> list = new LinkedList<>();
+            list.add("areThereAnyWinners");
+            list.add(winnerList);
+
+            pw.print(list);
             boolean returnValue = Boolean.valueOf(in.readLine());
-            closeConnection();
+
+            closeConnection(echoSocket, pw, in);
             return returnValue;
         }catch (IOException e){
             e.printStackTrace();
@@ -73,27 +89,44 @@ public class BettingCentre{
 
     public static void honorBets() {
         try {
-            initConnection();
+            Socket echoSocket = initConnection();
+            PrintWriter pw = new PrintWriter(echoSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 
-            pw.print("honorBets");
+            LinkedList<Object> list = new LinkedList<>();
+            
+            pw.print(list);
             if(!in.readLine().equals("ok"))
                 System.out.println("Something wrong in honorBets of Broker");
 
-            closeConnection();
+            closeConnection(echoSocket, pw, in);
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    private static void initConnection() throws IOException{
-        echoSocket = new Socket(address, port);
-        pw = new PrintWriter(echoSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+    private static Socket initConnection() throws IOException{
+        int inputPort = -1;
+        Socket echoSocket = null;
+        for(int i=0; i < 10; i++){
+            if( availablePorts[i] ){
+                inputPort = 23040 + i;
+                availablePorts[i] = false;
+                break;
+            }
+        }
+        try{
+            echoSocket = new Socket(targetAddress, targetPort, InetAddress.getByName("localhost"), inputPort);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return echoSocket;
     }
 
-    private static void closeConnection() throws IOException{
+    private static void closeConnection(Socket echoSocket, PrintWriter pw, BufferedReader in) throws IOException{
         in.close();
         pw.close();
+        availablePorts[echoSocket.getPort() - 23040] = true;
         echoSocket.close();
     }
 }

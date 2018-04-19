@@ -5,10 +5,12 @@ import Threads.Broker;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
 
 
 /**
@@ -27,51 +29,86 @@ import java.net.UnknownHostException;
 @SuppressWarnings("JavadocReference")
 public class RaceTrack {
 
-    private static InetAddress address;
-    private static int port;
-    private static Socket echoSocket;
-    private static PrintWriter pw;
-    private static BufferedReader in;
+    private static InetAddress targetAddress;
+    private static int targetPort;
+    private static boolean[] availablePorts;
 
     public static void initialize(String ip, int port){
         try {
-            address = InetAddress.getByName(ip);
+            targetAddress = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        RaceTrack.port = port;
+        targetPort = port;
+        availablePorts = new boolean[]{true, true, true, true, true, true, true, true, true, true};
     }
 
     public static void startTheRace(){
         try {
-        initConnection();
+            Socket echoSocket = initConnection();
+            PrintWriter pw = new PrintWriter(echoSocket.getOutputStream(), true);
+            ObjectInputStream in = new ObjectInputStream(echoSocket.getInputStream());
 
-        pw.print("startTheRace");
+            LinkedList<Object> list = new LinkedList<>();
+            list.add("startTheRace");
 
-        if(!in.readLine().equals("ok"))
-            System.out.println("Something wrong in openingTheEvents of Broker");
+            pw.print(list);
+            if(!((String)in.readObject()).equals("ok"))
+                System.out.println("Something wrong in openingTheEvents of Broker");
 
-        closeConnection();
-    }catch (IOException e){
-        e.printStackTrace();
+            closeConnection(echoSocket, pw, in);
+        }catch (IOException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
-}
 
 
     public static int[] reportResults(){
+        int[] result = null;
+        try {
+            Socket echoSocket = initConnection();
+            PrintWriter pw = new PrintWriter(echoSocket.getOutputStream(), true);
+            ObjectInputStream in = new ObjectInputStream(echoSocket.getInputStream());
 
-        return null;
+            LinkedList<Object> list = new LinkedList<>();
+            list.add("reportResults");
+
+            pw.print(list);
+            
+            result = (int[])in.readObject();
+            closeConnection(echoSocket, pw, in);
+        }catch (IOException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return result;
     }
 
-    private static void initConnection() throws IOException {
-        echoSocket = new Socket(address, port);
-        pw = new PrintWriter(echoSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+    private static Socket initConnection() throws IOException {
+        int inputPort = -1;
+        Socket echoSocket = null;
+        for(int i=0; i < 10; i++){
+            if ( availablePorts[i] ){
+                inputPort = 23040 + i;
+                availablePorts[i] = false;
+                break;
+            }
+        }
+        try{
+            echoSocket = new Socket(targetAddress, targetPort, InetAddress.getByName("localhost"), inputPort);
+        } catch (UnknownHostException e){
+            e.printStackTrace();
+        }
+        return echoSocket;
     }
 
-    private static void closeConnection() throws IOException{
+    private static void closeConnection(Socket echoSocket, PrintWriter pw, ObjectInputStream in) throws IOException{
         in.close();
         pw.close();
+        availablePorts[echoSocket.getPort() - 23040] = true;
         echoSocket.close();
     }
 
