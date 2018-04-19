@@ -40,14 +40,13 @@ public class ControlCentreAndWatchingStand {
         }
     }
 
-
     public static void summonHorsesToPaddock(int numRace) {
         try {
             initConnection();
 
             pw.print("summonHorsesToPaddock/" + numRace);
 
-            if(!in.readLine().equals("true"))
+            if(!in.readLine().equals("ok"))
                 System.out.println("Something wrong in openingTheEvents of Broker");
 
             closeConnection();
@@ -56,14 +55,13 @@ public class ControlCentreAndWatchingStand {
         }
     }
 
-
     public static void startTheRace() {
         try {
             initConnection();
 
             pw.print("startTheRace");
 
-            if(!in.readLine().equals("true"))
+            if(!in.readLine().equals("ok"))
                 System.out.println("Something wrong in startTheRace of Broker");
 
             closeConnection();
@@ -72,14 +70,13 @@ public class ControlCentreAndWatchingStand {
         }
     }
 
-
     public static void reportResults(int[] list) {
         try {
             initConnection();
 
             pw.print("reportResults/" + Arrays.toString(list));
 
-            if(!in.readLine().equals("true"))
+            if(!in.readLine().equals("ok"))
                 System.out.println("Something wrong in reportResults of Broker");
 
             closeConnection();
@@ -88,14 +85,13 @@ public class ControlCentreAndWatchingStand {
         }
     }
 
-
     static public void entertainTheGuests() {
         try {
             initConnection();
 
             pw.print("entertainTheGuests");
 
-            if(!in.readLine().equals("true"))
+            if(!in.readLine().equals("ok"))
                 System.out.println("Something wrong in entertainTheGuests of Broker");
 
             closeConnection();

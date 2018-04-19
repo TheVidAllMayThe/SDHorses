@@ -1,6 +1,13 @@
 package Monitors;
 import Threads.Broker;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 
 /**
@@ -20,6 +27,22 @@ import Threads.Broker;
 @SuppressWarnings("JavadocReference")
 public class Stable {
 
+    private static InetAddress address;
+    private static int port;
+    private static Socket echoSocket;
+    private static PrintWriter pw;
+    private static BufferedReader in;
+
+
+    public static void initialize(String ip, int port){
+        try {
+            address = InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        Stable.port = port;
+    }
+
     /**
      * {@link Broker} awakes the {@link Horse}s who are waiting to enter the {@link Paddock}.
      */
@@ -34,5 +57,16 @@ public class Stable {
 
     }
 
+    private static void initConnection() throws IOException {
+        echoSocket = new Socket(address, port);
+        pw = new PrintWriter(echoSocket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+    }
+
+    private static void closeConnection() throws IOException{
+        in.close();
+        pw.close();
+        echoSocket.close();
+    }
 
 }

@@ -8,8 +8,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="General" />
-    <orderEntry type="module" module-name="Broker" />
     <orderEntry type="module" module-name="Horse" />
     <orderEntry type="module" module-name="Spectator" />
+    <orderEntry type="module" module-name="Broker" />
   </component>
 </module>

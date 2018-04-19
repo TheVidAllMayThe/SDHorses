@@ -2,6 +2,13 @@ package Monitors;
 
 import Threads.Broker;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 
 /**
@@ -20,10 +27,35 @@ import Threads.Broker;
 @SuppressWarnings("JavadocReference")
 public class RaceTrack {
 
+    private static InetAddress address;
+    private static int port;
+    private static Socket echoSocket;
+    private static PrintWriter pw;
+    private static BufferedReader in;
+
+    public static void initialize(String ip, int port){
+        try {
+            address = InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        RaceTrack.port = port;
+    }
 
     public static void startTheRace(){
+        try {
+        initConnection();
 
+        pw.print("startTheRace");
+
+        if(!in.readLine().equals("ok"))
+            System.out.println("Something wrong in openingTheEvents of Broker");
+
+        closeConnection();
+    }catch (IOException e){
+        e.printStackTrace();
     }
+}
 
 
     public static int[] reportResults(){
@@ -31,5 +63,16 @@ public class RaceTrack {
         return null;
     }
 
+    private static void initConnection() throws IOException {
+        echoSocket = new Socket(address, port);
+        pw = new PrintWriter(echoSocket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+    }
+
+    private static void closeConnection() throws IOException{
+        in.close();
+        pw.close();
+        echoSocket.close();
+    }
 
 }
