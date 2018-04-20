@@ -1,8 +1,10 @@
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.net.ServerSocket;
 import java.io.IOException;
+import java.net.InetAddress;
 
 
 /**
@@ -11,8 +13,11 @@ import java.io.IOException;
 
 public class GeneralRepositoryOfInformation{
     private static ReentrantLock r1 = new ReentrantLock(false);
+    private static Condition[] conditions = new Condition[5];
     private static PrintWriter writer;
 
+    private static InetAddress[] monitorAddresses = new InetAddress[5];
+    private static int[] monitorPorts = new int[5];
     private static int numberOfRaces, numberOfHorses, numberOfSpectators, raceLength;
 
     private static String brokerState;
@@ -106,6 +111,30 @@ public class GeneralRepositoryOfInformation{
         }
         writer.flush();
     }    
+    
+    public static void setMonitorAddress(InetAddress address, int port, int monitor){
+        monitorAddresses[monitor] = address;
+        monitorPorts[monitor] = port;
+        conditions[monitor].signalAll();
+    }
+
+    public static InetAddress getMonitorAddress(int monitor){
+        try{
+            while(monitorAddresses[monitor] == null) conditions[monitor].await();
+        } catch(InterruptedException ie){
+            ie.printStackTrace();
+        }
+        return monitorAddresses[monitor];
+    }
+
+    public static int getMonitorPort(int monitor){
+        try{
+            while(monitorPorts[monitor] == 0) conditions[monitor].await();
+        } catch(InterruptedException ie){
+            ie.printStackTrace();
+        }
+        return monitorPorts[monitor];
+    }
 
     public static void setBrokerState(String state){
         r1.lock();
