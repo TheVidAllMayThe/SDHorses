@@ -1,3 +1,3 @@
 find . -type f -name "*.class" -delete
-javac GeneralRepositoryOfInformation.java
-java GeneralRepositoryOfInformation
+javac Stump.java
+java Stump

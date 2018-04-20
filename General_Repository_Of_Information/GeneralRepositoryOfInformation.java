@@ -29,21 +29,6 @@ public class GeneralRepositoryOfInformation{
     private static String[] horseTrackPosition;
     private static String[] horsesStanding;
 
-    public static void main(String[] args){
-        initialize(5,4,4, 100);
-        
-        try{
-            ServerSocket serverSocket = new ServerSocket(23040);
-            while(true){
-                new ClientThread(serverSocket.accept(), GeneralRepositoryOfInformation.class).run();
-            }
-        } catch(IOException e){
-            e.printStackTrace();
-        }
-
-        close();
-    }
-
     public static void initialize(int numberOfRaces, int numberOfHorses, int numberOfSpectators, int raceLength){
         numberOfRaces = numberOfRaces;
         numberOfHorses = numberOfHorses;
