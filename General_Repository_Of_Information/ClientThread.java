@@ -1,5 +1,3 @@
-package Main;
-
 import java.net.Socket;
 import java.lang.Class;
 import java.lang.reflect.Method;

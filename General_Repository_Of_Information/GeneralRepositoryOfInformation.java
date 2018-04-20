@@ -1,10 +1,8 @@
-package Monitors;
-
-import Monitors.AuxiliaryClasses.Parameters;
-
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
+import java.net.ServerSocket;
+import java.io.IOException;
 
 
 /**
@@ -14,6 +12,8 @@ import java.io.FileNotFoundException;
 public class GeneralRepositoryOfInformation{
     private static ReentrantLock r1 = new ReentrantLock(false);
     private static PrintWriter writer;
+
+    private static int numberOfRaces, numberOfHorses, numberOfSpectators, raceLength;
 
     private static String brokerState;
     private static String[] spectatorsState;
@@ -29,7 +29,27 @@ public class GeneralRepositoryOfInformation{
     private static String[] horseTrackPosition;
     private static String[] horsesStanding;
 
-    public static void initialize(){
+    public static void main(String[] args){
+        initialize(5,4,4, 100);
+        
+        try{
+            ServerSocket serverSocket = new ServerSocket(23040);
+            while(true){
+                new ClientThread(serverSocket.accept(), GeneralRepositoryOfInformation.class).run();
+            }
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+
+        close();
+    }
+
+    public static void initialize(int numberOfRaces, int numberOfHorses, int numberOfSpectators, int raceLength){
+        numberOfRaces = numberOfRaces;
+        numberOfHorses = numberOfHorses;
+        numberOfSpectators = numberOfSpectators;
+        raceLength = raceLength;
+
         try{
             writer = new PrintWriter("log.txt");
 
@@ -38,27 +58,27 @@ public class GeneralRepositoryOfInformation{
         }
 
         brokerState = "----";
-        spectatorsState = new String[Parameters.getNumberOfSpectators()];
+        spectatorsState = new String[numberOfSpectators];
         for(int i=0; i < spectatorsState.length; i++) spectatorsState[i] = "---";
-        horsesState = new String[Parameters.getNumberOfHorses()];
+        horsesState = new String[numberOfHorses];
         for(int i=0; i < horsesState.length; i++) horsesState[i] = "---";
-        spectatorsBudget = new String[Parameters.getNumberOfSpectators()];
+        spectatorsBudget = new String[numberOfSpectators];
         for(int i=0; i < spectatorsBudget.length; i++) spectatorsBudget[i] = "----";
         raceNumber = 0; 
-        horsesPnk = new String[Parameters.getNumberOfHorses()];
+        horsesPnk = new String[numberOfHorses];
         for(int i=0; i < horsesPnk.length; i++) horsesPnk[i] = "--";
         raceDistance = "--";
-        spectatorsSelection = new String[Parameters.getNumberOfSpectators()];
+        spectatorsSelection = new String[numberOfSpectators];
         for(int i=0; i < spectatorsSelection.length; i++) spectatorsSelection[i] = "-";
-        spectatorsBet = new String[Parameters.getNumberOfSpectators()];
+        spectatorsBet = new String[numberOfSpectators];
         for(int i=0; i < spectatorsBet.length; i++) spectatorsBet[i] = "----";
-        horseProbability = new String[Parameters.getNumberOfHorses()];
+        horseProbability = new String[numberOfHorses];
         for(int i=0; i < horseProbability.length; i++) horseProbability[i] = "----";
-        horseIteration = new String[Parameters.getNumberOfHorses()];
+        horseIteration = new String[numberOfHorses];
         for(int i=0; i < horseIteration.length; i++) horseIteration[i] = "--";
-        horseTrackPosition = new String[Parameters.getNumberOfHorses()];
+        horseTrackPosition = new String[numberOfHorses];
         for(int i=0; i < horseTrackPosition.length; i++) horseTrackPosition[i] = "--";
-        horsesStanding = new String[Parameters.getNumberOfHorses()];
+        horsesStanding = new String[numberOfHorses];
         for(int i=0; i < horsesStanding.length; i++) horsesStanding[i] = "-";
 
 
@@ -82,14 +102,14 @@ public class GeneralRepositoryOfInformation{
             StringBuilder line2 = new StringBuilder(String.format(" %1d  %2s  ", raceNumber, raceDistance));
 
 
-            for(int i=0; i<Parameters.getNumberOfSpectators(); i++){
+            for(int i=0; i<numberOfSpectators; i++){
                 line1.append(String.format("%4s %3s", spectatorsState[i], spectatorsBudget[i]));
                 line2.append(String.format(" %1s  %4s ", spectatorsSelection[i], spectatorsBet[i]));
             }
             
             line1.append(String.format("  %1d ", raceNumber));
 
-            for(int i=0; i<Parameters.getNumberOfHorses(); i++){
+            for(int i=0; i<numberOfHorses; i++){
                 line1.append(String.format("%3s  %2s  ", horsesState[i], horsesPnk[i]));
                 line2.append(String.format("%4s  %2s  %2s  %1s ", horseProbability[i], horseIteration[i], horseTrackPosition[i], horsesStanding[i]));
             }
