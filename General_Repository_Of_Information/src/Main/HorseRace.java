@@ -4,9 +4,10 @@ import java.util.Random;
 
 import Monitors.GeneralRepositoryOfInformation;
 import Monitors.AuxiliaryClasses.Parameters;
-import Threads.Broker;
-import Threads.Horse;
-import Threads.Spectator;
+import Main.ClientThread;
+import java.net.ServerSocket;
+import java.io.IOException;
+import java.lang.ClassNotFoundException;
 
 /**
 * The Main.HorseRace program creates one thread of type Broker and several
@@ -21,37 +22,28 @@ import Threads.Spectator;
 */
 
 public class HorseRace {
+    public enum Monitor {
+        CONTROLCENTRE, BETTINGCENTRE, STABLE, PADDOCK, RACETRACK    
+    }
+
     public static void main(String[] args){
         //Simulation variables
         Random rng = new Random();
         Parameters.initialize(5,4,4, rng.nextInt(99)+1);
         GeneralRepositoryOfInformation.initialize();
 
-        Broker brokerInst = new Broker();
-        brokerInst.start();
-        Spectator[] spectators = new Spectator[Parameters.getNumberOfSpectators()];
-        Horse[] horses = new Horse[Parameters.getNumberOfHorses() * Parameters.getNumberOfRaces()];
-
-        for(int i = 0; i<Parameters.getNumberOfHorses() * Parameters.getNumberOfRaces(); i++){
-            horses[i] = new Horse(i%Parameters.getNumberOfHorses(), i/Parameters.getNumberOfHorses());
-            horses[i].start();
-        }
-
-        for(int i = 0; i < Parameters.getNumberOfSpectators(); i++){
-            spectators[i] = new Spectator(i);
-            spectators[i].start();
-        }
-
         try{
-            for(Spectator s: spectators)
-                s.join();
+            ServerSocket serverSocket = new ServerSocket(23040);
+            while(true){
+                new ClientThread(serverSocket.accept(), Class.forName("Monitors.GeneralRepositoryOfInformation")).run();
+                
+            }
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }        
 
-            for(Spectator h: spectators)
-                h.join();
-            brokerInst.join();
-            GeneralRepositoryOfInformation.close();
-        }catch(InterruptedException ie){
-            ie.printStackTrace();
-        }
+        GeneralRepositoryOfInformation.close();    
     }
 }
