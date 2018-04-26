@@ -46,6 +46,7 @@ public class ClientThread extends Thread{
         try{
             method = monitorClass.getMethod((String) list.get(0), classArray);
             result = method.invoke(null, list.toArray());
+            if (result == null) result = (Object) "ok";
         } catch(NoSuchMethodException e){
             e.printStackTrace();
         } catch(IllegalAccessException e){ 

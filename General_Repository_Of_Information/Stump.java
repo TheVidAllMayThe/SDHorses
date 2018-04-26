@@ -6,7 +6,7 @@ public class Stump{
         GeneralRepositoryOfInformation.initialize(5,4,4, 100);
         
         try{
-            ServerSocket serverSocket = new ServerSocket(23040);
+            ServerSocket serverSocket = new ServerSocket(Integer.valueOf(args[0]));
             while(true){
                 new ClientThread(serverSocket.accept(), GeneralRepositoryOfInformation.class).run();
             }

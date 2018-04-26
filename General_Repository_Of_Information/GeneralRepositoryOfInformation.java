@@ -311,4 +311,8 @@ public class GeneralRepositoryOfInformation{
             r1.unlock();
         }
     }
+
+    public static int getNumberOfSpectators(){
+        return numberOfSpectators;
+    }
 }
