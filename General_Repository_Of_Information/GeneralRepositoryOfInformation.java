@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.net.ServerSocket;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.net.Inet4Address;
 
 
 /**
@@ -16,7 +16,7 @@ public class GeneralRepositoryOfInformation{
     private static Condition[] conditions = new Condition[5];
     private static PrintWriter writer;
 
-    private static InetAddress[] monitorAddresses = new InetAddress[5];
+    private static Inet4Address[] monitorAddresses = new Inet4Address[5];
     private static int[] monitorPorts = new int[5];
     private static int numberOfRaces, numberOfHorses, numberOfSpectators, raceLength;
 
@@ -39,6 +39,7 @@ public class GeneralRepositoryOfInformation{
         numberOfHorses = numberOfHorses;
         numberOfSpectators = numberOfSpectators;
         raceLength = raceLength;
+        for(int i=0; i < conditions.length; i++) conditions[i] = r1.newCondition();
 
         try{
             writer = new PrintWriter("log.txt");
@@ -112,13 +113,20 @@ public class GeneralRepositoryOfInformation{
         writer.flush();
     }    
     
-    public static void setMonitorAddress(InetAddress address, int port, int monitor){
-        monitorAddresses[monitor] = address;
-        monitorPorts[monitor] = port;
-        conditions[monitor].signalAll();
+    public static void setMonitorAddress(Inet4Address address, Integer port, Integer monitor){
+        try{
+            r1.lock();
+            monitorAddresses[monitor] = address;
+            monitorPorts[monitor] = port;
+            conditions[monitor].signalAll();
+        }catch(Exception e){
+            e.printStackTrace();
+        } finally{
+            r1.unlock();
+        }
     }
 
-    public static InetAddress getMonitorAddress(int monitor){
+    public static Inet4Address getMonitorAddress(int monitor){
         try{
             while(monitorAddresses[monitor] == null) conditions[monitor].await();
         } catch(InterruptedException ie){

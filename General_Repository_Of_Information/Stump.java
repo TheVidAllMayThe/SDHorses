@@ -12,8 +12,8 @@ public class Stump{
             }
         } catch(IOException e){
             e.printStackTrace();
+        } finally{ 
+            GeneralRepositoryOfInformation.close();
         }
-
-        GeneralRepositoryOfInformation.close();
     }
 }
