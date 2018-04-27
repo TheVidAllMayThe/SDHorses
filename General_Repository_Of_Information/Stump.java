@@ -8,7 +8,7 @@ public class Stump{
         try{
             ServerSocket serverSocket = new ServerSocket(Integer.valueOf(args[0]));
             while(true){
-                new ClientThread(serverSocket.accept(), GeneralRepositoryOfInformation.class, groi).run();
+                new ClientThread(serverSocket.accept(), GeneralRepositoryOfInformation.class, groi).start();
             }
         } catch(IOException e){
             e.printStackTrace();

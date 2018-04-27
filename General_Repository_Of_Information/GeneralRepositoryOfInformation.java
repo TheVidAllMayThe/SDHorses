@@ -118,6 +118,7 @@ public class GeneralRepositoryOfInformation{
             r1.lock();
             monitorAddresses[monitor] = address;
             monitorPorts[monitor] = port;
+            System.out.println("Monitor " + monitor + ": " + address + "/" + port);
             conditions[monitor].signalAll();
         }catch(Exception e){
             e.printStackTrace();
