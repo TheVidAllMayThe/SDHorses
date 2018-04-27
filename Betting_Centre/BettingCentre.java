@@ -16,39 +16,41 @@ import java.util.concurrent.locks.ReentrantLock;
 */
 
 public class BettingCentre{
-    private static int numberOfSpectators;
+    private int numberOfSpectators;
     
-    private static Bet[] bets;
-    private static Lock r1;
-    private static Condition brokerCond;
-    private static Condition spectatorCond;
-    private static boolean waitingOnBroker;
-    private static boolean resolvedSpectator;
-    private static int numWinners;
-    private static int currentNumberOfSpectators;
-    private static int numHorsesFirst;
+    private Bet[] bets;
+    private Lock r1;
+    private Condition brokerCond;
+    private Condition spectatorCond;
+    private boolean waitingOnBroker;
+    private boolean resolvedSpectator;
+    private int numWinners;
+    private int currentNumberOfSpectators;
+    private int numHorsesFirst;
+    private GeneralRepositoryOfInformation groi;
 
-    public static void initialize(int numberOfSpectators){
-        numberOfSpectators = numberOfSpectators;
-        bets = new Bet[numberOfSpectators];
-        r1 = new ReentrantLock();
-        brokerCond = r1.newCondition();
-        spectatorCond = r1.newCondition();
-        waitingOnBroker = false;
-        resolvedSpectator = false;
-        numWinners = 0;
-        currentNumberOfSpectators = 0;
-        numHorsesFirst = 0;
+    public BettingCentre(GeneralRepositoryOfInformation groi){
+        this.numberOfSpectators = groi.getNumberOfSpectators();
+        this.bets = new Bet[numberOfSpectators];
+        this.r1 = new ReentrantLock();
+        this.brokerCond = r1.newCondition();
+        this.spectatorCond = r1.newCondition();
+        this.waitingOnBroker = false;
+        this.resolvedSpectator = false;
+        this.numWinners = 0;
+        this.currentNumberOfSpectators = 0;
+        this.numHorsesFirst = 0;
+        this.groi = groi;
     }
 
     /**
      * {@link Broker} accepts a {@link Bet}, wakes next {@link Spectator} in line and waits for the next one until all {@link Bet}s are taken.
      */
 
-    public static void acceptTheBets() throws IllegalMonitorStateException{
+    public void acceptTheBets() throws IllegalMonitorStateException{
         r1.lock();
         try {
-            GeneralRepositoryOfInformation.setBrokerState("WFBE"); 
+            groi.setBrokerState("WFBE"); 
             while(currentNumberOfSpectators != numberOfSpectators){
                 resolvedSpectator = true;
                 waitingOnBroker = false; spectatorCond.signal(); while (!waitingOnBroker){
@@ -72,10 +74,9 @@ public class BettingCentre{
      * @return  boolean     Returns true if any {@link Spectator} won a {@link Bet}.
      */
 
-    static public boolean areThereAnyWinners(int[] winnerList) {
+    public boolean areThereAnyWinners(int[] winnerList) {
         boolean returnValue = false;
-
-        r1.lock();
+r1.lock();
         try {
             numHorsesFirst = winnerList.length; 
             for (Bet bet: bets){
@@ -99,7 +100,7 @@ public class BettingCentre{
     /**
      * {@link Broker} honors a {@link Bet}, wakes next {@link Spectator} in line and waits for the next {@link Spectator} claiming a reward until all rewards are given.
      */
-    public static void honorBets(){
+    public void honorBets(){
         r1.lock();
         try{
             while(currentNumberOfSpectators != numWinners){
@@ -130,18 +131,18 @@ public class BettingCentre{
      * @param odds Odds of the {@link Horse} in which to bet.
      */
 
-    public static void placeABet(int pid, double value, int horseID, double odds, double budget){
+    public void placeABet(int pid, double value, int horseID, double odds, double budget){
         r1.lock();
         try{  
-            GeneralRepositoryOfInformation.setSpectatorsState("PAB", pid);
+            groi.setSpectatorsState("PAB", pid);
             while(!resolvedSpectator){
                 spectatorCond.await();
             }
 
             waitingOnBroker = true;
-            GeneralRepositoryOfInformation.setSpectatorsBudget(budget, pid);
+            groi.setSpectatorsBudget(budget, pid);
             bets[currentNumberOfSpectators++] = new Bet(pid, value, horseID, odds);
-            GeneralRepositoryOfInformation.setSpectatorsBet(value, pid);
+            groi.setSpectatorsBet(value, pid);
             resolvedSpectator = false;
             brokerCond.signal();
 
@@ -157,10 +158,10 @@ public class BettingCentre{
      *
      * @param spectatorID ID of the thread calling the method.
      */
-    public static double goCollectTheGains(int spectatorID, double budget){
+    public double goCollectTheGains(int spectatorID, double budget){
         double result = 0;
         r1.lock(); try{
-            GeneralRepositoryOfInformation.setSpectatorsState("CTG", spectatorID);
+            groi.setSpectatorsState("CTG", spectatorID);
             while(!resolvedSpectator){
                 spectatorCond.await();
             }
@@ -179,7 +180,7 @@ public class BettingCentre{
                 }
 
             }
-            GeneralRepositoryOfInformation.setSpectatorsBudget(budget, spectatorID);
+            groi.setSpectatorsBudget(budget, spectatorID);
         
         }catch(InterruptedException ie){
             ie.printStackTrace();

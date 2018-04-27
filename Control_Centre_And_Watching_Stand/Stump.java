@@ -17,16 +17,21 @@ public class Stump{
             Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]), sourceAddress, sourcePort + 1);
             groi = new GeneralRepositoryOfInformation(echoSocket);
             
-            //Calls method setMonitorAddress for monitor #2 (Betting_centre)
-            groi.setMonitorAddress(sourceAddress, sourcePort, 2);
+            //Calls method setMonitorAddress for monitor #3 (Control Centre and Watching Stand)
+            groi.setMonitorAddress(sourceAddress, sourcePort, 3);
 
-            BettingCentre bc = new BettingCentre(groi);
+            //Gets variables necessary for ControlCentre
+            int raceLength = groi.getRaceLength();
+            int numSpectators = groi.getNumberOfSpectators();
+            int numHorses = groi.getNumberOfHorses();
+
+            ControlCentreAndWatchingStand ccws = new ControlCentreAndWatchingStand(groi);
 
         
             //Monitor is now open to requests from clients
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             while(true){
-                new ClientThread(serverSocket.accept(), BettingCentre.class, bc).run();
+                new ClientThread(serverSocket.accept(), ControlCentreAndWatchingStand.class, ccws).run();
             }
 
         } catch(IOException e){

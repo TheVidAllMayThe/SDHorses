@@ -1,12 +1,5 @@
-package Monitors;
-
-import Monitors.AuxiliaryClasses.Parameters;
-import Threads.Broker;
-import Threads.Horse;
-import Threads.Spectator;
-
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
 
 /**
 * The {@link ControlCentreAndWatchingStand} class is a monitor that contains
@@ -24,38 +17,60 @@ import java.util.concurrent.locks.ReentrantLock;
 */
 
 public class ControlCentreAndWatchingStand{
-    private static ReentrantLock r1= new ReentrantLock(false); private static Condition brokerCond = r1.newCondition();
-    private static boolean lastHorseFinished = false;
-    private static Condition spectatorsCond = r1.newCondition(); private static boolean allowSpectators = false;
-    private static int[] winnerHorses;
-    private static int nSpectators = 0;
-    private static int nSpectatorsRace = 0;
-    private static int nHorsesInPaddock = 0;
-    private static int nHorsesFinishedRace = 0;
-    private static boolean allowSpectatorsToWatch = false;
-    private static Condition spectatorsCondRace = r1.newCondition();
+    private ReentrantLock r1; 
+    private Condition brokerCond;
+    private boolean lastHorseFinished;
+    private Condition spectatorsCond; 
+    private boolean allowSpectators;
+    private int[] winnerHorses;
+    private int nSpectators;
+    private int nSpectatorsRace;
+    private int nHorsesInPaddock;
+    private int nHorsesFinishedRace;
+    private boolean allowSpectatorsToWatch;
+    private static Condition spectatorsCondRace;
+    private int raceLength;
+    private int numberOfSpectators;
+    private int numberOfHorses;
+    private GeneralRepositoryOfInformation groi;
 
+
+    public ControlCentreAndWatchingStand(GeneralRepositoryOfInformation groi){
+        this.r1 = new ReentrantLock(false);
+        this.brokerCond = r1.newCondition();
+        this.lastHorseFinished = false;
+        this.spectatorsCond = r1.newCondition();
+        this.allowSpectators = false;
+        this.nSpectators = 0;
+        this.nSpectatorsRace = 0;
+        this.nHorsesInPaddock = 0;
+        this.nHorsesFinishedRace = 0;
+        this.allowSpectatorsToWatch = false;
+        this.spectatorsCondRace = r1.newCondition();
+        this.raceLength = groi.getRaceLength();
+        this.numberOfSpectators = groi.getNumberOfSpectators();
+        this.numberOfHorses = groi.getNumberOfHorses();
+        this.groi = groi;
+    }
 
     /**
      * Method used to set the {@link Broker} initial state.
      */
 
-    public static void openingTheEvents(){
-        ((Broker)Thread.currentThread()).setState("OPENING_THE_EVENT");
+    public void openingTheEvents(){
     }
     
     /**
      * The {@link Broker} waits for all the {@link Spectator} threads to have reached the {@link ControlCentreAndWatchingStand} before proceeding.
      */
-    public static void summonHorsesToPaddock(int numRace){
+    public void summonHorsesToPaddock(int numRace){
 
         r1.lock();
         try{
-            ((Broker)Thread.currentThread()).setState("ANNOUNCING_NEXT_RACE");
-            GeneralRepositoryOfInformation.setBrokerState("ANRA");
-            GeneralRepositoryOfInformation.setRaceNumber(numRace);
-            GeneralRepositoryOfInformation.setRaceDistance(Parameters.getRaceLength());
-            while(nSpectators != Parameters.getNumberOfSpectators()){
+            groi.setBrokerState("ANRA");
+            groi.setRaceNumber(numRace);
+            groi.setRaceDistance(raceLength);
+            while(nSpectators != numberOfSpectators){
                 brokerCond.await();
             }
             nSpectators = 0;
@@ -69,11 +84,10 @@ public class ControlCentreAndWatchingStand{
     /**
      *  {@link Broker}  waits for all  {@link Horse} threads to have reached the finish line before proceeding.
      */
-    public static void startTheRace(){
+    public void startTheRace(){
         r1.lock();
         try{ 
-            ((Broker)Thread.currentThread()).setState("SUPERVISING_THE_RACE");
-            GeneralRepositoryOfInformation.setBrokerState("STRA");
+            groi.setBrokerState("STRA");
             while(!lastHorseFinished){
                 brokerCond.await();
             }
@@ -92,11 +106,10 @@ public class ControlCentreAndWatchingStand{
      *
      * @param   list  An integer array containing the ID of the {@link Horse}s who won the race.
      */
-    public static void reportResults(int[] list) {
+    public void reportResults(int[] list) {
         r1.lock();
         try { 
-            ((Broker)Thread.currentThread()).setState("SUPERVISING_THE_RACE");
-            GeneralRepositoryOfInformation.setBrokerState("STRA");
+            groi.setBrokerState("STRA");
             winnerHorses = list;
             allowSpectatorsToWatch = true;
             spectatorsCondRace.signal();
@@ -111,9 +124,8 @@ public class ControlCentreAndWatchingStand{
     /**
      * Last function of {@link Broker} lifecycle.
      */
-    static public void entertainTheGuests(){ 
-        ((Broker)Thread.currentThread()).setState("PLAYING_HOST_AT_THE_BAR");
-        GeneralRepositoryOfInformation.setBrokerState("PHAB");
+    public void entertainTheGuests(){ 
+        groi.setBrokerState("PHAB");
     }
 
     
@@ -121,18 +133,16 @@ public class ControlCentreAndWatchingStand{
      * {@link Spectator} waits for next race of the day, last {@link Spectator} waiting wakes the {@link Broker}
      * who's ready to start the race.
      */
-    static public void waitForNextRace(){
+    public void waitForNextRace(int spectatorID, double budget){
         r1.lock();
         try{
-            Spectator sInst = (Spectator)Thread.currentThread();
-            sInst.setState("WAITING_FOR_A_RACE_TO_START");
-            GeneralRepositoryOfInformation.setSpectatorsState("WRS",sInst.getID());
-            GeneralRepositoryOfInformation.setSpectatorsBudget(sInst.getBudget(),sInst.getID());
+            groi.setSpectatorsState("WRS", spectatorID);
+            groi.setSpectatorsBudget(budget, spectatorID);
 
             while(!allowSpectators){
                 spectatorsCond.await();
             }
-            if(++nSpectators == Parameters.getNumberOfSpectators()){
+            if(++nSpectators == numberOfSpectators){
                 allowSpectators = false;
                 brokerCond.signal();
             }
@@ -148,17 +158,15 @@ public class ControlCentreAndWatchingStand{
     /**
      * {@link Spectator} waits while watching the race.
      */
-    static public void goWatchTheRace(){
+    public void goWatchTheRace(int spectatorID){
         r1.lock();
         try {
-            Spectator sInst = (Spectator)Thread.currentThread();
-            sInst.setState("WATCHING_A_RACE");
-            GeneralRepositoryOfInformation.setSpectatorsState("WAR", sInst.getID());
+            groi.setSpectatorsState("WAR", spectatorID);
             while (!allowSpectatorsToWatch) {
                 spectatorsCondRace.await();
             }
 
-            if (++nSpectatorsRace == Parameters.getNumberOfSpectators()) {
+            if (++nSpectatorsRace == numberOfSpectators) {
                 allowSpectatorsToWatch = false;
                 nSpectatorsRace = 0;
             }
@@ -177,13 +185,11 @@ public class ControlCentreAndWatchingStand{
      * @param   horseID  ID of the {@link Horse} whom the {@link Spectator} bet on.
      * @return  True if the {@link Spectator} won.
      */
-    static public boolean haveIWon(int horseID){
+    public boolean haveIWon(int horseID, int spectatorID){
         boolean result = false;
         r1.lock();
         try{
-            Spectator sInst = (Spectator)Thread.currentThread();
-            sInst.setState("WATCHING_A_RACE");
-            GeneralRepositoryOfInformation.setSpectatorsState("WAR", sInst.getID());
+            groi.setSpectatorsState("WAR", spectatorID);
             for (int winnerHorse : winnerHorses) {
                 if (horseID == winnerHorse) {
                     result = true;
@@ -201,20 +207,18 @@ public class ControlCentreAndWatchingStand{
     /**
      * Last function of {@link Spectator} lifecycle.
      */
-    static public void relaxABit(){ 
-        Spectator sInst = (Spectator)Thread.currentThread();
-        sInst.setState("CELEBRATING");
-        GeneralRepositoryOfInformation.setSpectatorsState("CEL", sInst.getID());
+    public void relaxABit(int spectatorID){ 
+        groi.setSpectatorsState("CEL", spectatorID);
     }
 
     /**
      * {@link Horse} proceeds to paddock, last {@link Horse} awakes {@link Spectator}s
      * that are waiting for the {@link Horse}s to enter the {@link Paddock}.
      */
-    static public void proceedToPaddock(){
+    public void proceedToPaddock(){
         r1.lock();
         try {
-            if (++nHorsesInPaddock == Parameters.getNumberOfHorses()) {
+            if (++nHorsesInPaddock == numberOfHorses) {
                 allowSpectators = true;
                 nHorsesInPaddock = 0;
                 spectatorsCond.signal();
@@ -229,10 +233,10 @@ public class ControlCentreAndWatchingStand{
     /**
      * The last {@link Horse} announces in the {@link ControlCentreAndWatchingStand} that he finished the race waking up the {@link Broker}.
      */
-    static public void makeAMove(){
+    public void makeAMove(){
         r1.lock();
         try {
-            if(++nHorsesFinishedRace == Parameters.getNumberOfHorses()){
+            if(++nHorsesFinishedRace == numberOfHorses){
                 nHorsesFinishedRace = 0;
                 lastHorseFinished = true;
                 brokerCond.signal();

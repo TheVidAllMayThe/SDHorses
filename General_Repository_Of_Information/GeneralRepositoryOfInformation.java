@@ -12,33 +12,33 @@ import java.net.Inet4Address;
  */
 
 public class GeneralRepositoryOfInformation{
-    private static ReentrantLock r1 = new ReentrantLock(false);
-    private static Condition[] conditions = new Condition[5];
-    private static PrintWriter writer;
+    private ReentrantLock r1 = new ReentrantLock(false);
+    private Condition[] conditions = new Condition[5];
+    private PrintWriter writer;
 
-    private static Inet4Address[] monitorAddresses = new Inet4Address[5];
-    private static int[] monitorPorts = new int[5];
-    private static int numberOfRaces, numberOfHorses, numberOfSpectators, raceLength;
+    private Inet4Address[] monitorAddresses = new Inet4Address[5];
+    private int[] monitorPorts = new int[5];
+    private int numberOfRaces, numberOfHorses, numberOfSpectators, raceLength;
 
-    private static String brokerState;
-    private static String[] spectatorsState;
-    private static String[] horsesState;
-    private static String[] spectatorsBudget;
-    private static int raceNumber ;
-    private static String[] horsesPnk;
-    private static String raceDistance;
-    private static String[] spectatorsSelection;
-    private static String[] spectatorsBet;
-    private static String[] horseProbability; 
-    private static String[] horseIteration;
-    private static String[] horseTrackPosition;
-    private static String[] horsesStanding;
+    private String brokerState;
+    private String[] spectatorsState;
+    private String[] horsesState;
+    private String[] spectatorsBudget;
+    private int raceNumber ;
+    private String[] horsesPnk;
+    private String raceDistance;
+    private String[] spectatorsSelection;
+    private String[] spectatorsBet;
+    private String[] horseProbability; 
+    private String[] horseIteration;
+    private String[] horseTrackPosition;
+    private String[] horsesStanding;
 
-    public static void initialize(int numberOfRaces, int numberOfHorses, int numberOfSpectators, int raceLength){
-        numberOfRaces = numberOfRaces;
-        numberOfHorses = numberOfHorses;
-        numberOfSpectators = numberOfSpectators;
-        raceLength = raceLength;
+    public GeneralRepositoryOfInformation(int numberOfRaces, int numberOfHorses, int numberOfSpectators, int raceLength){
+        this.numberOfRaces = numberOfRaces;
+        this.numberOfHorses = numberOfHorses;
+        this.numberOfSpectators = numberOfSpectators;
+        this.raceLength = raceLength;
         for(int i=0; i < conditions.length; i++) conditions[i] = r1.newCondition();
 
         try{
@@ -82,11 +82,11 @@ public class GeneralRepositoryOfInformation{
 
     }
 
-    public static void close(){
+    public void close(){
         writer.close();
     }
  
-    private static void log(){
+    private void log(){
         try{
 
             StringBuilder line1 = new StringBuilder(String.format("  %4s ", brokerState));
@@ -113,7 +113,7 @@ public class GeneralRepositoryOfInformation{
         writer.flush();
     }    
     
-    public static void setMonitorAddress(Inet4Address address, Integer port, Integer monitor){
+    public void setMonitorAddress(Inet4Address address, Integer port, Integer monitor){
         try{
             r1.lock();
             monitorAddresses[monitor] = address;
@@ -126,7 +126,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static Inet4Address getMonitorAddress(int monitor){
+    public Inet4Address getMonitorAddress(int monitor){
         try{
             while(monitorAddresses[monitor] == null) conditions[monitor].await();
         } catch(InterruptedException ie){
@@ -135,7 +135,7 @@ public class GeneralRepositoryOfInformation{
         return monitorAddresses[monitor];
     }
 
-    public static int getMonitorPort(int monitor){
+    public int getMonitorPort(int monitor){
         try{
             while(monitorPorts[monitor] == 0) conditions[monitor].await();
         } catch(InterruptedException ie){
@@ -144,7 +144,7 @@ public class GeneralRepositoryOfInformation{
         return monitorPorts[monitor];
     }
 
-    public static void setBrokerState(String state){
+    public void setBrokerState(String state){
         r1.lock();
         try{
             brokerState = state;
@@ -156,7 +156,7 @@ public class GeneralRepositoryOfInformation{
         } 
     }
 
-    public static void setSpectatorsState(String state, int i){
+    public void setSpectatorsState(String state, int i){
         r1.lock();
         try{
             spectatorsState[i] = state;
@@ -168,7 +168,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
     
-    public static void setHorsesState(String state, int i){
+    public void setHorsesState(String state, int i){
         r1.lock();
         try{
             horsesState[i] = state;
@@ -180,7 +180,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setSpectatorsBudget(double budget, int i){
+    public void setSpectatorsBudget(double budget, int i){
         r1.lock();
         try{
             String temp = "" + ((int)budget);
@@ -194,7 +194,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setRaceNumber(int raceNu){
+    public void setRaceNumber(int raceNu){
         r1.lock();
         try{
             raceNumber = raceNu;
@@ -204,7 +204,7 @@ public class GeneralRepositoryOfInformation{
         }finally{
             r1.unlock();
         }
-    } public static void setHorsesPnk(int pnk, int i){
+    } public void setHorsesPnk(int pnk, int i){
         r1.lock();
         try{
             String temp = "" + pnk;
@@ -218,7 +218,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setRaceDistance(int distance){
+    public void setRaceDistance(int distance){
         r1.lock();
         try{
             if(distance < 10) raceDistance = "0"+distance;
@@ -231,7 +231,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setSpectatorsSelection(int horse, int i){
+    public void setSpectatorsSelection(int horse, int i){
         r1.lock();
         try{
             spectatorsSelection[i] = "" + horse;
@@ -243,7 +243,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setSpectatorsBet(double bet, int i){
+    public void setSpectatorsBet(double bet, int i){
         r1.lock();
         try{
             String temp = "" + ((int)bet);
@@ -257,7 +257,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setHorseProbability(double prob, int i){
+    public void setHorseProbability(double prob, int i){
         r1.lock();
         try{
 
@@ -276,7 +276,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setHorseIteration(int iteration, int i){
+    public void setHorseIteration(int iteration, int i){
         r1.lock();
         try{
             if(iteration < 0) horseIteration[i] = "--";
@@ -292,7 +292,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setHorseTrackPosition(int position, int i){
+    public void setHorseTrackPosition(int position, int i){
         r1.lock();
         try{
             if(position < 0) horseTrackPosition[i] = "--";
@@ -308,7 +308,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static void setHorsesStanding(char standing, int i){
+    public void setHorsesStanding(char standing, int i){
         r1.lock();
         try{
             horsesStanding[i] = "" + standing;
@@ -320,7 +320,15 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public static int getNumberOfSpectators(){
-        return numberOfSpectators;
+    public int getNumberOfSpectators(){
+        return this.numberOfSpectators;
+    }
+
+    public int getNumberOfHorses(){
+        return this.numberOfHorses;
+    }
+
+    public int getRaceLength(){
+        return this.raceLength;
     }
 }

@@ -35,21 +35,21 @@ public class Spectator extends Thread{
     @Override
     public void run(){
 
-        int pid = (int) Thread.currentThread().getId();
         double amountToBet;
         HorseInPaddock horse;
 
         for(int i = 0; i < Parameters.getNumberOfRaces(); i++){
-            ControlCentreAndWatchingStand.waitForNextRace();
-            horse = Paddock.goCheckHorses();
+            ControlCentreAndWatchingStand.waitForNextRace(this.id, this.budget);
+            horse = Paddock.goCheckHorses(this.id);
             amountToBet = ThreadLocalRandom.current().nextDouble(0, this.budget);
-            BettingCentre.placeABet(id, amountToBet, horse.getHorseID(), horse.getOdds());
-            ControlCentreAndWatchingStand.goWatchTheRace();
-            if(ControlCentreAndWatchingStand.haveIWon(horse.getHorseID())){
-                BettingCentre.goCollectTheGains(id);
+            BettingCentre.placeABet(id, amountToBet, horse.getHorseID(), horse.getOdds(), budget);
+            budget = budget - amountToBet;
+            ControlCentreAndWatchingStand.goWatchTheRace(this.id);
+            if(ControlCentreAndWatchingStand.haveIWon(horse.getHorseID(), this.id)){
+                budget += BettingCentre.goCollectTheGains(id, budget);
             }
         }
-        ControlCentreAndWatchingStand.relaxABit();
+        ControlCentreAndWatchingStand.relaxABit(this.id);
     }
 
     public int getID(){

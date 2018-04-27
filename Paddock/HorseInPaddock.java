@@ -1,9 +1,3 @@
-package Monitors.AuxiliaryClasses;
-
-
-import Monitors.Paddock;
-import Threads.Horse;
-
 /**
  * The {@link HorseInPaddock} class holds all the necessary about a {@link Horse} that is/has been in the {@link Paddock}.
  *

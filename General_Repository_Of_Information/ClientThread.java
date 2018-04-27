@@ -13,10 +13,12 @@ import java.io.ObjectOutputStream;
 public class ClientThread extends Thread{
     private Socket clientSocket;
     private Class monitorClass;
+    private Object obj;
     
-    public ClientThread(Socket clientSocket, Class monitorClass){
+    public ClientThread(Socket clientSocket, Class monitorClass, Object obj){
         this.clientSocket = clientSocket;
         this.monitorClass = monitorClass;
+        this.obj = obj;
     }
      
     public void run(){
@@ -32,8 +34,6 @@ public class ClientThread extends Thread{
                 out.writeObject(reflection(list));         
                 out.flush();
             }
-            out.writeObject("ok");
-            out.flush();
         
             out.close();
             in.close();
@@ -56,7 +56,7 @@ public class ClientThread extends Thread{
         Object result = null;
         try{
             method = monitorClass.getMethod((String) list.get(0), classArray);
-            result = method.invoke(null, args);
+            result = method.invoke(obj, args);
             if (result == null) result = (Object) "ok";
         } catch(NoSuchMethodException e){
             e.printStackTrace();
@@ -65,7 +65,6 @@ public class ClientThread extends Thread{
         } catch(InvocationTargetException e){ 
             e.printStackTrace();
         }
-        System.out.println(result);
         return result;
     }
 }

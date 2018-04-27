@@ -1,14 +1,4 @@
-package Monitors;
-
-
-import Monitors.AuxiliaryClasses.HorseInPaddock;
-import Monitors.AuxiliaryClasses.Parameters;
-import Threads.Broker;
-import Threads.Horse;
-import Threads.Spectator;
-
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -28,17 +18,33 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 
 public class Paddock{
-    private static final Lock r1 = new ReentrantLock(false);
+    private final ReentrantLock r1;
 
-    private static final Condition horsesCond = r1.newCondition();
-    private static Boolean allowHorses = false;
+    private final Condition horsesCond;
+    private Boolean allowHorses;
 
-    private static final Condition spectatorsCond = r1.newCondition();
-    private static Boolean allowSpectators = false;
-    private static final HorseInPaddock horses[] = new HorseInPaddock[Parameters.getNumberOfHorses()];
-    private static int horsesInPaddock = 0;
-    private static int spectatorsInPaddock = 0;
+    private final Condition spectatorsCond;
+    private Boolean allowSpectators;
+    private final HorseInPaddock horses[];
+    private int horsesInPaddock;
+    private int spectatorsInPaddock;
+    private int numberOfSpectators;
+    private int numberOfHorses;
+    private GeneralRepositoryOfInformation groi;
 
+    public Paddock(GeneralRepositoryOfInformation groi){
+        this.numberOfSpectators = groi.getNumberOfSpectators();
+        this.numberOfHorses = groi.getNumberOfHorses();
+        r1 = new ReentrantLock(false);
+        horsesCond = r1.newCondition();
+        allowHorses = false;
+        spectatorsCond = r1.newCondition();
+        allowSpectators = false;
+        horses = new HorseInPaddock[numberOfHorses];
+        horsesInPaddock = 0;
+        spectatorsInPaddock = 0;
+        this.groi = groi;
+    }
 
     //Horses methods
 
@@ -49,24 +55,22 @@ public class Paddock{
      * @param pnk Max step size.
      */
 
-    public static void proceedToPaddock(int horseID, int pnk){
+    public void proceedToPaddock(int horseID, int pnk){
         r1.lock();
         try {
-            Horse hInst = (Horse)Thread.currentThread();
-            hInst.setState("AT_THE_PADDOCK");
-            GeneralRepositoryOfInformation.setHorsesState("ATP", hInst.getID());
+            groi.setHorsesState("ATP", horseID);
 
             horses[horsesInPaddock++] = new HorseInPaddock(horseID, pnk);
-            if (horsesInPaddock == Parameters.getNumberOfHorses()) {
+            if (horsesInPaddock == numberOfHorses) {
                 int total_pnk = 0;
                 for (HorseInPaddock horse : horses) total_pnk += horse.getPnk();
 
                 for (HorseInPaddock horse : horses){
-                    if(Parameters.getNumberOfHorses() > 1){
+                    if(numberOfHorses > 1){
                         horse.setOdds((double) horse.getPnk() / total_pnk / (1 - (horse.getPnk() / total_pnk)));
                     }
                     else horse.setOdds(1.0);
-                    GeneralRepositoryOfInformation.setHorseProbability(horse.getOdds() * 100, horse.getHorseID());
+                    groi.setHorseProbability(horse.getOdds() * 100, horse.getHorseID());
                 }
                 allowSpectators = true;
                 spectatorsCond.signal();
@@ -82,7 +86,7 @@ public class Paddock{
      * Called by the {@link Horse} to exit the {@link Paddock}.
      */
 
-    public static void proceedToStartLine(){
+    public void proceedToStartLine(){
         r1.lock();
         try{
             
@@ -102,26 +106,25 @@ public class Paddock{
             r1.unlock();
         }
     }
+
     /**
      * Function in which the {@link Spectator} enters the {@link Paddock}. The last {@link Spectator} to enter wakes up the {@link Horse}s. In this function the {@link Spectator} determines in which {@link Horse} they will bet.
      * @return Returns the {@link Horse} in which the {@link Spectator} will bet.
      */
-    public static HorseInPaddock goCheckHorses(){
+    public HorseInPaddock goCheckHorses(int spectatorID){
         HorseInPaddock result = null;
         r1.lock();
 
         try{
-            Spectator sInst = (Spectator)Thread.currentThread();
-            sInst.setState("APPRAISING_THE_HORSES");
-            GeneralRepositoryOfInformation.setSpectatorsState("ATH", sInst.getID());
+            groi.setSpectatorsState("ATH", spectatorID);
             while(!allowSpectators){
                 spectatorsCond.await();
             }
 
             result = horses[ThreadLocalRandom.current().nextInt(horses.length)];
-            GeneralRepositoryOfInformation.setSpectatorsSelection(result.getHorseID(), sInst.getID());
+            groi.setSpectatorsSelection(result.getHorseID(), spectatorID);
 
-            if(++spectatorsInPaddock == Parameters.getNumberOfSpectators()){
+            if(++spectatorsInPaddock == numberOfSpectators){
                 allowHorses = true;
                 allowSpectators = false;
                 spectatorsInPaddock = 0;
