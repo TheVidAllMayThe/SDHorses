@@ -331,4 +331,8 @@ public class GeneralRepositoryOfInformation{
     public int getRaceLength(){
         return this.raceLength;
     }
+
+    public int getNumberOfRaces(){
+        return this.numberOfRaces;
+    }
 }
