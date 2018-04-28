@@ -41,6 +41,7 @@ public class BettingCentre{
         this.currentNumberOfSpectators = 0;
         this.numHorsesFirst = 0;
         this.groi = groi;
+        System.out.println("numberOfSpectators: " + numberOfSpectators);
     }
 
     /**
@@ -74,7 +75,7 @@ public class BettingCentre{
      * @return  boolean     Returns true if any {@link Spectator} won a {@link Bet}.
      */
 
-    public boolean areThereAnyWinners(int[] winnerList) {
+    public boolean areThereAnyWinners(Integer[] winnerList) {
         boolean returnValue = false;
 r1.lock();
         try {
@@ -131,7 +132,7 @@ r1.lock();
      * @param odds Odds of the {@link Horse} in which to bet.
      */
 
-    public void placeABet(int pid, double value, int horseID, double odds, double budget){
+    public void placeABet(Integer pid, Double value, Integer horseID, Double odds, Double budget){
         r1.lock();
         try{  
             groi.setSpectatorsState("PAB", pid);
@@ -158,7 +159,7 @@ r1.lock();
      *
      * @param spectatorID ID of the thread calling the method.
      */
-    public double goCollectTheGains(int spectatorID, double budget){
+    public double goCollectTheGains(Integer spectatorID, Double budget){
         double result = 0;
         r1.lock(); try{
             groi.setSpectatorsState("CTG", spectatorID);

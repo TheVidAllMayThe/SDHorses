@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.lang.ClassNotFoundException;
 import java.net.InetAddress;
+import java.net.Inet4Address;
 
 public class GeneralRepositoryOfInformation{
     private Socket clientSocket;
@@ -52,6 +53,44 @@ public class GeneralRepositoryOfInformation{
         } catch(ClassNotFoundException e){
             e.printStackTrace();    
         } 
+    }
+
+    public Inet4Address getMonitorAddress(int monitor){
+        LinkedList<Object> list = new LinkedList<>();
+        list.add("getMonitorAddress");
+        list.add(monitor);
+        
+        Inet4Address result = null;
+        try{
+            out.writeObject(list);
+            out.flush();
+            
+            result = (Inet4Address)in.readObject();
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();    
+        } 
+        return result;
+    }
+
+    public int getMonitorPort(int monitor){ 
+        LinkedList<Object> list = new LinkedList<>();
+        list.add("getMonitorPort");
+        list.add(monitor);
+        
+        int result = -1;
+        try{
+            out.writeObject(list);
+            out.flush();
+            
+            result = (int)in.readObject();
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();    
+        } 
+        return result;
     }
 
     public void setRaceNumber(int numRace){

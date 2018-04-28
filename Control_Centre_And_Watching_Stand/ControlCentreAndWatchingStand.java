@@ -51,6 +51,9 @@ public class ControlCentreAndWatchingStand{
         this.numberOfSpectators = groi.getNumberOfSpectators();
         this.numberOfHorses = groi.getNumberOfHorses();
         this.groi = groi;
+        System.out.println("raceLength: " + raceLength);
+        System.out.println("numberOfSpectators: " + numberOfSpectators);
+        System.out.println("numberOfHorses: " + numberOfHorses);
     }
 
     /**
@@ -63,7 +66,7 @@ public class ControlCentreAndWatchingStand{
     /**
      * The {@link Broker} waits for all the {@link Spectator} threads to have reached the {@link ControlCentreAndWatchingStand} before proceeding.
      */
-    public void summonHorsesToPaddock(int numRace){
+    public void summonHorsesToPaddock(Integer numRace){
 
         r1.lock();
         try{
@@ -106,7 +109,7 @@ public class ControlCentreAndWatchingStand{
      *
      * @param   list  An integer array containing the ID of the {@link Horse}s who won the race.
      */
-    public void reportResults(int[] list) {
+    public void reportResults(Integer[] list) {
         r1.lock();
         try { 
             groi.setBrokerState("STRA");
@@ -133,7 +136,7 @@ public class ControlCentreAndWatchingStand{
      * {@link Spectator} waits for next race of the day, last {@link Spectator} waiting wakes the {@link Broker}
      * who's ready to start the race.
      */
-    public void waitForNextRace(int spectatorID, double budget){
+    public void waitForNextRace(Integer spectatorID, Double budget){
         r1.lock();
         try{
             groi.setSpectatorsState("WRS", spectatorID);
@@ -158,7 +161,7 @@ public class ControlCentreAndWatchingStand{
     /**
      * {@link Spectator} waits while watching the race.
      */
-    public void goWatchTheRace(int spectatorID){
+    public void goWatchTheRace(Integer spectatorID){
         r1.lock();
         try {
             groi.setSpectatorsState("WAR", spectatorID);
@@ -185,7 +188,7 @@ public class ControlCentreAndWatchingStand{
      * @param   horseID  ID of the {@link Horse} whom the {@link Spectator} bet on.
      * @return  True if the {@link Spectator} won.
      */
-    public boolean haveIWon(int horseID, int spectatorID){
+    public boolean haveIWon(Integer horseID, Integer spectatorID){
         boolean result = false;
         r1.lock();
         try{
@@ -207,7 +210,7 @@ public class ControlCentreAndWatchingStand{
     /**
      * Last function of {@link Spectator} lifecycle.
      */
-    public void relaxABit(int spectatorID){ 
+    public void relaxABit(Integer spectatorID){ 
         groi.setSpectatorsState("CEL", spectatorID);
     }
 

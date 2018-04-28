@@ -13,8 +13,8 @@ public class Stump{
         try{
             //Creates input and output streams
             InetAddress sourceAddress = InetAddress.getByName("localhost");
-            int sourcePort = 23040;
-            Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]), sourceAddress, sourcePort + 1);
+            int sourcePort = Integer.valueOf(args[0]);
+            Socket echoSocket = new Socket(InetAddress.getByName(args[1]), Integer.valueOf(args[2]), sourceAddress, sourcePort + 1);
             groi = new GeneralRepositoryOfInformation(echoSocket);
             
             //Calls method setMonitorAddress for monitor #3 (Control Centre and Watching Stand)
@@ -31,7 +31,7 @@ public class Stump{
             //Monitor is now open to requests from clients
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             while(true){
-                new ClientThread(serverSocket.accept(), ControlCentreAndWatchingStand.class, ccws).run();
+                new ClientThread(serverSocket.accept(), ControlCentreAndWatchingStand.class, ccws).start();
             }
 
         } catch(IOException e){

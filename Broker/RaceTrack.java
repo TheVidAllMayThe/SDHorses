@@ -22,24 +22,15 @@ import java.util.LinkedList;
  */
 
 @SuppressWarnings("JavadocReference")
-public class RaceTrack {
-    private InetSocketAddress address;
-    private int port;
+public class RaceTrack extends Monitor{
 
     public RaceTrack(int port, InetSocketAddress address){
-        this.address = address;
-        this.port = port;
+        super(port, address);
     }
 
     public void startTheRace(){
         try {
-            Socket clientSocket = new Socket();
-            clientSocket.setReuseAddress(true);
-            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
-            clientSocket.connect(address);
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            openConnection();
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("startTheRace");
@@ -50,11 +41,7 @@ public class RaceTrack {
             if(!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong in openingTheEvents of Broker");
 
-            out.writeObject("close");
-            out.flush();
-            out.close();
-            in.close();
-            clientSocket.close();
+            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -66,13 +53,7 @@ public class RaceTrack {
     public int[] reportResults(){
         int[] result = null;
         try {
-            Socket clientSocket = new Socket();
-            clientSocket.setReuseAddress(true);
-            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
-            clientSocket.connect(address);
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            openConnection();
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("reportResults");
@@ -82,11 +63,7 @@ public class RaceTrack {
             
             result = (int[])in.readObject();
 
-            out.writeObject("close");
-            out.flush();
-            out.close();
-            in.close();
-            clientSocket.close();
+            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

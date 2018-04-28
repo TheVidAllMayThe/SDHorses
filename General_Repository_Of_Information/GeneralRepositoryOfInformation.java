@@ -127,7 +127,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public Inet4Address getMonitorAddress(int monitor){
+    public Inet4Address getMonitorAddress(Integer monitor){
         try{
             while(monitorAddresses[monitor] == null) conditions[monitor].await();
         } catch(InterruptedException ie){
@@ -136,7 +136,7 @@ public class GeneralRepositoryOfInformation{
         return monitorAddresses[monitor];
     }
 
-    public int getMonitorPort(int monitor){
+    public int getMonitorPort(Integer monitor){
         try{
             while(monitorPorts[monitor] == 0) conditions[monitor].await();
         } catch(InterruptedException ie){
@@ -157,7 +157,7 @@ public class GeneralRepositoryOfInformation{
         } 
     }
 
-    public void setSpectatorsState(String state, int i){
+    public void setSpectatorsState(String state, Integer i){
         r1.lock();
         try{
             spectatorsState[i] = state;
@@ -169,7 +169,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
     
-    public void setHorsesState(String state, int i){
+    public void setHorsesState(String state, Integer i){
         r1.lock();
         try{
             horsesState[i] = state;
@@ -181,10 +181,10 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setSpectatorsBudget(double budget, int i){
+    public void setSpectatorsBudget(Double budget, Integer i){
         r1.lock();
         try{
-            String temp = "" + ((int)budget);
+            String temp = "" + budget.intValue();
             for(int j=temp.length(); j<4; j++) temp = "0" + temp;
             spectatorsBudget[i] = temp;
             log();
@@ -195,7 +195,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setRaceNumber(int raceNu){
+    public void setRaceNumber(Integer raceNu){
         r1.lock();
         try{
             raceNumber = raceNu;
@@ -205,7 +205,9 @@ public class GeneralRepositoryOfInformation{
         }finally{
             r1.unlock();
         }
-    } public void setHorsesPnk(int pnk, int i){
+    }
+
+    public void setHorsesPnk(Integer pnk, Integer i){
         r1.lock();
         try{
             String temp = "" + pnk;
@@ -219,7 +221,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setRaceDistance(int distance){
+    public void setRaceDistance(Integer distance){
         r1.lock();
         try{
             if(distance < 10) raceDistance = "0"+distance;
@@ -232,7 +234,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setSpectatorsSelection(int horse, int i){
+    public void setSpectatorsSelection(Integer horse, Integer i){
         r1.lock();
         try{
             spectatorsSelection[i] = "" + horse;
@@ -244,10 +246,10 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setSpectatorsBet(double bet, int i){
+    public void setSpectatorsBet(Double bet, Integer i){
         r1.lock();
         try{
-            String temp = "" + ((int)bet);
+            String temp = "" + bet.intValue();
             for(int j=temp.length(); j<4; j++) temp = "0" + temp;
             spectatorsBet[i] = temp;
             log();
@@ -258,14 +260,14 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setHorseProbability(double prob, int i){
+    public void setHorseProbability(Double prob, Integer i){
         r1.lock();
         try{
 
             String temp;
             if(prob < 0) temp = "----";
             else{
-                temp = "" + ((int)prob);
+                temp = "" + prob.intValue();
                 for(int j=temp.length(); j<4; j++) temp = "0" + temp;
             }
             horseProbability[i] = temp;
@@ -277,7 +279,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setHorseIteration(int iteration, int i){
+    public void setHorseIteration(Integer iteration, Integer i){
         r1.lock();
         try{
             if(iteration < 0) horseIteration[i] = "--";
@@ -293,7 +295,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setHorseTrackPosition(int position, int i){
+    public void setHorseTrackPosition(Integer position, Integer i){
         r1.lock();
         try{
             if(position < 0) horseTrackPosition[i] = "--";
@@ -309,7 +311,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setHorsesStanding(char standing, int i){
+    public void setHorsesStanding(Character standing, Integer i){
         r1.lock();
         try{
             horsesStanding[i] = "" + standing;

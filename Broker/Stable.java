@@ -23,13 +23,9 @@ import java.util.LinkedList;
 */
 
 @SuppressWarnings("JavadocReference")
-public class Stable {
-    private InetSocketAddress address;
-    private int port;
-
+public class Stable extends Monitor{
     public Stable(int port, InetSocketAddress address){
-        this.address = address;
-        this.port = port;
+        super(port, address);
     }
 
     /**
@@ -37,13 +33,7 @@ public class Stable {
      */
     public void summonHorsesToPaddock(){
         try{
-            Socket clientSocket = new Socket();
-            clientSocket.setReuseAddress(true);
-            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
-            clientSocket.connect(address);
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            openConnection();
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("summonHorsesToPaddock");
@@ -54,11 +44,7 @@ public class Stable {
             if (!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong with summonHorsesToPaddock");
 
-            out.writeObject("close");
-            out.flush();
-            out.close();
-            in.close();
-            clientSocket.close();
+            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -71,14 +57,8 @@ public class Stable {
      */
     public void entertainTheGuests(){
         try{
-            Socket clientSocket = new Socket();
-            clientSocket.setReuseAddress(true);
-            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
-            clientSocket.connect(address);
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-
+            openConnection();
+            
             LinkedList<Object> list = new LinkedList<>();
             list.add("entertainTheGuests");
 
@@ -88,11 +68,7 @@ public class Stable {
             if (!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong with entertainTheGuests");
 
-            out.writeObject("close");
-            out.flush();
-            out.close();
-            in.close();
-            clientSocket.close();
+            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

@@ -44,6 +44,8 @@ public class Paddock{
         horsesInPaddock = 0;
         spectatorsInPaddock = 0;
         this.groi = groi;
+        System.out.println("numberOfHorses: " + numberOfHorses);
+        System.out.println("numberOfSpectators: " + numberOfSpectators);
     }
 
     //Horses methods
@@ -55,7 +57,7 @@ public class Paddock{
      * @param pnk Max step size.
      */
 
-    public void proceedToPaddock(int horseID, int pnk){
+    public void proceedToPaddock(Integer horseID, Integer pnk){
         r1.lock();
         try {
             groi.setHorsesState("ATP", horseID);
@@ -111,7 +113,7 @@ public class Paddock{
      * Function in which the {@link Spectator} enters the {@link Paddock}. The last {@link Spectator} to enter wakes up the {@link Horse}s. In this function the {@link Spectator} determines in which {@link Horse} they will bet.
      * @return Returns the {@link Horse} in which the {@link Spectator} will bet.
      */
-    public HorseInPaddock goCheckHorses(int spectatorID){
+    public HorseInPaddock goCheckHorses(Integer spectatorID){
         HorseInPaddock result = null;
         r1.lock();
 

@@ -142,6 +142,24 @@ public class GeneralRepositoryOfInformation{
         return result;
     }
 
+    public int getNumberOfRaces(){
+        LinkedList<Object> list = new LinkedList<>();
+        list.add("getNumberOfRaces");
+        
+        int result = -1;
+        try{
+            out.writeObject(list);
+            out.flush();
+            
+            result = (int)in.readObject();
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();    
+        } 
+        return result;
+    }
+
     public void setBrokerState(String state){
         LinkedList<Object> list = new LinkedList<>();
         list.add("setBrokerState");
@@ -170,6 +188,78 @@ public class GeneralRepositoryOfInformation{
             out.flush();
             if(!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setHorsesState of GRI");
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();    
+        }
+    }
+
+    public void setHorsesPnk(int pnk, int horseID){
+        LinkedList<Object> list = new LinkedList<>();
+        list.add("setHorsesPnk");
+        list.add(pnk);
+        list.add(horseID);
+
+        try{
+            out.writeObject(list);
+            out.flush();
+            if(!((String)in.readObject()).equals("ok"))
+                System.out.println("Something wrong in setHorsesPnk of GRI");
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();    
+        }
+    }
+
+    public void setHorseTrackPosition(int pos, int horseID){
+        LinkedList<Object> list = new LinkedList<>();
+        list.add("setHorseTrackPosition");
+        list.add(pos);
+        list.add(horseID);
+
+        try{
+            out.writeObject(list);
+            out.flush();
+            if(!((String)in.readObject()).equals("ok"))
+                System.out.println("Something wrong in setHorseTrackPosition of GRI");
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();    
+        }
+    }
+
+    public void setHorseIteration(int iteration, int horseID){
+        LinkedList<Object> list = new LinkedList<>();
+        list.add("setHorseIteration");
+        list.add(iteration);
+        list.add(horseID);
+
+        try{
+            out.writeObject(list);
+            out.flush();
+            if(!((String)in.readObject()).equals("ok"))
+                System.out.println("Something wrong in setHorseIteration of GRI");
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();    
+        }
+    }
+
+    public void setHorsesStanding(char standing, int horseID){
+        LinkedList<Object> list = new LinkedList<>();
+        list.add("setHorsesStanding");
+        list.add(standing);
+        list.add(horseID);
+
+        try{
+            out.writeObject(list);
+            out.flush();
+            if(!((String)in.readObject()).equals("ok"))
+                System.out.println("Something wrong in setHorsesStanding of GRI");
         } catch(IOException e){
             e.printStackTrace();
         } catch(ClassNotFoundException e){

@@ -24,24 +24,15 @@ import java.util.concurrent.locks.ReentrantLock;
 * @see Broker
 */
 
-public class BettingCentre{
-    private InetSocketAddress address;
-    private int port;
+public class BettingCentre extends Monitor{
 
     public BettingCentre(int port, InetSocketAddress address){
-        this.address = address;
-        this.port = port;
+        super(port,address);
     }
-
+ 
     public void acceptTheBets(){
         try{
-            Socket clientSocket = new Socket();
-            clientSocket.setReuseAddress(true);
-            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
-            clientSocket.connect(address);
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            openConnection();
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("acceptTheBets");
@@ -52,11 +43,7 @@ public class BettingCentre{
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with acceptTheBets of broker");
 
-            out.writeObject("close");
-            out.flush();
-            out.close();
-            in.close();
-            clientSocket.close();
+            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -67,45 +54,29 @@ public class BettingCentre{
     public boolean areThereAnyWinners(int[] winnerList) {
         boolean result = false;
         try {
-            Socket clientSocket = new Socket();
-            clientSocket.setReuseAddress(true);
-            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
-            clientSocket.connect(address);
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            openconnection();
 
-            LinkedList<Object> list = new LinkedList<>();
-            list.add("areThereAnyWinners");
-            list.add(winnerList);
+            linkedlist<object> list = new linkedlist<>();
+            list.add("arethereanywinners");
+            list.add(winnerlist);
 
-            out.writeObject(list);
+            out.writeobject(list);
             out.flush();
             
-            result = (boolean) in.readObject();
+            result = (boolean) in.readobject();
 
-            out.writeObject("close");
-            out.flush();
-            out.close();
-            in.close();
-            clientSocket.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
-            e.printStackTrace();
+            closeconnection();
+        }catch (ioexception e){
+            e.printstacktrace();
+        }catch (classnotfoundexception e){
+            e.printstacktrace();
         }
         return result;
     }
 
     public void honorBets() {
         try {
-            Socket clientSocket = new Socket();
-            clientSocket.setReuseAddress(true);
-            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
-            clientSocket.connect(address);
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush();
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            openConnection();
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("honorBets");
@@ -116,11 +87,7 @@ public class BettingCentre{
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with honorBets of broker");
 
-            out.writeObject("close");
-            out.flush();
-            out.close();
-            in.close();
-            clientSocket.close();
+            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
