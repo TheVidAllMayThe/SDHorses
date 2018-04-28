@@ -28,7 +28,6 @@ public class Broker extends Thread{
         ccws.openingTheEvents();
 
         for(int i = 0; i < numberOfRaces; i++){
-            bc.honorBets();
             st.summonHorsesToPaddock();
             ccws.summonHorsesToPaddock(i);
             bc.acceptTheBets();

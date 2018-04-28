@@ -2,22 +2,26 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class ControlCentreAndWatchingStand {
-    private Socket clientSocket;
+    private int port;
     private InetSocketAddress address;
 
-    public ControlCentreAndWatchingStand(Socket clientSocket, InetSocketAddress address){
-        this.clientSocket = clientSocket;
+    public ControlCentreAndWatchingStand(int port, InetSocketAddress address){
+        this.port = port;
         this.address = address;
     }
 
     public void openingTheEvents() {
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -36,6 +40,7 @@ public class ControlCentreAndWatchingStand {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -45,6 +50,9 @@ public class ControlCentreAndWatchingStand {
 
     public void summonHorsesToPaddock(int numRace) {
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -64,6 +72,7 @@ public class ControlCentreAndWatchingStand {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -73,6 +82,9 @@ public class ControlCentreAndWatchingStand {
 
     public void startTheRace() {
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -91,6 +103,7 @@ public class ControlCentreAndWatchingStand {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -100,6 +113,9 @@ public class ControlCentreAndWatchingStand {
 
     public void reportResults(int[] results) {
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -119,6 +135,7 @@ public class ControlCentreAndWatchingStand {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -128,6 +145,9 @@ public class ControlCentreAndWatchingStand {
 
     public void entertainTheGuests() {
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -146,6 +166,7 @@ public class ControlCentreAndWatchingStand {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

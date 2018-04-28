@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
@@ -22,18 +23,19 @@ import java.util.LinkedList;
 
 @SuppressWarnings("JavadocReference")
 public class RaceTrack {
-    private Socket clientSocket;
     private InetSocketAddress address;
     private int port;
 
-    public RaceTrack(Socket clientSocket, InetSocketAddress address){
-        this.clientSocket = clientSocket;
+    public RaceTrack(int port, InetSocketAddress address){
         this.address = address;
         this.port = port;
     }
 
     public void startTheRace(){
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -52,6 +54,7 @@ public class RaceTrack {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -63,6 +66,9 @@ public class RaceTrack {
     public int[] reportResults(){
         int[] result = null;
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -80,6 +86,7 @@ public class RaceTrack {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

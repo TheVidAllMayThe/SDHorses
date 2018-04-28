@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.SQLOutput;
@@ -24,18 +25,19 @@ import java.util.concurrent.locks.ReentrantLock;
 */
 
 public class BettingCentre{
-    private Socket clientSocket;
     private InetSocketAddress address;
     private int port;
 
-    public BettingCentre(Socket clientSocket, InetSocketAddress address){
-        this.clientSocket = clientSocket;
+    public BettingCentre(int port, InetSocketAddress address){
         this.address = address;
         this.port = port;
     }
 
     public void acceptTheBets(){
         try{
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -54,7 +56,7 @@ public class BettingCentre{
             out.flush();
             out.close();
             in.close();
-
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -65,6 +67,9 @@ public class BettingCentre{
     public boolean areThereAnyWinners(int[] winnerList) {
         boolean result = false;
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -83,7 +88,7 @@ public class BettingCentre{
             out.flush();
             out.close();
             in.close();
-            
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -94,6 +99,9 @@ public class BettingCentre{
 
     public void honorBets() {
         try {
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
@@ -112,6 +120,7 @@ public class BettingCentre{
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

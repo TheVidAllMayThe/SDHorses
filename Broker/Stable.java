@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
@@ -23,13 +24,12 @@ import java.util.LinkedList;
 
 @SuppressWarnings("JavadocReference")
 public class Stable {
-    private Socket clientSocket;
     private InetSocketAddress address;
     private int port;
 
-    public Stable(Socket clientSocket, InetSocketAddress address){
-        this.clientSocket = clientSocket;
+    public Stable(int port, InetSocketAddress address){
         this.address = address;
+        this.port = port;
     }
 
     /**
@@ -37,8 +37,10 @@ public class Stable {
      */
     public void summonHorsesToPaddock(){
         try{
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
-
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
@@ -56,6 +58,7 @@ public class Stable {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -68,8 +71,10 @@ public class Stable {
      */
     public void entertainTheGuests(){
         try{
+            Socket clientSocket = new Socket();
+            clientSocket.setReuseAddress(true);
+            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
-
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
@@ -87,6 +92,7 @@ public class Stable {
             out.flush();
             out.close();
             in.close();
+            clientSocket.close();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
