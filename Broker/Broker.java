@@ -25,21 +25,33 @@ public class Broker extends Thread{
     @Override
     public void run(){
 
+        System.out.println("OpeningTheEvents");
         ccws.openingTheEvents();
 
         for(int i = 0; i < numberOfRaces; i++){
+            System.out.println("summonHorsesToPaddock (st)");
             st.summonHorsesToPaddock();
+            System.out.println("summonHorsesToPaddock (ccws)");
             ccws.summonHorsesToPaddock(i);
+            System.out.println("acceptTheBets");
             bc.acceptTheBets();
+            System.out.println("startTheRace (rt)");
             rt.startTheRace();
+            System.out.println("startTheRace (ccws)");
             ccws.startTheRace();
-            int[] list = rt.reportResults();
+            System.out.println("reportResults (rt)");
+            Integer[] list = rt.reportResults();
+            System.out.println("reportResults (ccws)");
             ccws.reportResults(list);
+            System.out.println("areThereAnyWinners");
             if(bc.areThereAnyWinners(list))
+                System.out.println("honorTheBets");
                 bc.honorBets();
         }
         
+        System.out.println("entertainTheGuests (st)");
         st.entertainTheGuests();
+        System.out.println("entertainTheGuests (ccws)");
         ccws.entertainTheGuests();
     }
 }

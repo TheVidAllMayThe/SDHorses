@@ -37,6 +37,7 @@ public class BettingCentre extends Monitor{
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("placeABet");
+            list.add(pid);
             list.add(value);
             list.add(horseID);
             list.add(odds);

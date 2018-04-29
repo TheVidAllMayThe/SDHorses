@@ -78,7 +78,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
         }
     }
 
-    public void reportResults(int[] results) {
+    public void reportResults(Integer[] results) {
         try {
             openConnection();
 

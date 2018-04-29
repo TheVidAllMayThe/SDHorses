@@ -38,16 +38,23 @@ public class Spectator extends Thread{
         HorseInPaddock horse;
 
         for(int i = 0; i < numberOfRaces; i++){
+            System.out.println("waitForNextRace " + this.id);
             ccws.waitForNextRace(this.id, this.budget);
+            System.out.println("goCheckHorses " + this.id);
             horse = pd.goCheckHorses(this.id);
             amountToBet = ThreadLocalRandom.current().nextDouble(0, this.budget);
+            System.out.println("placeABet " + this.id);
             bc.placeABet(id, amountToBet, horse.getHorseID(), horse.getOdds(), budget);
             budget = budget - amountToBet;
+            System.out.println("goWatchTheRace " + this.id);
             ccws.goWatchTheRace(this.id);
+            System.out.println("haveIWon " + this.id);
             if(ccws.haveIWon(horse.getHorseID(), this.id)){
+                System.out.println("goCollectTheGains " + this.id);
                 budget += bc.goCollectTheGains(id, budget);
             }
-        }
+    }
+        System.out.println("relaxABit " + this.id);
         ccws.relaxABit(this.id);
     }
 }

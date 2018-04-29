@@ -50,8 +50,8 @@ public class RaceTrack extends Monitor{
     }
 
 
-    public int[] reportResults(){
-        int[] result = null;
+    public Integer[] reportResults(){
+        Integer[] result = null;
         try {
             openConnection();
 
@@ -61,7 +61,7 @@ public class RaceTrack extends Monitor{
             out.writeObject(list);
             out.flush();
             
-            result = (int[])in.readObject();
+            result = (Integer[])in.readObject();
 
             closeConnection();
         }catch (IOException e){

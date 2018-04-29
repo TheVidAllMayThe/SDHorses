@@ -51,25 +51,25 @@ public class BettingCentre extends Monitor{
         }
     }
     
-    public boolean areThereAnyWinners(int[] winnerList) {
+    public boolean areThereAnyWinners(Integer[] winnerList) {
         boolean result = false;
         try {
-            openconnection();
+            openConnection();
 
-            linkedlist<object> list = new linkedlist<>();
-            list.add("arethereanywinners");
-            list.add(winnerlist);
+            LinkedList<Object> list = new LinkedList<>();
+            list.add("areThereAnyWinners");
+            list.add(winnerList);
 
-            out.writeobject(list);
+            out.writeObject(list);
             out.flush();
             
-            result = (boolean) in.readobject();
+            result = (boolean) in.readObject();
 
-            closeconnection();
-        }catch (ioexception e){
-            e.printstacktrace();
-        }catch (classnotfoundexception e){
-            e.printstacktrace();
+            closeConnection();
+        }catch (IOException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
         }
         return result;
     }

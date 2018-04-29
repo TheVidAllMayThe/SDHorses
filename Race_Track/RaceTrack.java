@@ -67,9 +67,9 @@ public class RaceTrack {
      * @return Array containing the ID's of the winning {@link Horse}s.
      */
 
-    public int[] reportResults(){
+    public Integer[] reportResults(){
 
-        int[] result = null;
+        Integer[] result = null;
         r1.lock();
         try{
             ArrayList<HorsePos> winnerHorsesTmp = new ArrayList<>();
@@ -81,7 +81,7 @@ public class RaceTrack {
                     winnerHorsesTmp.add(horse);
             }
 
-            result = new int[winnerHorsesTmp.size()];
+            result = new Integer[winnerHorsesTmp.size()];
 
             for(int i = 0; i < result.length; i++)
                 result[i] = winnerHorsesTmp.get(i).getHorseID();
@@ -148,20 +148,9 @@ public class RaceTrack {
             groi.setHorseTrackPosition(horses[horsePos].getPos(), horseID);
             horses[horsePos].setMyTurn(false);
 
-            if(numHorsesFinished+1 != numberOfHorses) {
-                for (int i = horsePos + 1; i != horsePos; i++) {
-                    i = i % numberOfHorses;
-                    if (!horses[i].isFinished()) {
-                        horses[i].setMyTurn(true);
-                        break;
-                    }
-                }
-            }
-            else horses[horsePos].setMyTurn(true);
-
-
         } catch (IllegalMonitorStateException | InterruptedException e) {
             e.printStackTrace();
+        } finally{
             r1.unlock();
         }
     }
@@ -173,7 +162,19 @@ public class RaceTrack {
      */
     public boolean hasFinishLineBeenCrossed(Integer horsePos, Integer horseID){ 
         boolean returnVal = false;
+        r1.lock();
         try{
+            if(numHorsesFinished+1 != numberOfHorses) {
+                for (int i = horsePos + 1; i != horsePos; i++) {
+                    i = i % numberOfHorses;
+                    if (!horses[i].isFinished()) {
+                        horses[i].setMyTurn(true);
+                        break;
+                    }
+                }
+            }
+            else horses[horsePos].setMyTurn(true);
+
             if (horses[horsePos].getPos() >= raceLength) {
                 groi.setHorsesState("AFL", horseID);
                 returnVal = true;
@@ -189,11 +190,9 @@ public class RaceTrack {
 
         }catch (Exception e){
             e.printStackTrace();
-        }
-        finally {
+        }finally{
             r1.unlock();
         }
-
         return returnVal;
     }
 

@@ -24,18 +24,18 @@ public class Stump{
             //Gets address and port of all necessary monitors
             InetSocketAddress address0 = new InetSocketAddress(groi.getMonitorAddress(0), groi.getMonitorPort(0));
             InetSocketAddress address1 = new InetSocketAddress(groi.getMonitorAddress(1), groi.getMonitorPort(1));
-            InetSocketAddress address2 = new InetSocketAddress(groi.getMonitorAddress(3), groi.getMonitorPort(3));
+            InetSocketAddress address3 = new InetSocketAddress(groi.getMonitorAddress(3), groi.getMonitorPort(3));
             InetSocketAddress address4 = new InetSocketAddress(groi.getMonitorAddress(4), groi.getMonitorPort(4));
 
             int numberOfHorses = groi.getNumberOfHorses();
             int numberOfRaces = groi.getNumberOfRaces();
             groi.close();
 
-            Paddock[] pd = new Paddock[numberOfHorses];
-            Stable[] st = new Stable[numberOfHorses];
-            ControlCentreAndWatchingStand[] ccws = new ControlCentreAndWatchingStand[numberOfHorses];
-            RaceTrack[] rt = new RaceTrack[numberOfHorses];
-            for(int i=0; i<numberOfHorses; i++){
+            Paddock[] pd = new Paddock[numberOfHorses * numberOfRaces];
+            Stable[] st = new Stable[numberOfHorses * numberOfRaces];
+            ControlCentreAndWatchingStand[] ccws = new ControlCentreAndWatchingStand[numberOfHorses * numberOfRaces];
+            RaceTrack[] rt = new RaceTrack[numberOfHorses * numberOfRaces];
+            for(int i=0; i<numberOfHorses * numberOfRaces; i++){
                 pd[i] = new Paddock(sourcePort + i, address0);
                 st[i] = new Stable(sourcePort + i, address1);
                 ccws[i] = new ControlCentreAndWatchingStand(sourcePort + i, address3);
@@ -43,12 +43,10 @@ public class Stump{
             }
             
             //Run Horses
-            Horse[] horses = new Horse[numberOfHorses];
-            for(int j=0; j<numberOfRaces; j++){
-                for(int i=0; i<numberOfHorses; i++){
-                    horses[j*numberOfHorses + i] = new Horse(i,j, pd[i], st[i], ccws[i], rt[i]);
-                    horses[j*numberOfHorses + i].start();
-                }
+            Horse[] horses = new Horse[numberOfHorses*numberOfRaces];
+            for(int i=0; i<numberOfHorses * numberOfRaces; i++){
+                horses[i] = new Horse(i%numberOfHorses, i/numberOfHorses, pd[i], st[i], ccws[i], rt[i]);
+                horses[i].start();
             }
             for(int i=0; i<numberOfRaces*numberOfHorses; i++){
                 horses[i].join();

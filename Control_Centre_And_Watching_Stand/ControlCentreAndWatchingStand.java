@@ -22,7 +22,7 @@ public class ControlCentreAndWatchingStand{
     private boolean lastHorseFinished;
     private Condition spectatorsCond; 
     private boolean allowSpectators;
-    private int[] winnerHorses;
+    private Integer[] winnerHorses;
     private int nSpectators;
     private int nSpectatorsRace;
     private int nHorsesInPaddock;
