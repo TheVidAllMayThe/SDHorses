@@ -196,4 +196,7 @@ public class RaceTrack {
         return returnVal;
     }
 
+    public int getNumberOfHorses(){
+        return this.numberOfHorses;
+    }
 }

@@ -34,6 +34,7 @@ public class ClientThread extends Thread{
                 out.writeObject(reflection(list));         
                 out.flush();
             }
+            Stub.closed++; 
         
             out.close();
             in.close();

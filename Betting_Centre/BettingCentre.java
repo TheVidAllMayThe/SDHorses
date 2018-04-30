@@ -190,4 +190,8 @@ r1.lock();
         }
         return result;
     }
+
+    public int getNumberOfSpectators(){
+        return this.numberOfSpectators;
+    }
 }

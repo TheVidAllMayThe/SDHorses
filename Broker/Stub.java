@@ -13,7 +13,6 @@ public class Stub{
         Socket clientSocket = null;
         try{
             //Creates input and output streams
-            InetAddress sourceAddress = InetAddress.getByName("localhost");
             Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
             GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(echoSocket);
             

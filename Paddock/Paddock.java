@@ -141,4 +141,12 @@ public class Paddock{
         }
         return result;
     }
+
+    public int getNumberOfSpectators(){
+        return this.numberOfSpectators;
+    }
+
+    public int getNumberOfHorses(){
+        return this.numberOfHorses;
+    }
 }

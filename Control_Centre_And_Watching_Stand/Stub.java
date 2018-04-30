@@ -6,8 +6,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.lang.ClassNotFoundException;
+import java.net.SocketTimeoutException;
 
 public class Stub{
+    public static int closed = 0;
+
     public static void main(String[] args){
         GeneralRepositoryOfInformation groi = null;
         try{
@@ -20,17 +23,18 @@ public class Stub{
             groi.setMonitorAddress(InetAddress.getByName("localhost"), sourcePort, 3);
 
             //Gets variables necessary for ControlCentre
-            int raceLength = groi.getRaceLength();
-            int numSpectators = groi.getNumberOfSpectators();
-            int numHorses = groi.getNumberOfHorses();
-
+            int nRaces = groi.getNumberOfRaces();
             ControlCentreAndWatchingStand ccws = new ControlCentreAndWatchingStand(groi);
 
         
             //Monitor is now open to requests from clients
             ServerSocket serverSocket = new ServerSocket(sourcePort);
-            while(true){
-                new ClientThread(serverSocket.accept(), ccws).start();
+            serverSocket.setSoTimeout(1000);
+            while(closed < 1 + ccws.getNumberOfSpectators() + ccws.getNumberOfHorses() * nRaces){
+                try{
+                    new ClientThread(serverSocket.accept(), ccws).start();
+                } catch (SocketTimeoutException e){
+                }
             }
 
         } catch(IOException e){

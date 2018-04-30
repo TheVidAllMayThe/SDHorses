@@ -18,7 +18,6 @@ import java.util.concurrent.ThreadLocalRandom;
 */
 
 public class Stable {
-
     private ReentrantLock r1;
     private Condition horsesToPaddock;
     private boolean canHorsesMoveToPaddock;
@@ -115,5 +114,9 @@ public class Stable {
         } finally {
             r1.unlock();
         }
+    }
+
+    public int getNumberOfHorses(){
+        return this.numberOfHorses;
     }
 }

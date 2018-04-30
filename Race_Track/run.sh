@@ -1,3 +1,3 @@
 find . -type f -name "*.class" -delete
 javac Stub.java
-java Stub 23070 localhost 23040
+java Stub 22344 l040101-ws01.ua.pt 22340

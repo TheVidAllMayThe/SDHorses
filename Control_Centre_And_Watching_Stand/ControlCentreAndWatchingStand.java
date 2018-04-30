@@ -257,4 +257,12 @@ public class ControlCentreAndWatchingStand{
             r1.unlock();
         }
     }
+
+    public int getNumberOfSpectators(){
+        return this.numberOfSpectators;
+    }
+
+    public int getNumberOfHorses(){
+        return this.numberOfHorses;
+    }
 }
