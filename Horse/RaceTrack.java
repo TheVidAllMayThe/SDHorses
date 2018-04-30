@@ -18,8 +18,8 @@ import java.util.LinkedList;
  */
 
 public class RaceTrack extends Monitor{
-    public RaceTrack(int port, InetSocketAddress address){
-        super(port, address);
+    public RaceTrack(InetSocketAddress address){
+        super(address);
     }
 
     /**
@@ -30,7 +30,7 @@ public class RaceTrack extends Monitor{
     public int proceedToStartLine(int pID){   //Returns the pos in the array of Horses
         int result = -1;
         try{
-            openConnection();
+            
             
             LinkedList<Object> list = new LinkedList<>();
             list.add("proceedToStartLine");
@@ -41,7 +41,7 @@ public class RaceTrack extends Monitor{
 
             result = (int) in.readObject();
 
-            closeConnection();
+            
         } catch(IOException e){
             e.printStackTrace();
         } catch(ClassNotFoundException e){
@@ -58,7 +58,7 @@ public class RaceTrack extends Monitor{
      */
     public void makeAMove(int horsePos, int moveAmount, int horseID) {
         try{
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("makeAMove");
@@ -72,7 +72,7 @@ public class RaceTrack extends Monitor{
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with makeAMove of broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -88,7 +88,7 @@ public class RaceTrack extends Monitor{
     public boolean hasFinishLineBeenCrossed(int horsePos, int horseID){ 
         boolean result = false;
         try{
-            openConnection();
+            
             
             LinkedList<Object> list = new LinkedList<>();
             list.add("hasFinishLineBeenCrossed");
@@ -100,7 +100,7 @@ public class RaceTrack extends Monitor{
 
             result = (boolean) in.readObject();
 
-            closeConnection();
+            
         } catch(IOException e){
             e.printStackTrace();
         } catch(ClassNotFoundException e){

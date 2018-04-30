@@ -18,8 +18,8 @@ import java.util.LinkedList;
 
 public class BettingCentre extends Monitor{
     
-    public BettingCentre(int port, InetSocketAddress address){
-        super(port, address);
+    public BettingCentre(InetSocketAddress address){
+        super(address);
     }
 
     /**
@@ -33,8 +33,6 @@ public class BettingCentre extends Monitor{
 
     public void placeABet(int pid, double value, int horseID, double odds, double budget){
         try{
-            openConnection();
-
             LinkedList<Object> list = new LinkedList<>();
             list.add("placeABet");
             list.add(pid);
@@ -48,8 +46,6 @@ public class BettingCentre extends Monitor{
             
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with placeABet");
-
-            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -65,8 +61,6 @@ public class BettingCentre extends Monitor{
     public double goCollectTheGains(int spectatorID, double budget){
         double result = 0.0;
         try {
-            openConnection();
-
             LinkedList<Object> list = new LinkedList<>();
             list.add("goCollectTheGains");
             list.add(spectatorID);
@@ -76,8 +70,6 @@ public class BettingCentre extends Monitor{
             out.flush();
             
             result = (double) in.readObject();
-
-            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

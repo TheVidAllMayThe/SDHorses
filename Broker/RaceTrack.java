@@ -24,13 +24,13 @@ import java.util.LinkedList;
 @SuppressWarnings("JavadocReference")
 public class RaceTrack extends Monitor{
 
-    public RaceTrack(int port, InetSocketAddress address){
-        super(port, address);
+    public RaceTrack(InetSocketAddress address){
+        super(address);
     }
 
     public void startTheRace(){
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("startTheRace");
@@ -41,7 +41,7 @@ public class RaceTrack extends Monitor{
             if(!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong in openingTheEvents of Broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -53,7 +53,7 @@ public class RaceTrack extends Monitor{
     public Integer[] reportResults(){
         Integer[] result = null;
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("reportResults");
@@ -63,7 +63,7 @@ public class RaceTrack extends Monitor{
             
             result = (Integer[])in.readObject();
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

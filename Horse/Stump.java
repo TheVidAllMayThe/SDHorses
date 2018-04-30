@@ -14,11 +14,7 @@ public class Stump{
         try{
             //Creates input and output streams
             InetAddress sourceAddress = InetAddress.getByName("localhost");
-            int sourcePort = Integer.valueOf(args[0]);
-            Socket echoSocket = new Socket();
-            echoSocket.setReuseAddress(true);
-            echoSocket.bind(new InetSocketAddress(sourceAddress, sourcePort));
-            echoSocket.connect(new InetSocketAddress(InetAddress.getByName(args[1]), Integer.valueOf(args[2])));
+            Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
             GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(echoSocket);
             
             //Gets address and port of all necessary monitors
@@ -36,10 +32,10 @@ public class Stump{
             ControlCentreAndWatchingStand[] ccws = new ControlCentreAndWatchingStand[numberOfHorses * numberOfRaces];
             RaceTrack[] rt = new RaceTrack[numberOfHorses * numberOfRaces];
             for(int i=0; i<numberOfHorses * numberOfRaces; i++){
-                pd[i] = new Paddock(sourcePort + i, address0);
-                st[i] = new Stable(sourcePort + i, address1);
-                ccws[i] = new ControlCentreAndWatchingStand(sourcePort + i, address3);
-                rt[i] = new RaceTrack(sourcePort + i, address4);
+                pd[i] = new Paddock(address0);
+                st[i] = new Stable(address1);
+                ccws[i] = new ControlCentreAndWatchingStand(address3);
+                rt[i] = new RaceTrack(address4);
             }
             
             //Run Horses
@@ -50,6 +46,10 @@ public class Stump{
             }
             for(int i=0; i<numberOfRaces*numberOfHorses; i++){
                 horses[i].join();
+                pd[i].closeConnection();
+                st[i].closeConnection();
+                ccws[i].closeConnection();
+                rt[i].closeConnection();
             }
         } catch(IOException e){
             e.printStackTrace();

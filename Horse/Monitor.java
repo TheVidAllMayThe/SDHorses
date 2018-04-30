@@ -8,21 +8,14 @@ import java.net.SocketException;
 
 public class Monitor{
     protected InetSocketAddress address;
-    protected int port;
     protected Socket clientSocket;
     protected ObjectOutputStream out;
     protected ObjectInputStream in;
 
-    public Monitor(int port, InetSocketAddress address){
-        this.address = address;
-        this.port = port;
-    }
-
-    public void openConnection(){
+    public Monitor(InetSocketAddress address){
         try{
+            this.address = address;
             clientSocket = new Socket(); 
-            clientSocket.setReuseAddress(true);
-            clientSocket.bind(new InetSocketAddress(InetAddress.getByName("localHost"), port));
             clientSocket.connect(address);
             out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();

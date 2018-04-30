@@ -26,13 +26,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BettingCentre extends Monitor{
 
-    public BettingCentre(int port, InetSocketAddress address){
-        super(port,address);
+    public BettingCentre(InetSocketAddress address){
+        super(address);
     }
  
     public void acceptTheBets(){
         try{
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("acceptTheBets");
@@ -43,7 +43,7 @@ public class BettingCentre extends Monitor{
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with acceptTheBets of broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -54,7 +54,7 @@ public class BettingCentre extends Monitor{
     public boolean areThereAnyWinners(Integer[] winnerList) {
         boolean result = false;
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("areThereAnyWinners");
@@ -65,7 +65,7 @@ public class BettingCentre extends Monitor{
             
             result = (boolean) in.readObject();
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -76,7 +76,7 @@ public class BettingCentre extends Monitor{
 
     public void honorBets() {
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("honorBets");
@@ -87,7 +87,7 @@ public class BettingCentre extends Monitor{
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with honorBets of broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

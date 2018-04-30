@@ -18,8 +18,8 @@ import java.util.LinkedList;
 */
 
 public class Stable extends Monitor{
-    public Stable(int port, InetSocketAddress address){
-        super(port, address);
+    public Stable(InetSocketAddress address){
+        super(address);
     }
 
     /**
@@ -29,7 +29,7 @@ public class Stable extends Monitor{
      */
     public void proceedToStable(int raceNum, int horseID, int pnk){
         try{ 
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("proceedToStable");
@@ -43,7 +43,7 @@ public class Stable extends Monitor{
             if (!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong with proceedToStable");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

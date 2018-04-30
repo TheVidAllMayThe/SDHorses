@@ -24,8 +24,8 @@ import java.util.LinkedList;
 
 @SuppressWarnings("JavadocReference")
 public class Stable extends Monitor{
-    public Stable(int port, InetSocketAddress address){
-        super(port, address);
+    public Stable(InetSocketAddress address){
+        super(address);
     }
 
     /**
@@ -33,7 +33,7 @@ public class Stable extends Monitor{
      */
     public void summonHorsesToPaddock(){
         try{
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("summonHorsesToPaddock");
@@ -44,7 +44,7 @@ public class Stable extends Monitor{
             if (!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong with summonHorsesToPaddock");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -57,7 +57,7 @@ public class Stable extends Monitor{
      */
     public void entertainTheGuests(){
         try{
-            openConnection();
+            
             
             LinkedList<Object> list = new LinkedList<>();
             list.add("entertainTheGuests");
@@ -68,7 +68,7 @@ public class Stable extends Monitor{
             if (!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong with entertainTheGuests");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

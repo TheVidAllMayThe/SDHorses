@@ -20,8 +20,8 @@ import java.util.LinkedList;
 
 public class ControlCentreAndWatchingStand extends Monitor{
 
-    public ControlCentreAndWatchingStand(int port, InetSocketAddress address){
-        super(port, address);
+    public ControlCentreAndWatchingStand(InetSocketAddress address){
+        super(address);
     }
 
     /**
@@ -30,7 +30,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
      */
     public void waitForNextRace(int spectatorID, double budget){
         try{
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("waitForNextRace");
@@ -43,7 +43,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with waitForNextRace");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -56,7 +56,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
      */
     public void goWatchTheRace(int spectatorID){
         try{
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("goWatchTheRace");
@@ -68,7 +68,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with goWatchTheRace");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -85,7 +85,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
     public boolean haveIWon(int horseID, int spectatorID){
         boolean result = false;
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("haveIWon");
@@ -97,7 +97,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             
             result = (boolean) in.readObject();
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -111,7 +111,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
      */
     public void relaxABit(int spectatorID){ 
         try{
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("relaxABit");
@@ -122,8 +122,6 @@ public class ControlCentreAndWatchingStand extends Monitor{
             
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with relaxABit");
-
-            closeConnection();
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

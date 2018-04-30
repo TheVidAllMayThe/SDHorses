@@ -20,8 +20,8 @@ import java.net.InetSocketAddress;
 
 public class Paddock extends Monitor{
     
-    public Paddock(int port, InetSocketAddress address){
-        super(port, address);
+    public Paddock(InetSocketAddress address){
+        super(address);
     }
 
     /**
@@ -31,7 +31,7 @@ public class Paddock extends Monitor{
     public HorseInPaddock goCheckHorses(int spectatorID){
         HorseInPaddock result = null;
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("goCheckHorses");
@@ -42,7 +42,7 @@ public class Paddock extends Monitor{
             
             result = (HorseInPaddock) in.readObject();
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

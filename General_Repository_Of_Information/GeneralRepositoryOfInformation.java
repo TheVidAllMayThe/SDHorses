@@ -114,8 +114,8 @@ public class GeneralRepositoryOfInformation{
     }    
     
     public void setMonitorAddress(Inet4Address address, Integer port, Integer monitor){
+        r1.lock();
         try{
-            r1.lock();
             monitorAddresses[monitor] = address;
             monitorPorts[monitor] = port;
             System.out.println("Monitor " + monitor + ": " + address + "/" + port);
@@ -128,19 +128,25 @@ public class GeneralRepositoryOfInformation{
     }
 
     public Inet4Address getMonitorAddress(Integer monitor){
+        r1.lock();
         try{
             while(monitorAddresses[monitor] == null) conditions[monitor].await();
         } catch(InterruptedException ie){
             ie.printStackTrace();
+        } finally{
+            r1.unlock();
         }
         return monitorAddresses[monitor];
     }
 
     public int getMonitorPort(Integer monitor){
+        r1.lock();
         try{
             while(monitorPorts[monitor] == 0) conditions[monitor].await();
         } catch(InterruptedException ie){
             ie.printStackTrace();
+        } finally{
+            r1.unlock();
         }
         return monitorPorts[monitor];
     }

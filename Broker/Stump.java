@@ -14,11 +14,7 @@ public class Stump{
         try{
             //Creates input and output streams
             InetAddress sourceAddress = InetAddress.getByName("localhost");
-            int sourcePort = Integer.valueOf(args[0]);
-            Socket echoSocket = new Socket();
-            echoSocket.setReuseAddress(true);
-            echoSocket.bind(new InetSocketAddress(sourceAddress, sourcePort));
-            echoSocket.connect(new InetSocketAddress(InetAddress.getByName(args[1]), Integer.valueOf(args[2])));
+            Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
             GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(echoSocket);
             
             //Gets address and port of all necessary monitors
@@ -31,15 +27,19 @@ public class Stump{
 
             groi.close();
 
-            Stable st = new Stable(sourcePort, address1);
-            BettingCentre bc = new BettingCentre(sourcePort, address2);
-            ControlCentreAndWatchingStand ccws = new ControlCentreAndWatchingStand(sourcePort, address3);
-            RaceTrack rt = new RaceTrack(sourcePort, address4);
+            Stable st = new Stable(address1);
+            BettingCentre bc = new BettingCentre(address2);
+            ControlCentreAndWatchingStand ccws = new ControlCentreAndWatchingStand(address3);
+            RaceTrack rt = new RaceTrack(address4);
             
             //Run Broker
             Broker b = new Broker(numberOfRaces, st, bc, ccws, rt);
             b.start();
             b.join(); 
+            st.closeConnection();
+            bc.closeConnection();
+            ccws.closeConnection();
+            rt.closeConnection();
         } catch(IOException e){
             e.printStackTrace();
         } catch(InterruptedException e){

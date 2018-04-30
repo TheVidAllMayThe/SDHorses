@@ -19,8 +19,8 @@ import java.util.LinkedList;
 */
 
 public class ControlCentreAndWatchingStand extends Monitor{
-    public ControlCentreAndWatchingStand(int port, InetSocketAddress address){
-        super(port, address);
+    public ControlCentreAndWatchingStand(InetSocketAddress address){
+        super(address);
     }
 
     /**
@@ -29,7 +29,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
      */
     public void proceedToPaddock(){
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("proceedToPaddock");
@@ -40,7 +40,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if(!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong in proceedToPaddock");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -53,7 +53,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
      */
     public void makeAMove(){
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("makeAMove");
@@ -64,7 +64,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if(!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong in makeAMove");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

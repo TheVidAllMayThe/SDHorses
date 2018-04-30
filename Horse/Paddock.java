@@ -19,8 +19,8 @@ import java.util.LinkedList;
  */
 
 public class Paddock extends Monitor{
-    public Paddock(int port, InetSocketAddress address){
-        super(port, address);
+    public Paddock(InetSocketAddress address){
+        super(address);
     }
 
     /**
@@ -32,7 +32,7 @@ public class Paddock extends Monitor{
 
     public void proceedToPaddock(int horseID, int pnk){
         try{
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("proceedToPaddock");
@@ -45,7 +45,7 @@ public class Paddock extends Monitor{
             if (!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong with proceedToPaddock");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -59,7 +59,7 @@ public class Paddock extends Monitor{
 
     public void proceedToStartLine(){
         try{
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("proceedToStartLine");
@@ -70,7 +70,7 @@ public class Paddock extends Monitor{
             if (!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong with proceedToStartLine");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -84,7 +84,7 @@ public class Paddock extends Monitor{
     public HorseInPaddock goCheckHorses(){
         HorseInPaddock result = null;
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("goCheckHorses");
@@ -94,7 +94,7 @@ public class Paddock extends Monitor{
             
             result = (HorseInPaddock)in.readObject();
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){

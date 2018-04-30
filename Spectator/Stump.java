@@ -14,11 +14,10 @@ public class Stump{
         try{
             //Creates input and output streams
             InetAddress sourceAddress = InetAddress.getByName("localhost");
-            int sourcePort = Integer.valueOf(args[0]);
-            Socket echoSocket = new Socket();
-            echoSocket.setReuseAddress(true);
-            echoSocket.bind(new InetSocketAddress(sourceAddress, sourcePort));
-            echoSocket.connect(new InetSocketAddress(InetAddress.getByName(args[1]), Integer.valueOf(args[2])));
+            Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
+            //echoSocket.setReuseAddress(true);
+            //echoSocket.bind(new InetSocketAddress(sourceAddress, sourcePort));
+            //echoSocket.connect(new InetSocketAddress(InetAddress.getByName(args[1]), Integer.valueOf(args[2])));
             GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(echoSocket);
             
             //Gets address and port of all necessary monitors
@@ -34,9 +33,9 @@ public class Stump{
             BettingCentre[] bc = new BettingCentre[numberOfSpectators];
             ControlCentreAndWatchingStand[] ccws = new ControlCentreAndWatchingStand[numberOfSpectators];
             for(int i=0; i<numberOfSpectators; i++){
-                pd[i] = new Paddock(sourcePort + i, address0);
-                bc[i] = new BettingCentre(sourcePort + i, address2);
-                ccws[i] = new ControlCentreAndWatchingStand(sourcePort + i, address3);
+                pd[i] = new Paddock(address0);
+                bc[i] = new BettingCentre(address2);
+                ccws[i] = new ControlCentreAndWatchingStand(address3);
             }
             
             //Run Horses
@@ -47,6 +46,9 @@ public class Stump{
             }
             for(int i=0; i<numberOfSpectators; i++){
                 spectators[i].join();
+                pd[i].closeConnection();
+                bc[i].closeConnection();
+                ccws[i].closeConnection();
             }
         } catch(IOException e){
             e.printStackTrace();

@@ -10,13 +10,13 @@ import java.util.LinkedList;
 
 public class ControlCentreAndWatchingStand extends Monitor{
 
-    public ControlCentreAndWatchingStand(int port, InetSocketAddress address){
-        super(port, address);
+    public ControlCentreAndWatchingStand(InetSocketAddress address){
+        super(address);
     }
 
     public void openingTheEvents() {
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("openingTheEvents");
@@ -27,7 +27,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in openingTheEvents of Broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -37,7 +37,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
 
     public void summonHorsesToPaddock(int numRace) {
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("summonHorsesToPaddock");
@@ -49,7 +49,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in openingTheEvents of Broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -59,7 +59,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
 
     public void startTheRace() {
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("startTheRace");
@@ -70,7 +70,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in startTheRace of Broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -80,7 +80,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
 
     public void reportResults(Integer[] results) {
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("reportResults");
@@ -92,7 +92,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in reportResults of Broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -102,7 +102,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
 
     public void entertainTheGuests() {
         try {
-            openConnection();
+            
 
             LinkedList<Object> list = new LinkedList<>();
             list.add("entertainTheGuests");
@@ -113,7 +113,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
             if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in entertainTheGuests of Broker");
 
-            closeConnection();
+            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
