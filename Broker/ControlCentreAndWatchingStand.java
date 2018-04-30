@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class ControlCentreAndWatchingStand extends Monitor{
+public class ControlCentreAndWatchingStand extends MonitorProxy{
 
     public ControlCentreAndWatchingStand(InetSocketAddress address){
         super(address);

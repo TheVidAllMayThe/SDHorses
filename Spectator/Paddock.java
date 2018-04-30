@@ -18,7 +18,7 @@ import java.net.InetSocketAddress;
  * @see Spectator
  */
 
-public class Paddock extends Monitor{
+public class Paddock extends MonitorProxy{
     
     public Paddock(InetSocketAddress address){
         super(address);

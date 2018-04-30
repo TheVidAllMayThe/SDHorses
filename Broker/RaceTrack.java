@@ -22,7 +22,7 @@ import java.util.LinkedList;
  */
 
 @SuppressWarnings("JavadocReference")
-public class RaceTrack extends Monitor{
+public class RaceTrack extends MonitorProxy{
 
     public RaceTrack(InetSocketAddress address){
         super(address);

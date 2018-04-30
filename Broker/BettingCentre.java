@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 * @see Broker
 */
 
-public class BettingCentre extends Monitor{
+public class BettingCentre extends MonitorProxy{
 
     public BettingCentre(InetSocketAddress address){
         super(address);

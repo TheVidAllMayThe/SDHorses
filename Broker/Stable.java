@@ -23,7 +23,7 @@ import java.util.LinkedList;
 */
 
 @SuppressWarnings("JavadocReference")
-public class Stable extends Monitor{
+public class Stable extends MonitorProxy{
     public Stable(InetSocketAddress address){
         super(address);
     }

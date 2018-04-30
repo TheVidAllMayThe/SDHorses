@@ -15,9 +15,9 @@ public class ClientThread extends Thread{
     private Class monitorClass;
     private Object obj;
     
-    public ClientThread(Socket clientSocket, Class monitorClass, Object obj){
+    public ClientThread(Socket clientSocket, Object obj){
         this.clientSocket = clientSocket;
-        this.monitorClass = monitorClass;
+        this.monitorClass = obj.getClass();
         this.obj = obj;
     }
      

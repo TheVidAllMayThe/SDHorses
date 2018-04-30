@@ -6,13 +6,13 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.net.SocketException;
 
-public class Monitor{
+public class MonitorProxy{
     protected InetSocketAddress address;
     protected Socket clientSocket;
     protected ObjectOutputStream out;
     protected ObjectInputStream in;
 
-    public Monitor(InetSocketAddress address){
+    public MonitorProxy(InetSocketAddress address){
         try{
             this.address = address;
             clientSocket = new Socket(); 

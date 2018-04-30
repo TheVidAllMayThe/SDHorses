@@ -324,7 +324,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setSpectatorsState(String state, int spectatorID){
+    public void setSpectatorsState(String state, Integer spectatorID){
         LinkedList<Object> list = new LinkedList<>();
         list.add("setSpectatorsState");
         list.add(state);

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 * @see Spectator
 */
 
-public class ControlCentreAndWatchingStand extends Monitor{
+public class ControlCentreAndWatchingStand extends MonitorProxy{
 
     public ControlCentreAndWatchingStand(InetSocketAddress address){
         super(address);
@@ -85,8 +85,6 @@ public class ControlCentreAndWatchingStand extends Monitor{
     public boolean haveIWon(int horseID, int spectatorID){
         boolean result = false;
         try {
-            
-
             LinkedList<Object> list = new LinkedList<>();
             list.add("haveIWon");
             list.add(horseID);
@@ -96,8 +94,6 @@ public class ControlCentreAndWatchingStand extends Monitor{
             out.flush();
             
             result = (boolean) in.readObject();
-
-            
         }catch (IOException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
@@ -109,7 +105,7 @@ public class ControlCentreAndWatchingStand extends Monitor{
     /**
      * Last function of {@link Spectator} lifecycle.
      */
-    public void relaxABit(int spectatorID){ 
+    public void relaxABit(Integer spectatorID){ 
         try{
             
 

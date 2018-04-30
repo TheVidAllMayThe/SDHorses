@@ -211,7 +211,14 @@ public class ControlCentreAndWatchingStand{
      * Last function of {@link Spectator} lifecycle.
      */
     public void relaxABit(Integer spectatorID){ 
-        groi.setSpectatorsState("CEL", spectatorID);
+        r1.lock();
+        try{
+            groi.setSpectatorsState("CEL", spectatorID);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            r1.unlock();
+        }
     }
 
     /**

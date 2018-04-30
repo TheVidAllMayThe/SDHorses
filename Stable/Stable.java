@@ -101,15 +101,12 @@ public class Stable {
             while(!canHorsesMoveToPaddock)
                 horsesToPaddock.await();
 
-            if(raceNumber == numberOfRaces){
-                if(++numHorses == numberOfHorses*raceNumber){
-                    numHorses = 0;
-                    canHorsesMoveToPaddock = false;
-                }
-            }
-            else if(++numHorses == numberOfHorses){
+            if(++numHorses == numberOfHorses){
                 numHorses = 0;
                 canHorsesMoveToPaddock = false;
+                if(raceNumber == numberOfRaces){
+                    raceNumber = 0;
+                }
             }
             horsesToPaddock.signal();
 

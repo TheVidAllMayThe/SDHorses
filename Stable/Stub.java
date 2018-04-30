@@ -7,26 +7,24 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.lang.ClassNotFoundException;
 
-public class Stump{
+public class Stub{
     public static void main(String[] args){
         GeneralRepositoryOfInformation groi = null;
         try{
             //Creates input and output streams
-            InetAddress sourceAddress = InetAddress.getByName("localhost");
             int sourcePort = Integer.valueOf(args[0]);
-            Socket echoSocket = new Socket(InetAddress.getByName(args[1]), Integer.valueOf(args[2]), sourceAddress, sourcePort + 1);
+            Socket echoSocket = new Socket(InetAddress.getByName(args[1]), Integer.valueOf(args[2]));
             groi = new GeneralRepositoryOfInformation(echoSocket);
             
-            //Calls method setMonitorAddress for monitor #2 (Betting_centre)
-            groi.setMonitorAddress(sourceAddress, sourcePort, 2);
+            //Calls method setMonitorAddress for monitor #1 (Stable)
+            groi.setMonitorAddress(InetAddress.getByName("localhost"), sourcePort, 1);
 
-            BettingCentre bc = new BettingCentre(groi);
+            Stable sb = new Stable(groi);
 
-        
             //Monitor is now open to requests from clients
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             while(true){
-                new ClientThread(serverSocket.accept(), BettingCentre.class, bc).start();
+                new ClientThread(serverSocket.accept(), sb).start();
             }
 
         } catch(IOException e){

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 * @see Spectator
 */
 
-public class ControlCentreAndWatchingStand extends Monitor{
+public class ControlCentreAndWatchingStand extends MonitorProxy{
     public ControlCentreAndWatchingStand(InetSocketAddress address){
         super(address);
     }

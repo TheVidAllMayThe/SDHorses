@@ -17,7 +17,7 @@ import java.util.LinkedList;
  *@see Horse
 */
 
-public class Stable extends Monitor{
+public class Stable extends MonitorProxy{
     public Stable(InetSocketAddress address){
         super(address);
     }

@@ -16,7 +16,7 @@ import java.util.LinkedList;
 * @see Spectator
 */
 
-public class BettingCentre extends Monitor{
+public class BettingCentre extends MonitorProxy{
     
     public BettingCentre(InetSocketAddress address){
         super(address);

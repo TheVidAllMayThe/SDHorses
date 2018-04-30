@@ -17,7 +17,7 @@ import java.util.LinkedList;
  * @see HorsePos
  */
 
-public class RaceTrack extends Monitor{
+public class RaceTrack extends MonitorProxy{
     public RaceTrack(InetSocketAddress address){
         super(address);
     }
