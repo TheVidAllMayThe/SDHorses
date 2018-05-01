@@ -1,9 +1,11 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Stub{
    public static int closed = 0;
+   public static ReentrantLock r1 = new ReentrantLock(false);
 
    public static void main(String[] args){
         GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(5,4,4, 10);
@@ -23,4 +25,16 @@ public class Stub{
             groi.close();
         }
     }
+
+    public static void closed(){
+        r1.lock();
+        try{
+            closed++;
+        } catch(Exception e){
+            e.printStackTrace();
+        } finally{
+            r1.unlock();
+        }
+    }
+
 }

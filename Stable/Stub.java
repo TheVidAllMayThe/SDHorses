@@ -7,9 +7,11 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.lang.ClassNotFoundException;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Stub{
     public static int closed = 0;
+    public static ReentrantLock r1 = new ReentrantLock(false);
 
     public static void main(String[] args){
         GeneralRepositoryOfInformation groi = null;
@@ -20,7 +22,7 @@ public class Stub{
             groi = new GeneralRepositoryOfInformation(echoSocket);
             
             //Calls method setMonitorAddress for monitor #1 (Stable)
-            groi.setMonitorAddress(InetAddress.getByName("localhost"), sourcePort, 1);
+            groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 1);
             int numRaces = groi.getNumberOfRaces();
 
             Stable sb = new Stable(groi);
@@ -29,6 +31,7 @@ public class Stub{
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             serverSocket.setSoTimeout(1000);
             while(closed < 1 + sb.getNumberOfHorses() * numRaces){
+                System.out.println(closed);
                 try{
                     new ClientThread(serverSocket.accept(), sb).start();
                 } catch(SocketTimeoutException e){
@@ -41,4 +44,16 @@ public class Stub{
             groi.close();
         }
     }
+
+    public static void closed(){
+        r1.lock();
+        try{
+            closed++;
+        } catch(Exception e){
+            e.printStackTrace();
+        } finally{
+            r1.unlock();
+        }
+    }
+
 }

@@ -128,7 +128,14 @@ public class ControlCentreAndWatchingStand{
      * Last function of {@link Broker} lifecycle.
      */
     public void entertainTheGuests(){ 
-        groi.setBrokerState("PHAB");
+        r1.lock();
+        try { 
+            groi.setBrokerState("PHAB");
+        } catch (IllegalMonitorStateException e) {
+            e.printStackTrace();
+        } finally {
+            r1.unlock();
+        }
     }
 
     
