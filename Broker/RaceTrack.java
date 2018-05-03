@@ -24,7 +24,7 @@ import java.util.LinkedList;
 @SuppressWarnings("JavadocReference")
 public class RaceTrack extends MonitorProxy{
 
-    public RaceTrack(InetSocketAddress address){
+    RaceTrack(InetSocketAddress address){
         super(address);
     }
 
@@ -38,13 +38,11 @@ public class RaceTrack extends MonitorProxy{
             out.writeObject(list);
             out.flush();
 
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in openingTheEvents of Broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -64,9 +62,7 @@ public class RaceTrack extends MonitorProxy{
             result = (Integer[])in.readObject();
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return result;

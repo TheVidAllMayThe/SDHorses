@@ -29,7 +29,7 @@ public class BettingCentre{
     private int numHorsesFirst;
     private GeneralRepositoryOfInformation groi;
 
-    public BettingCentre(GeneralRepositoryOfInformation groi){
+    BettingCentre(GeneralRepositoryOfInformation groi){
         this.numberOfSpectators = groi.getNumberOfSpectators();
         this.bets = new Bet[numberOfSpectators];
         this.r1 = new ReentrantLock();
@@ -77,7 +77,7 @@ public class BettingCentre{
 
     public boolean areThereAnyWinners(Integer[] winnerList) {
         boolean returnValue = false;
-r1.lock();
+        r1.lock();
         try {
             numHorsesFirst = winnerList.length; 
             for (Bet bet: bets){

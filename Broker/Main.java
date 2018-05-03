@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.lang.ClassNotFoundException;
 
-public class Stub{
+public class Main {
     public static void main(String[] args){
         Socket clientSocket = null;
         try{

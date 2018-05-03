@@ -30,7 +30,7 @@ public class RaceTrack {
     private int numberOfHorses;
     private int raceLength;
 
-    public RaceTrack(GeneralRepositoryOfInformation groi){
+    RaceTrack(GeneralRepositoryOfInformation groi){
         r1 = new ReentrantLock();
         horsesCond = r1.newCondition();
         numberOfHorses = groi.getNumberOfHorses();

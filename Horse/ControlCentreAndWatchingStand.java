@@ -19,7 +19,7 @@ import java.util.LinkedList;
 */
 
 public class ControlCentreAndWatchingStand extends MonitorProxy{
-    public ControlCentreAndWatchingStand(InetSocketAddress address){
+    ControlCentreAndWatchingStand(InetSocketAddress address){
         super(address);
     }
 
@@ -37,13 +37,11 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
             out.writeObject(list);
             out.flush();
 
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in proceedToPaddock");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -65,9 +63,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
                 System.out.println("Something wrong in makeAMove");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }

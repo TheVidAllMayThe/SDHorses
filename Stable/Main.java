@@ -9,9 +9,9 @@ import java.lang.ClassNotFoundException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Stub{
-    public static int closed = 0;
-    public static ReentrantLock r1 = new ReentrantLock(false);
+public class Main {
+    private static int closed = 0;
+    private static ReentrantLock r1 = new ReentrantLock(false);
 
     public static void main(String[] args){
         GeneralRepositoryOfInformation groi = null;
@@ -21,21 +21,23 @@ public class Stub{
             Socket echoSocket = new Socket(InetAddress.getByName(args[1]), Integer.valueOf(args[2]));
             groi = new GeneralRepositoryOfInformation(echoSocket);
             
-            //Calls method setMonitorAddress for monitor #2 (Betting_centre)
-            groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 2);
+            //Calls method setMonitorAddress for monitor #1 (Stable)
+            groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 1);
+            int numRaces = groi.getNumberOfRaces();
 
-            BettingCentre bc = new BettingCentre(groi);
-        
+            Stable sb = new Stable(groi);
+
             //Monitor is now open to requests from clients
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             serverSocket.setSoTimeout(1000);
-            while(closed < 1 + bc.getNumberOfSpectators()){
+            while(closed < 1 + sb.getNumberOfHorses() * numRaces){
                 System.out.println(closed);
                 try{
-                    new ClientThread(serverSocket.accept(), bc).start();
-                }catch (SocketTimeoutException e){
+                    new ClientThread(serverSocket.accept(), sb).start();
+                } catch(SocketTimeoutException ignored){
                 }
             }
+
         } catch(IOException e){
             e.printStackTrace();
         } finally{
@@ -53,4 +55,5 @@ public class Stub{
             r1.unlock();
         }
     }
+
 }

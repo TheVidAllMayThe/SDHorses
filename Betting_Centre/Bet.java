@@ -21,7 +21,7 @@ public class Bet{
      * @param horseID ID of the {@link Horse} in  which the {@link Spectator} wishes to bet.
      * @param   odds  Odds of the bet.
      */
-    public Bet(int pID, double betAmount, int horseID, double odds) {
+    Bet(int pID, double betAmount, int horseID, double odds) {
         this.spectatorID = pID;
         this.betAmount = betAmount;
         this.horseID = horseID;

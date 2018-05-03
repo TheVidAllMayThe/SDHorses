@@ -20,8 +20,6 @@ public class MonitorProxy{
             out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(clientSocket.getInputStream());
-        } catch(SocketException e){
-            e.printStackTrace();
         } catch(IOException e){
             e.printStackTrace();
         }

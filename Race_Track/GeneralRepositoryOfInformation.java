@@ -11,7 +11,7 @@ public class GeneralRepositoryOfInformation{
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    public GeneralRepositoryOfInformation(Socket socket){
+    GeneralRepositoryOfInformation(Socket socket){
         try{
             this.clientSocket = socket;
             this.out = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -21,7 +21,7 @@ public class GeneralRepositoryOfInformation{
             e.printStackTrace();
         }
     }
-    
+
     public void close(){
         try{
             //Closes sockets both ways
@@ -45,13 +45,11 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setMonitorAddress of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
-        } 
+        }
     }
 
     public void setRaceNumber(int numRace){
@@ -64,11 +62,9 @@ public class GeneralRepositoryOfInformation{
             out.flush();
             if(!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setRaceDistance of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
-        } 
+        }
     }
 
     public void setRaceDistance(int raceLength){
@@ -81,82 +77,72 @@ public class GeneralRepositoryOfInformation{
             out.flush();
             if(!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setRaceDistance of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
-        } 
+        }
     }
 
     public int getNumberOfSpectators(){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfSpectators");
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
-        } 
+        }
         return result;
     }
 
     public int getNumberOfHorses(){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfHorses");
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
-        } 
+        }
         return result;
     }
 
     public int getRaceLength(){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getRaceLength");
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
-        } 
+        }
         return result;
     }
 
     public int getNumberOfRaces(){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfRaces");
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
-        } 
+        }
         return result;
     }
 
@@ -168,12 +154,10 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setBrokerState of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 
@@ -186,12 +170,10 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setHorsesState of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 
@@ -204,12 +186,10 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setHorsesPnk of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 
@@ -222,12 +202,10 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setHorseTrackPosition of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 
@@ -240,12 +218,10 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setHorseIteration of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 
@@ -258,12 +234,10 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setHorsesStanding of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 
@@ -276,12 +250,10 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setHorseProbability of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 
@@ -294,14 +266,12 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setBrokerState of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
-        
+
     }
 
     public void setSpectatorsSelection(int horseID, int spectatorID){
@@ -313,14 +283,11 @@ public class GeneralRepositoryOfInformation{
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setSpectatorsSelection of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
-        
     }
 
     public void setSpectatorsBudget(double budget, int spectatorID){
@@ -329,16 +296,14 @@ public class GeneralRepositoryOfInformation{
         list.add(budget);
         list.add(spectatorID);
 
-        try{ 
+        try{
             out.writeObject(list);
             out.flush();
-       
-            if(!((String)in.readObject()).equals("ok"))
+
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setSpectatorsBudget of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 
@@ -348,16 +313,14 @@ public class GeneralRepositoryOfInformation{
         list.add(value);
         list.add(spectatorID);
 
-        
+
         try{
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if(!in.readObject().equals("ok"))
                 System.out.println("Something wrong in setSpectatorsBet of GRI");
-        } catch(IOException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();    
         }
     }
 }

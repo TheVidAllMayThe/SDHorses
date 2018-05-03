@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="General_Repository_Of_Information:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/General_Repository_Of_Information_jar</output-path>
+    <root id="archive" name="General_Repository_Of_Information.jar">
+      <element id="module-output" name="General_Repository_Of_Information" />
+    </root>
+  </artifact>
+</component>

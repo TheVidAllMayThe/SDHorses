@@ -1,16 +1,6 @@
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.sql.SQLOutput;
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
 * The {@link BettingCentre} class is a monitor that contains all the
@@ -26,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BettingCentre extends MonitorProxy{
 
-    public BettingCentre(InetSocketAddress address){
+    BettingCentre(InetSocketAddress address){
         super(address);
     }
  
@@ -44,9 +34,7 @@ public class BettingCentre extends MonitorProxy{
                 System.out.println("Something wrong with acceptTheBets of broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -66,9 +54,7 @@ public class BettingCentre extends MonitorProxy{
             result = (boolean) in.readObject();
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return result;
@@ -76,8 +62,6 @@ public class BettingCentre extends MonitorProxy{
 
     public void honorBets() {
         try {
-            
-
             LinkedList<Object> list = new LinkedList<>();
             list.add("honorBets");
             
@@ -88,9 +72,7 @@ public class BettingCentre extends MonitorProxy{
                 System.out.println("Something wrong with honorBets of broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }

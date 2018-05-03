@@ -14,7 +14,7 @@ public class Broker extends Thread{
     private ControlCentreAndWatchingStand ccws;
     private RaceTrack rt;
 
-    public Broker(int numberOfRaces, Stable st, BettingCentre bc, ControlCentreAndWatchingStand ccws, RaceTrack rt){
+    Broker(int numberOfRaces, Stable st, BettingCentre bc, ControlCentreAndWatchingStand ccws, RaceTrack rt){
         this.numberOfRaces = numberOfRaces;
         this.st = st;
         this.bc = bc;

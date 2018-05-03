@@ -1,17 +1,13 @@
-import java.net.Socket;
-import java.net.InetAddress;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.LinkedList;
-import java.lang.ClassNotFoundException;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Stub{
-    public static int closed = 0;
-    public static ReentrantLock r1 = new ReentrantLock(false);
+public class Main {
+    private static int closed = 0;
+    private static ReentrantLock r1 = new ReentrantLock(false);
 
     public static void main(String[] args){
         GeneralRepositoryOfInformation groi = null;

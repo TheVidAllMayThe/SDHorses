@@ -1,19 +1,12 @@
-import java.net.Socket;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.LinkedList;
-import java.lang.ClassNotFoundException;
+import java.net.Socket;
 
-public class Stub{
+public class Main {
     public static void main(String[] args){
-        Socket clientSocket = null;
         try{
             //Creates input and output streams
-            InetAddress sourceAddress = InetAddress.getByName("localhost");
             Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
             GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(echoSocket);
             
@@ -47,9 +40,7 @@ public class Stub{
                 bc[i].closeConnection();
                 ccws[i].closeConnection();
             }
-        } catch(IOException e){
-            e.printStackTrace();
-        } catch(InterruptedException e){
+        } catch(IOException | InterruptedException e){
             e.printStackTrace();
         }
     }

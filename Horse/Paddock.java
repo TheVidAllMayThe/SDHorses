@@ -1,6 +1,5 @@
-import java.net.InetSocketAddress;
 import java.io.IOException;
-import java.net.UnknownHostException;
+import java.net.InetSocketAddress;
 import java.util.LinkedList;
 
 /**
@@ -19,7 +18,7 @@ import java.util.LinkedList;
  */
 
 public class Paddock extends MonitorProxy{
-    public Paddock(InetSocketAddress address){
+    Paddock(InetSocketAddress address){
         super(address);
     }
 
@@ -46,9 +45,7 @@ public class Paddock extends MonitorProxy{
                 System.out.println("Something wrong with proceedToPaddock");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -67,13 +64,11 @@ public class Paddock extends MonitorProxy{
             out.writeObject(list);
             out.flush();
 
-            if (!((String)in.readObject()).equals("ok"))
+            if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with proceedToStartLine");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -95,9 +90,7 @@ public class Paddock extends MonitorProxy{
             result = (HorseInPaddock)in.readObject();
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return result;

@@ -20,7 +20,7 @@ import java.util.LinkedList;
 
 public class ControlCentreAndWatchingStand extends MonitorProxy{
 
-    public ControlCentreAndWatchingStand(InetSocketAddress address){
+    ControlCentreAndWatchingStand(InetSocketAddress address){
         super(address);
     }
 
@@ -44,9 +44,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
                 System.out.println("Something wrong with waitForNextRace");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -69,9 +67,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
                 System.out.println("Something wrong with goWatchTheRace");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -94,9 +90,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
             out.flush();
             
             result = (boolean) in.readObject();
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return result;
@@ -118,9 +112,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
             
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with relaxABit");
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }

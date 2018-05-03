@@ -12,7 +12,7 @@ public class MonitorProxy{
     protected ObjectOutputStream out;
     protected ObjectInputStream in;
 
-    public MonitorProxy(InetSocketAddress address){
+    MonitorProxy(InetSocketAddress address){
         try{
             this.address = address;
             clientSocket = new Socket(); 
@@ -20,8 +20,6 @@ public class MonitorProxy{
             out = new ObjectOutputStream(clientSocket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(clientSocket.getInputStream());
-        } catch(SocketException e){
-            e.printStackTrace();
         } catch(IOException e){
             e.printStackTrace();
         }

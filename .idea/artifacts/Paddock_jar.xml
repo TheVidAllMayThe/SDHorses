@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Paddock:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Paddock_jar</output-path>
+    <root id="archive" name="Paddock.jar">
+      <element id="module-output" name="Paddock" />
+    </root>
+  </artifact>
+</component>

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 */
 
 public class Stable extends MonitorProxy{
-    public Stable(InetSocketAddress address){
+    Stable(InetSocketAddress address){
         super(address);
     }
 
@@ -44,9 +44,7 @@ public class Stable extends MonitorProxy{
                 System.out.println("Something wrong with proceedToStable");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }

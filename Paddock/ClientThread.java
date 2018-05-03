@@ -5,7 +5,6 @@ import java.lang.NoSuchMethodException;
 import java.lang.IllegalAccessException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
-import java.io.PrintWriter;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -15,7 +14,7 @@ public class ClientThread extends Thread{
     private Class monitorClass;
     private Object obj;
     
-    public ClientThread(Socket clientSocket, Object obj){
+    ClientThread(Socket clientSocket, Object obj){
         this.clientSocket = clientSocket;
         this.monitorClass = obj.getClass();
         this.obj = obj;
@@ -34,14 +33,12 @@ public class ClientThread extends Thread{
                 out.writeObject(reflection(list));         
                 out.flush();
             }
-            Stub.closed(); 
+            Main.closed();
         
             out.close();
             in.close();
             clientSocket.close(); 
-        } catch (ClassNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e){
+        } catch (ClassNotFoundException | IOException e){
             e.printStackTrace();
         }
     }
@@ -53,17 +50,13 @@ public class ClientThread extends Thread{
             classArray[i-1] = list.get(i).getClass();
             args[i-1] = list.get(i);
         }
-        Method method = null;
+        Method method;
         Object result = null;
         try{
             method = monitorClass.getMethod((String) list.get(0), classArray);
             result = method.invoke(obj, args);
             if (result == null) result = (Object) "ok";
-        } catch(NoSuchMethodException e){
-            e.printStackTrace();
-        } catch(IllegalAccessException e){ 
-            e.printStackTrace();
-        } catch(InvocationTargetException e){ 
+        } catch(NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
             e.printStackTrace();
         }
         return result;

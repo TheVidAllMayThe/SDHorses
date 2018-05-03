@@ -22,7 +22,7 @@ public class HorsePos implements Comparable<HorsePos>{
      * @param myTurn Set to true if it's the starting {@link Horse}.
      */
 
-    public HorsePos(int horseID, boolean myTurn) {
+    HorsePos(int horseID, boolean myTurn) {
         this.horseID = horseID;
         this.pos = 0;
         this.numSteps = 0;

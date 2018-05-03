@@ -27,7 +27,7 @@ public class Stable {
     private GeneralRepositoryOfInformation groi;
     private int numberOfHorses, numberOfRaces, raceLength;
 
-    public Stable(GeneralRepositoryOfInformation groi){
+    Stable(GeneralRepositoryOfInformation groi){
         r1 = new ReentrantLock();
         horsesToPaddock = r1.newCondition();
         canHorsesMoveToPaddock = false;

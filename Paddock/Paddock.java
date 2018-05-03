@@ -32,7 +32,7 @@ public class Paddock{
     private int numberOfHorses;
     private GeneralRepositoryOfInformation groi;
 
-    public Paddock(GeneralRepositoryOfInformation groi){
+    Paddock(GeneralRepositoryOfInformation groi){
         this.numberOfSpectators = groi.getNumberOfSpectators();
         this.numberOfHorses = groi.getNumberOfHorses();
         r1 = new ReentrantLock(false);

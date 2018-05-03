@@ -18,7 +18,7 @@ import java.util.LinkedList;
  */
 
 public class RaceTrack extends MonitorProxy{
-    public RaceTrack(InetSocketAddress address){
+    RaceTrack(InetSocketAddress address){
         super(address);
     }
 
@@ -42,9 +42,7 @@ public class RaceTrack extends MonitorProxy{
             result = (int) in.readObject();
 
             
-        } catch(IOException e){
-            e.printStackTrace();
-        } catch(ClassNotFoundException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return result;
@@ -73,9 +71,7 @@ public class RaceTrack extends MonitorProxy{
                 System.out.println("Something wrong with makeAMove of broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -101,9 +97,7 @@ public class RaceTrack extends MonitorProxy{
             result = (boolean) in.readObject();
 
             
-        } catch(IOException e){
-            e.printStackTrace();
-        } catch(ClassNotFoundException e){
+        } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return result;

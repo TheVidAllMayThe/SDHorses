@@ -20,7 +20,7 @@ import java.net.InetSocketAddress;
 
 public class Paddock extends MonitorProxy{
     
-    public Paddock(InetSocketAddress address){
+    Paddock(InetSocketAddress address){
         super(address);
     }
 
@@ -43,9 +43,7 @@ public class Paddock extends MonitorProxy{
             result = (HorseInPaddock) in.readObject();
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return result;

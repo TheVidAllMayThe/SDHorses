@@ -18,7 +18,7 @@ import java.util.LinkedList;
 
 public class BettingCentre extends MonitorProxy{
     
-    public BettingCentre(InetSocketAddress address){
+    BettingCentre(InetSocketAddress address){
         super(address);
     }
 
@@ -46,9 +46,7 @@ public class BettingCentre extends MonitorProxy{
             
             if (!in.readObject().equals("ok"))
                 System.out.println("Something wrong with placeABet");
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -70,9 +68,7 @@ public class BettingCentre extends MonitorProxy{
             out.flush();
             
             result = (double) in.readObject();
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return result;

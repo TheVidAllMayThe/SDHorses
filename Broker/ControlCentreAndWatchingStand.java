@@ -1,16 +1,10 @@
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 public class ControlCentreAndWatchingStand extends MonitorProxy{
 
-    public ControlCentreAndWatchingStand(InetSocketAddress address){
+    ControlCentreAndWatchingStand(InetSocketAddress address){
         super(address);
     }
 
@@ -28,9 +22,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
                 System.out.println("Something wrong in openingTheEvents of Broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -50,9 +42,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
                 System.out.println("Something wrong in openingTheEvents of Broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -71,9 +61,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
                 System.out.println("Something wrong in startTheRace of Broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
@@ -93,17 +81,13 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
                 System.out.println("Something wrong in reportResults of Broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
 
     public void entertainTheGuests() {
         try {
-            
-
             LinkedList<Object> list = new LinkedList<>();
             list.add("entertainTheGuests");
 
@@ -114,9 +98,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
                 System.out.println("Something wrong in entertainTheGuests of Broker");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }

@@ -22,7 +22,7 @@ public class Spectator extends Thread{
      *
      * @param id ID of the spectator.
      */
-    public Spectator(int id, int numberOfRaces, Paddock pd, BettingCentre bc, ControlCentreAndWatchingStand ccws){
+    Spectator(int id, int numberOfRaces, Paddock pd, BettingCentre bc, ControlCentreAndWatchingStand ccws){
         this.budget = ThreadLocalRandom.current().nextDouble(1000);
         this.id  = id;
         this.numberOfRaces = numberOfRaces;

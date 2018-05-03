@@ -26,7 +26,7 @@ public class Horse extends Thread {
      * @param raceNum Number of the race in which the race will participate.
      */
 
-    public Horse(int id, int raceNum, Paddock pd, Stable st, ControlCentreAndWatchingStand ccws, RaceTrack rt) {
+    Horse(int id, int raceNum, Paddock pd, Stable st, ControlCentreAndWatchingStand ccws, RaceTrack rt) {
         this.ID = id;
         this.raceNum = raceNum;
         this.pnk = ThreadLocalRandom.current().nextInt(5, 10);

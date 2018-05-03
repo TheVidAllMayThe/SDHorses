@@ -5,7 +5,6 @@ import java.lang.NoSuchMethodException;
 import java.lang.IllegalAccessException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
-import java.io.PrintWriter;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -15,7 +14,7 @@ public class ClientThread extends Thread{
     private Class monitorClass;
     private Object obj;
     
-    public ClientThread(Socket clientSocket, Object obj){
+    ClientThread(Socket clientSocket, Object obj){
         this.clientSocket = clientSocket;
         this.monitorClass = obj.getClass();
         this.obj = obj;
@@ -34,7 +33,7 @@ public class ClientThread extends Thread{
                 out.writeObject(reflection(list));         
                 out.flush();
             }
-            Stub.closed(); 
+            Main.closed();
         
             out.close();
             in.close();
@@ -59,11 +58,7 @@ public class ClientThread extends Thread{
             method = monitorClass.getMethod((String) list.get(0), classArray);
             result = method.invoke(obj, args);
             if (result == null) result = (Object) "ok";
-        } catch(NoSuchMethodException e){
-            e.printStackTrace();
-        } catch(IllegalAccessException e){ 
-            e.printStackTrace();
-        } catch(InvocationTargetException e){ 
+        } catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
             e.printStackTrace();
         }
         return result;
