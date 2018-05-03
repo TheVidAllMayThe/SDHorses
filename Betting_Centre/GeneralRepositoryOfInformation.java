@@ -7,355 +7,355 @@ import java.lang.ClassNotFoundException;
 import java.net.InetAddress;
 import java.net.Inet4Address;
 
-public class GeneralRepositoryOfInformation{
+public class GeneralRepositoryOfInformation {
     private Socket clientSocket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    public GeneralRepositoryOfInformation(Socket socket){
-        try{
+    public GeneralRepositoryOfInformation(Socket socket) {
+        try {
             this.clientSocket = socket;
             this.out = new ObjectOutputStream(clientSocket.getOutputStream());
             this.out.flush();
             this.in = new ObjectInputStream(clientSocket.getInputStream());
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void close(){
-        try{
+    public void close() {
+        try {
             //Closes sockets both ways
             this.out.writeObject("close");
             this.out.flush();
             this.out.close();
             this.in.close();
             this.clientSocket.close();
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void setMonitorAddress(InetAddress sourceAddress, int sourcePort, int monitor){
+    public void setMonitorAddress(InetAddress sourceAddress, int sourcePort, int monitor) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setMonitorAddress");
         list.add(sourceAddress);
         list.add(sourcePort);
         list.add(monitor);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setMonitorAddress of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public Inet4Address getMonitorAddress(int monitor){
+    public Inet4Address getMonitorAddress(int monitor) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("getMonitorAddress");
         list.add(monitor);
 
         Inet4Address result = null;
-        try{
+        try {
             out.writeObject(list);
             out.flush();
 
-            result = (Inet4Address)in.readObject();
-        } catch(IOException | ClassNotFoundException e){
+            result = (Inet4Address) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public int getMonitorPort(int monitor){
+    public int getMonitorPort(int monitor) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("getMonitorPort");
         list.add(monitor);
 
         int result = -1;
-        try{
+        try {
             out.writeObject(list);
             out.flush();
 
-            result = (int)in.readObject();
-        } catch(IOException | ClassNotFoundException e){
+            result = (int) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public void setRaceNumber(int numRace){
+    public void setRaceNumber(int numRace) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setRaceNumber");
         list.add(numRace);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setRaceDistance of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setRaceDistance(int raceLength){
+    public void setRaceDistance(int raceLength) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setRaceDistance");
         list.add(raceLength);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setRaceDistance of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public int getNumberOfSpectators(){
+    public int getNumberOfSpectators() {
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfSpectators");
 
         int result = -1;
-        try{
+        try {
             out.writeObject(list);
             out.flush();
 
-            result = (int)in.readObject();
-        } catch(IOException | ClassNotFoundException e){
+            result = (int) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public int getNumberOfHorses(){
+    public int getNumberOfHorses() {
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfHorses");
 
         int result = -1;
-        try{
+        try {
             out.writeObject(list);
             out.flush();
 
-            result = (int)in.readObject();
-        } catch(IOException | ClassNotFoundException e){
+            result = (int) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public int getRaceLength(){
+    public int getRaceLength() {
         LinkedList<Object> list = new LinkedList<>();
         list.add("getRaceLength");
 
         int result = -1;
-        try{
+        try {
             out.writeObject(list);
             out.flush();
 
-            result = (int)in.readObject();
-        } catch(IOException | ClassNotFoundException e){
+            result = (int) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public int getNumberOfRaces(){
+    public int getNumberOfRaces() {
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfRaces");
 
         int result = -1;
-        try{
+        try {
             out.writeObject(list);
             out.flush();
 
-            result = (int)in.readObject();
-        } catch(IOException | ClassNotFoundException e){
+            result = (int) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public void setBrokerState(String state){
+    public void setBrokerState(String state) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setBrokerState");
         list.add(state);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setBrokerState of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setHorsesState(String state, int horseID){
+    public void setHorsesState(String state, int horseID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setHorsesState");
         list.add(state);
         list.add(horseID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setHorsesState of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setHorsesPnk(int pnk, int horseID){
+    public void setHorsesPnk(int pnk, int horseID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setHorsesPnk");
         list.add(pnk);
         list.add(horseID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setHorsesPnk of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setHorseTrackPosition(int pos, int horseID){
+    public void setHorseTrackPosition(int pos, int horseID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setHorseTrackPosition");
         list.add(pos);
         list.add(horseID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setHorseTrackPosition of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setHorseIteration(int iteration, int horseID){
+    public void setHorseIteration(int iteration, int horseID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setHorseIteration");
         list.add(iteration);
         list.add(horseID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setHorseIteration of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setHorsesStanding(char standing, int horseID){
+    public void setHorsesStanding(char standing, int horseID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setHorsesStanding");
         list.add(standing);
         list.add(horseID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setHorsesStanding of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setHorseProbability(double prob, int horseID){
+    public void setHorseProbability(double prob, int horseID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setHorseProbability");
         list.add(prob);
         list.add(horseID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setHorseProbability of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setSpectatorsState(String state, Integer spectatorID){
+    public void setSpectatorsState(String state, Integer spectatorID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setSpectatorsState");
         list.add(state);
         list.add(spectatorID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setBrokerState of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
     }
 
-    public void setSpectatorsSelection(int horseID, int spectatorID){
+    public void setSpectatorsSelection(int horseID, int spectatorID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setSpectatorsSelection");
         list.add(horseID);
         list.add(spectatorID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setSpectatorsSelection of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
     }
 
-    public void setSpectatorsBudget(double budget, int spectatorID){
+    public void setSpectatorsBudget(double budget, int spectatorID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setSpectatorsBudget");
         list.add(budget);
         list.add(spectatorID);
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
 
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setSpectatorsBudget of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void setSpectatorsBet(double value, int spectatorID){
+    public void setSpectatorsBet(double value, int spectatorID) {
         LinkedList<Object> list = new LinkedList<>();
         list.add("setSpectatorsBet");
         list.add(value);
         list.add(spectatorID);
 
 
-        try{
+        try {
             out.writeObject(list);
             out.flush();
-            if(!((String)in.readObject()).equals("ok"))
+            if (!((String) in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setSpectatorsBet of GRI");
-        } catch(IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

@@ -17,7 +17,7 @@ public class HorseInPaddock {
      * @param horseID ID of the Thread calling the method.
      * @param pnk Maximum length of the move of a {@link Horse}.
      */
-    public HorseInPaddock(int horseID, int pnk) {
+    HorseInPaddock(int horseID, int pnk) {
         this.horseID = horseID;
         this.pnk = pnk;
     }
