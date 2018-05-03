@@ -12,7 +12,7 @@ public class GeneralRepositoryOfInformation{
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    GeneralRepositoryOfInformation(Socket socket){
+    public GeneralRepositoryOfInformation(Socket socket){
         try{
             this.clientSocket = socket;
             this.out = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -22,7 +22,7 @@ public class GeneralRepositoryOfInformation{
             e.printStackTrace();
         }
     }
-    
+
     public void close(){
         try{
             //Closes sockets both ways
@@ -57,12 +57,12 @@ public class GeneralRepositoryOfInformation{
         LinkedList<Object> list = new LinkedList<>();
         list.add("getMonitorAddress");
         list.add(monitor);
-        
+
         Inet4Address result = null;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (Inet4Address)in.readObject();
         } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
@@ -70,16 +70,16 @@ public class GeneralRepositoryOfInformation{
         return result;
     }
 
-    public int getMonitorPort(int monitor){ 
+    public int getMonitorPort(int monitor){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getMonitorPort");
         list.add(monitor);
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
         } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
@@ -120,12 +120,12 @@ public class GeneralRepositoryOfInformation{
     public int getNumberOfSpectators(){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfSpectators");
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
         } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
@@ -136,12 +136,12 @@ public class GeneralRepositoryOfInformation{
     public int getNumberOfHorses(){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfHorses");
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
         } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
@@ -152,12 +152,12 @@ public class GeneralRepositoryOfInformation{
     public int getRaceLength(){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getRaceLength");
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
         } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
@@ -168,12 +168,12 @@ public class GeneralRepositoryOfInformation{
     public int getNumberOfRaces(){
         LinkedList<Object> list = new LinkedList<>();
         list.add("getNumberOfRaces");
-        
+
         int result = -1;
         try{
             out.writeObject(list);
             out.flush();
-            
+
             result = (int)in.readObject();
         } catch(IOException | ClassNotFoundException e){
             e.printStackTrace();
@@ -292,7 +292,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public void setSpectatorsState(String state, int spectatorID){
+    public void setSpectatorsState(String state, Integer spectatorID){
         LinkedList<Object> list = new LinkedList<>();
         list.add("setSpectatorsState");
         list.add(state);
@@ -332,10 +332,10 @@ public class GeneralRepositoryOfInformation{
         list.add(budget);
         list.add(spectatorID);
 
-        try{ 
+        try{
             out.writeObject(list);
             out.flush();
-       
+
             if(!((String)in.readObject()).equals("ok"))
                 System.out.println("Something wrong in setSpectatorsBudget of GRI");
         } catch(IOException | ClassNotFoundException e){
@@ -349,7 +349,7 @@ public class GeneralRepositoryOfInformation{
         list.add(value);
         list.add(spectatorID);
 
-        
+
         try{
             out.writeObject(list);
             out.flush();
