@@ -27,7 +27,6 @@ public class Main {
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             serverSocket.setSoTimeout(1000);
             while(closed < pd.getNumberOfSpectators() + pd.getNumberOfHorses() * numRaces){
-                System.out.println(closed);
                 try{
                     new ClientThread(serverSocket.accept(), pd).start();
                 } catch(SocketTimeoutException ignored){

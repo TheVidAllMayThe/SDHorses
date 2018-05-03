@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Control_Centre_And_Watching_Stand:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Control_Centre_And_Watching_Stand_jar</output-path>
-    <root id="archive" name="Control_Centre_And_Watching_Stand.jar">
-      <element id="module-output" name="Control_Centre_And_Watching_Stand" />
-    </root>
-  </artifact>
-</component>

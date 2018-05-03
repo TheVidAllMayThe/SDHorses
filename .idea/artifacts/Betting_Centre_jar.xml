@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Betting_Centre:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Betting_Centre_jar</output-path>
-    <root id="archive" name="Betting_Centre.jar">
-      <element id="module-output" name="Betting_Centre" />
-    </root>
-  </artifact>
-</component>

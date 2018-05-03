@@ -27,7 +27,6 @@ public class Main {
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             serverSocket.setSoTimeout(1000);
             while(closed < 1 + rt.getNumberOfHorses() * numRaces){
-                System.out.println(closed);
                 try{
                     new ClientThread(serverSocket.accept(), rt).start();
                 }catch (SocketTimeoutException e){

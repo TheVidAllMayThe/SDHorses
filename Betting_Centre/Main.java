@@ -26,7 +26,6 @@ public class Main {
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             serverSocket.setSoTimeout(1000);
             while(closed < 1 + bc.getNumberOfSpectators()){
-                System.out.println(closed);
                 try{
                     new ClientThread(serverSocket.accept(), bc).start();
                 }catch (SocketTimeoutException ignored){

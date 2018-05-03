@@ -29,7 +29,6 @@ public class Main {
             ServerSocket serverSocket = new ServerSocket(sourcePort);
             serverSocket.setSoTimeout(1000);
             while(closed < 1 + ccws.getNumberOfSpectators() + ccws.getNumberOfHorses() * nRaces){
-                System.out.println(closed);
                 try{
                     new ClientThread(serverSocket.accept(), ccws).start();
                 } catch (SocketTimeoutException e){
