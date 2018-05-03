@@ -1,12 +1,14 @@
-scp -r out/artifacts/General_Repository_Of_Information_jar/* sd0304@l040101-ws01.ua.pt:~/
-scp -r out/artifacts/Betting_Centre_jar/* sd0304@l040101-ws02.ua.pt:~/
-scp -r out/artifacts/Control_Centre_And_Watching_Stand_jar/* sd0304@l040101-ws03.ua.pt:~/
-scp -r out/artifacts/Paddock_jar/* sd0304@l040101-ws04.ua.pt:~/
-scp -r out/artifacts/Race_Track_jar/* sd0304@l040101-ws05.ua.pt:~/
-scp -r out/artifacts/Stable_jar/* sd0304@l040101-ws06.ua.pt:~/
-scp -r out/artifacts/Broker_jar/* sd0304@l040101-ws07.ua.pt:~/
-scp -r out/artifacts/Spectator_jar/* sd0304@l040101-ws08.ua.pt:~/
-scp -r out/artifacts/Horse_jar/* sd0304@l040101-ws09.ua.pt:~/
+declare -a arr=("GeneralRepositoryOfInformation" "ControlCentreAndWatchingStand" "Paddock" "RaceTrack" "Stable" "BettingCentre" "Broker" "Horse" "Spectator")
+
+for i in {1..9}
+do
+    cd ${arr[i-1]}
+    javac *.java
+    jar cfe ../out/artifacts/${arr[i-1]}_jar/${arr[i-1]}.jar Main *.class
+    rm *.class
+    cd ../
+    scp -r out/artifacts/${arr[i-1]}_jar/* sd0304@l040101-ws0$i.ua.pt:~/
+done
 
 ssh sd0304@l040101-ws01.ua.pt java -jar *.jar 22340 &
 ssh sd0304@l040101-ws02.ua.pt java -jar *.jar 22340 l040101-ws01.ua.pt 22340 &
