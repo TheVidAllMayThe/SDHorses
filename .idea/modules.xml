@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Betting_Centre/Betting_Centre.iml" filepath="$PROJECT_DIR$/Betting_Centre/Betting_Centre.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Broker/Broker.iml" filepath="$PROJECT_DIR$/Broker/Broker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Control_Centre_And_Watching_Stand/Control_Centre_And_Watching_Stand.iml" filepath="$PROJECT_DIR$/Control_Centre_And_Watching_Stand/Control_Centre_And_Watching_Stand.iml" />
+      <module fileurl="file://$PROJECT_DIR$/General/General.iml" filepath="$PROJECT_DIR$/General/General.iml" />
+      <module fileurl="file://$PROJECT_DIR$/General_Repository_Of_Information/General_Repository_Of_Information.iml" filepath="$PROJECT_DIR$/General_Repository_Of_Information/General_Repository_Of_Information.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Horse/Horse.iml" filepath="$PROJECT_DIR$/Horse/Horse.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Paddock/Paddock.iml" filepath="$PROJECT_DIR$/Paddock/Paddock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Race_Track/Race_Track.iml" filepath="$PROJECT_DIR$/Race_Track/Race_Track.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Spectator/Spectator.iml" filepath="$PROJECT_DIR$/Spectator/Spectator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Stable/Stable.iml" filepath="$PROJECT_DIR$/Stable/Stable.iml" />
+    </modules>
+  </component>
+</project>

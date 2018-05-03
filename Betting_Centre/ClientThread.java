@@ -38,9 +38,7 @@ public class ClientThread extends Thread{
             out.close();
             in.close();
             clientSocket.close(); 
-        } catch (ClassNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e){
+        } catch (ClassNotFoundException | IOException e){
             e.printStackTrace();
         }
     }
