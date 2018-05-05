@@ -1,3 +1,5 @@
+package GeneralRepositoryOfInformation;
+
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 import java.io.PrintWriter;

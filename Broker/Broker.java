@@ -1,10 +1,11 @@
+package Broker;
+
 /**
  * The {@link Broker} class is a thread that contains the lifecycle of the {@link Broker} during the day.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0
  * @since   2018-03-21
- * @see Main.HorseRace
  */
 
 public class Broker extends Thread{
@@ -14,6 +15,16 @@ public class Broker extends Thread{
     private ControlCentreAndWatchingStand ccws;
     private RaceTrack rt;
 
+
+    /**
+     * Constructor for the class Broker.
+     * @param numberOfRaces Number of races to be held.
+     * @param st Instance of Stable.
+     * @param bc Instance of BettingCentre.
+     * @param ccws Instance of ControlCenterAndWatchingStand.
+     * @param rt Instance of RaceTrack.
+     */
+
     Broker(int numberOfRaces, Stable st, BettingCentre bc, ControlCentreAndWatchingStand ccws, RaceTrack rt){
         this.numberOfRaces = numberOfRaces;
         this.st = st;
@@ -21,6 +32,10 @@ public class Broker extends Thread{
         this.ccws = ccws;
         this.rt = rt;
     }
+
+    /**
+     * Main execution of the thread.
+     */
 
     @Override
     public void run(){

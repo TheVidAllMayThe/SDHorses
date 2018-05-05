@@ -1,3 +1,5 @@
+package BettingCentre;
+
 import java.util.LinkedList;
 import java.net.Socket;
 import java.io.ObjectInputStream;
@@ -6,6 +8,10 @@ import java.io.IOException;
 import java.lang.ClassNotFoundException;
 import java.net.InetAddress;
 import java.net.Inet4Address;
+
+/**
+ * This class stores the state of all the components of the program. Every time that there's a change the program logs the new state to a file (log.txt).
+ */
 
 public class GeneralRepositoryOfInformation {
     private Socket clientSocket;

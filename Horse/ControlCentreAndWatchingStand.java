@@ -1,31 +1,33 @@
+package Horse;
+
 import java.net.InetSocketAddress;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 
 /**
-* The {@link ControlCentreAndWatchingStand} class is a monitor that contains
-* necessary methods to be used in mutual exclusive access by the {@link Broker}, {@link Spectator}s and {@link Horse}s.
-* <p>
-* This is where the {@link Broker} mostly operates and the {@link Spectator}s watch the race.
-* 
-* @author  David Almeida, Manuel Xarez
-* @version 1.0
-* @since   2018-03-21
-* @see Main.HorseRace
-* @see Broker
-* @see Horse
-* @see Spectator
-*/
+ * The {@link ControlCentreAndWatchingStand} class is a monitor that contains
+ * necessary methods to be used in mutual exclusive access by the Broker, Spectators and Horses.
+ * <p>
+ * This is where the Broker mostly operates and the Spectators watch the race.
+ * This class is a proxy that through the use of sockets will request that the methods are invoked in an external server.
+ * @author  David Almeida, Manuel Xarez
+ * @version 1.0
+ * @since   2018-03-21
 
+ */
 public class ControlCentreAndWatchingStand extends MonitorProxy{
+    /**
+     * Constructor of the class.
+     * @param address Address of the server responsible for the ControlCentreAndWatchingStand.
+     */
     ControlCentreAndWatchingStand(InetSocketAddress address){
         super(address);
     }
 
     /**
-     * {@link Horse} proceeds to paddock, last {@link Horse} awakes {@link Spectator}s
-     * that are waiting for the {@link Horse}s to enter the {@link Paddock}.
+     * Horse proceeds to paddock, last Horse awakes Spectators
+     * that are waiting for the Horses to enter the Paddock.
      */
     public void proceedToPaddock(){
         try {
@@ -45,9 +47,9 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
             e.printStackTrace();
         }
     }
-    
+
     /**
-     * The last {@link Horse} announces in the {@link ControlCentreAndWatchingStand} that he finished the race waking up the {@link Broker}.
+     * The last Horse announces in the {@link ControlCentreAndWatchingStand} that he finished the race waking up the Broker.
      */
     public void makeAMove(){
         try {

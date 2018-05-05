@@ -1,19 +1,18 @@
+package ControlCentreAndWatchingStand;
+
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 
 /**
 * The {@link ControlCentreAndWatchingStand} class is a monitor that contains
-* necessary methods to be used in mutual exclusive access by the {@link Broker}, {@link Spectator}s and {@link Horse}s.
+* necessary methods to be used in mutual exclusive access by the Broker, Spectators and Horses.
 * <p>
-* This is where the {@link Broker} mostly operates and the {@link Spectator}s watch the race.
+* This is where the Broker mostly operates and the Spectators watch the race.
 * 
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see Main.HorseRace
-* @see Broker
-* @see Horse
-* @see Spectator
+
 */
 
 public class ControlCentreAndWatchingStand{
@@ -57,15 +56,17 @@ public class ControlCentreAndWatchingStand{
     }
 
     /**
-     * Method used to set the {@link Broker} initial state.
+     * Method used to set the Broker initial state.
      */
 
     public void openingTheEvents(){
     }
     
     /**
-     * The {@link Broker} waits for all the {@link Spectator} threads to have reached the {@link ControlCentreAndWatchingStand} before proceeding.
+     * The Broker waits for all the Spectator threads to have reached the {@link ControlCentreAndWatchingStand} before proceeding.
+     * @param numRace Number of the next race.
      */
+
     public void summonHorsesToPaddock(Integer numRace){
 
         r1.lock();
@@ -85,7 +86,7 @@ public class ControlCentreAndWatchingStand{
     }
 
     /**
-     *  {@link Broker}  waits for all  {@link Horse} threads to have reached the finish line before proceeding.
+     *  Broker  waits for all  Horse threads to have reached the finish line before proceeding.
      */
     public void startTheRace(){
         r1.lock();
@@ -105,9 +106,9 @@ public class ControlCentreAndWatchingStand{
     }
 
     /**
-     *  {@link Broker} declares the {@link Horse}s who won and wakes up the {@link Spectator}s watching the race.
+     *  Broker declares the Horses who won and wakes up the Spectators watching the race.
      *
-     * @param   list  An integer array containing the ID of the {@link Horse}s who won the race.
+     * @param   list  An integer array containing the ID of the Horses who won the race.
      */
     public void reportResults(Integer[] list) {
         r1.lock();
@@ -125,7 +126,7 @@ public class ControlCentreAndWatchingStand{
 
 
     /**
-     * Last function of {@link Broker} lifecycle.
+     * Last function of Broker lifecycle.
      */
     public void entertainTheGuests(){ 
         r1.lock();
@@ -140,9 +141,13 @@ public class ControlCentreAndWatchingStand{
 
     
     /**
-     * {@link Spectator} waits for next race of the day, last {@link Spectator} waiting wakes the {@link Broker}
+     * Spectator waits for next race of the day, last Spectator waiting wakes the Broker
      * who's ready to start the race.
+     * @param spectatorID ID of the spectator calling the method.
+     * @param budget Budget of the spectator.
      */
+
+
     public void waitForNextRace(Integer spectatorID, Double budget){
         r1.lock();
         try{
@@ -166,7 +171,8 @@ public class ControlCentreAndWatchingStand{
     }
 
     /**
-     * {@link Spectator} waits while watching the race.
+     * Spectator waits while watching the race.
+     * @param spectatorID ID of the spectator calling the method.
      */
     public void goWatchTheRace(Integer spectatorID){
         r1.lock();
@@ -190,10 +196,11 @@ public class ControlCentreAndWatchingStand{
     }
     
     /**
-     * {@link Spectator} checks if he won his bet.
+     * Spectator checks if he won his bet.
      *
-     * @param   horseID  ID of the {@link Horse} whom the {@link Spectator} bet on.
-     * @return  True if the {@link Spectator} won.
+     * @param   horseID  ID of the Horse whom the Spectator bet on.
+     * @param spectatorID ID of the spectator calling the method.
+     * @return  True if the Spectator won.
      */
     public boolean haveIWon(Integer horseID, Integer spectatorID){
         boolean result = false;
@@ -215,7 +222,8 @@ public class ControlCentreAndWatchingStand{
     }
 
     /**
-     * Last function of {@link Spectator} lifecycle.
+     * Last function of Spectator lifecycle.
+     * @param spectatorID ID of the spectator calling the method.
      */
     public void relaxABit(Integer spectatorID){ 
         r1.lock();
@@ -229,8 +237,8 @@ public class ControlCentreAndWatchingStand{
     }
 
     /**
-     * {@link Horse} proceeds to paddock, last {@link Horse} awakes {@link Spectator}s
-     * that are waiting for the {@link Horse}s to enter the {@link Paddock}.
+     * Horse proceeds to paddock, last Horse awakes Spectators
+     * that are waiting for the Horses to enter the Paddock.
      */
     public void proceedToPaddock(){
         r1.lock();
@@ -248,7 +256,7 @@ public class ControlCentreAndWatchingStand{
     }
     
     /**
-     * The last {@link Horse} announces in the {@link ControlCentreAndWatchingStand} that he finished the race waking up the {@link Broker}.
+     * The last Horse announces in the {@link ControlCentreAndWatchingStand} that he finished the race waking up the Broker.
      */
     public void makeAMove(){
         r1.lock();

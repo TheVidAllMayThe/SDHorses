@@ -1,3 +1,4 @@
+package RaceTrack;
 import java.net.Socket;
 import java.lang.Class;
 import java.lang.reflect.Method;
@@ -9,17 +10,27 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+/**
+ *  An instance of this class will be created in order to execute the function requested by the client.
+ */
 public class ClientThread extends Thread{
     private Socket clientSocket;
     private Class monitorClass;
     private Object obj;
-    
+
+    /**
+     * Contructor of the class.
+     * @param clientSocket Socket to which the return value of the function to be execute will be sent.
+     * @param obj List consisting of arguments and function name.
+     */
     public ClientThread(Socket clientSocket, Object obj){
         this.clientSocket = clientSocket;
         this.monitorClass = obj.getClass();
         this.obj = obj;
     }
-     
+    /**
+     * Main execution of the thread.
+     */
     public void run(){
         try{
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -42,7 +53,11 @@ public class ClientThread extends Thread{
             e.printStackTrace();
         }
     }
-
+    /**
+     * Executes methods using reflection.
+     * @param list List consisting of the method to be executed name and arguments.
+     * @return Return value of the method executed by reflection.
+     */
     private Object reflection(LinkedList<Object> list){
         Class[] classArray = new Class[list.size() - 1];
         Object[] args = new Object[list.size()-1];

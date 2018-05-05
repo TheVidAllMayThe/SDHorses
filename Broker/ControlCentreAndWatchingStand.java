@@ -1,13 +1,35 @@
+package Broker;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
 
+/**
+ * The {@link ControlCentreAndWatchingStand} class is a monitor that contains
+ * necessary methods to be used in mutual exclusive access by the Broker, Spectators and Horses.
+ * <p>
+ * This is where the Broker mostly operates and the Spectators watch the race.
+ * This class is a proxy that through the use of sockets will request that the methods are invoked in an external server.
+ * @author  David Almeida, Manuel Xarez
+ * @version 1.0
+ * @since   2018-03-21
+
+ */
+
 public class ControlCentreAndWatchingStand extends MonitorProxy{
 
+
+    /**
+     * Constructor of the class.
+     * @param address Address of the server responsible for the ControlCentreAndWatchingStand.
+     */
     ControlCentreAndWatchingStand(InetSocketAddress address){
         super(address);
     }
 
+
+    /**
+     * Method used to set the Broker initial state.
+     */
     public void openingTheEvents() {
         try {
             
@@ -26,6 +48,13 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
             e.printStackTrace();
         }
     }
+
+    /**
+     * The Broker waits for all the Spectator threads to have reached the {@link ControlCentreAndWatchingStand} before proceeding.
+     * @param numRace Number of the next race.
+     */
+
+
 
     public void summonHorsesToPaddock(int numRace) {
         try {
@@ -47,6 +76,10 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
         }
     }
 
+    /**
+     *  Broker  waits for all  Horse threads to have reached the finish line before proceeding.
+     */
+
     public void startTheRace() {
         try {
             
@@ -66,6 +99,11 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
         }
     }
 
+    /**
+     *  Broker declares the Horses who won and wakes up the Spectators watching the race.
+     *
+     * @param   results  An integer array containing the ID of the Horses who won the race.
+     */
     public void reportResults(Integer[] results) {
         try {
             
@@ -85,6 +123,10 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
             e.printStackTrace();
         }
     }
+
+    /**
+     * Last function of Broker lifecycle.
+     */
 
     public void entertainTheGuests() {
         try {

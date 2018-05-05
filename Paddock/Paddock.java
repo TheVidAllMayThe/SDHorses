@@ -1,20 +1,18 @@
+package Paddock;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The {@link Paddock} class is a monitor that contains
- * necessary methods to be used in mutual exclusive access by {@link Horse}s and {@link Spectator}s.
+ * necessary methods to be used in mutual exclusive access by Horses and Spectators.
  * <p>
- * This is where the {@link Horse}s are paraded for the {@link Spectator}s.
+ * This is where the Horses are paraded for the Spectators.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0
  * @since   2018-03-21
- * @see Main.HorseRace
- * @see Broker
- * @see Horse
- * @see Spectator
+
  */
 
 public class Paddock{
@@ -51,7 +49,7 @@ public class Paddock{
     //Horses methods
 
     /**
-     * The {@link Horse}s enter the paddock and add their information to the {@link #horsesInPaddock} array, then they wait until all the {@link Spectator}s have reached the {@link Paddock}, at the end the last {@link Horse} awakes the {@link Spectator}s.
+     * The Horses enter the paddock and add their information to the {@link #horsesInPaddock} array, then they wait until all the Spectators have reached the {@link Paddock}, at the end the last Horse awakes the Spectators.
      *
      * @param horseID ID of the calling thread.
      * @param pnk Max step size.
@@ -85,7 +83,7 @@ public class Paddock{
     }
 
     /**
-     * Called by the {@link Horse} to exit the {@link Paddock}.
+     * Called by the Horse to exit the {@link Paddock}.
      */
 
     public void proceedToStartLine(){
@@ -110,8 +108,9 @@ public class Paddock{
     }
 
     /**
-     * Function in which the {@link Spectator} enters the {@link Paddock}. The last {@link Spectator} to enter wakes up the {@link Horse}s. In this function the {@link Spectator} determines in which {@link Horse} they will bet.
-     * @return Returns the {@link Horse} in which the {@link Spectator} will bet.
+     * Function in which the Spectator enters the {@link Paddock}. The last Spectator to enter wakes up the Horses. In this function the Spectator determines in which Horse they will bet.
+     * @param spectatorID ID of the spectator calling the method.
+     * @return Returns the Horse in which the Spectator will bet.
      */
     public HorseInPaddock goCheckHorses(Integer spectatorID){
         HorseInPaddock result = null;

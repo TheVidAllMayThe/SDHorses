@@ -1,3 +1,4 @@
+package Spectator;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -6,7 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author  David Almeida, Manuel Xarez
  * @version 1.0
  * @since   2018-03-21
- * @see Main.HorseRace
  */
 
 public class Spectator extends Thread{

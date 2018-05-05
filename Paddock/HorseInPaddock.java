@@ -1,7 +1,8 @@
+package Paddock;
 import java.io.Serializable;
 
 /**
- * The {@link HorseInPaddock} class holds all the necessary about a {@link Horse} that is/has been in the {@link Paddock}.
+ * The {@link HorseInPaddock} class holds all the necessary about a Horse that is/has been in the {@link Paddock}.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0
@@ -17,7 +18,7 @@ public class HorseInPaddock implements Serializable{
     /**
      *
      * @param horseID ID of the Thread calling the method.
-     * @param pnk Maximum length of the move of a {@link Horse}.
+     * @param pnk Maximum length of the move of a Horse.
      */
     HorseInPaddock(int horseID, int pnk) {
         this.horseID = horseID;

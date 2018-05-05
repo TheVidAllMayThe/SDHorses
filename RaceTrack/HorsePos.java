@@ -1,5 +1,6 @@
+package RaceTrack;
 /**
- * The {@link HorsePos} class holds all the necessary information about a {@link Horse} that's racing or that has finished a race.
+ * The {@link HorsePos} class holds all the necessary information about a Horse that's racing or that has finished a race.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0
@@ -19,7 +20,7 @@ public class HorsePos implements Comparable<HorsePos>{
     /**
      *
      * @param horseID ID of the Thread invoking the constructor.
-     * @param myTurn Set to true if it's the starting {@link Horse}.
+     * @param myTurn Set to true if it's the starting Horse.
      */
 
     HorsePos(int horseID, boolean myTurn) {

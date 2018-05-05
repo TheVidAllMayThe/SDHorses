@@ -1,3 +1,4 @@
+package Stable;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.ThreadLocalRandom;
@@ -5,16 +6,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The {@link Stable} class is a monitor that contains all the
- * necessary methods to be used in mutual exclusive access by the {@link Broker} and {@link Horse}s to itself.
+ * necessary methods to be used in mutual exclusive access by the Broker and Horses to itself.
  * <p>
-* This is where the {@link Horse}s are initially and after a race.
+* This is where the Horses are initially and after a race.
 *
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see Main.HorseRace
- *@see Threads.Broker
- *@see Horse
+
 */
 
 public class Stable {
@@ -44,7 +43,7 @@ public class Stable {
     }
 
     /**
-     * {@link Broker} awakes the {@link Horse}s who are waiting to enter the {@link Paddock}.
+     * Broker awakes the Horses who are waiting to enter the Paddock.
      */
     public void summonHorsesToPaddock(){
         r1.lock();
@@ -61,7 +60,7 @@ public class Stable {
     }
 
     /**
-     * Last function of {@link Broker} lifecycle, awakes {@link Horse}s waiting to enter {@link Paddock}.
+     * Last function of Broker lifecycle, awakes Horses waiting to enter Paddock.
      */
     public void entertainTheGuests(){
         r1.lock();
@@ -78,10 +77,12 @@ public class Stable {
     }
 
     /**
-     * {@link Horse}s wait to move to {@link Paddock}.
-     *
-     * @param raceNum Number of the race in which the calling {@link Horse} will participate.
+     * Horses wait to move to Paddock.
+     * @param horseID Id of the horse calling the method.
+     * @param pnk Chance to win of the horse.
+     * @param raceNum Number of the race in which the calling Horse will participate.
      */
+
 
     public void proceedToStable(Integer raceNum, Integer horseID, Integer pnk){
         r1.lock();

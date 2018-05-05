@@ -1,3 +1,8 @@
+package Broker;
+/**
+ * Parent class to any monitor proxy. Holds common variables and methods.
+ */
+
 import java.net.InetSocketAddress;
 import java.net.InetAddress;
 import java.net.Socket;

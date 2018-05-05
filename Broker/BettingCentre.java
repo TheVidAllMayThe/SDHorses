@@ -1,13 +1,17 @@
+package Broker;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
 
+
 /**
-* The {@link BettingCentre} class is a monitor that contains all the
+* The {@link BettingCentre} class is a proxy monitor that contains all the
 * necessary methods to be used in mutual exclusive access by the {@link Broker} and Spectator.
 * <p>
 * This is where the Bets are handled.
 *
+ * This class will request the server responsible for the Betting Center to execute it's methods.
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
@@ -16,10 +20,20 @@ import java.util.LinkedList;
 
 public class BettingCentre extends MonitorProxy{
 
+
+    /**
+     * Constructor for the class.
+     * @param address address of the server responsible for the betting center.
+     */
+
     BettingCentre(InetSocketAddress address){
         super(address);
     }
- 
+
+    /**
+     * Broker accepts a Bet, wakes next Spectator in line and waits for the next one until all Bet's are taken.
+     */
+
     public void acceptTheBets(){
         try{
             
@@ -38,7 +52,14 @@ public class BettingCentre extends MonitorProxy{
             e.printStackTrace();
         }
     }
-    
+
+
+    /**
+     * Broker} verifies if any spectator won a bet.
+     *
+     * @param   winnerList  Integer array containing the ID of all the Horse}s who won.
+     * @return  boolean     Returns true if any spectator won a bet.
+     */
     public boolean areThereAnyWinners(Integer[] winnerList) {
         boolean result = false;
         try {
@@ -59,6 +80,11 @@ public class BettingCentre extends MonitorProxy{
         }
         return result;
     }
+
+
+    /**
+     * Broker honors a Bet, wakes next spectator in line and waits for the next spectator claiming a reward until all rewards are given.
+     */
 
     public void honorBets() {
         try {

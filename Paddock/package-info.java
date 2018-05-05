@@ -1,4 +1,4 @@
 /**
- * Monitors is a package containing the classes representing the shared memory areas that the threads will access.
+ * Package with sources of the files to be used by the server responsible for the Paddock.
  */
-package Monitors;
+package Paddock;

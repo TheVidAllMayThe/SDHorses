@@ -1,3 +1,4 @@
+package Spectator;
 import java.net.InetSocketAddress;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -5,16 +6,14 @@ import java.util.LinkedList;
 
 /**
 * The {@link ControlCentreAndWatchingStand} class is a monitor that contains
-* necessary methods to be used in mutual exclusive access by the {@link Broker}, {@link Spectator}s and {@link Horse}s.
+* necessary methods to be used in mutual exclusive access by the Broker, {@link Spectator}s and Horses.
 * <p>
-* This is where the {@link Broker} mostly operates and the {@link Spectator}s watch the race.
+* This is where the Broker mostly operates and the {@link Spectator}s watch the race.
 * 
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see Main.HorseRace
-* @see Broker
-* @see Horse
+
 * @see Spectator
 */
 
@@ -24,9 +23,13 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
         super(address);
     }
 
+
     /**
-     * {@link Spectator} waits for next race of the day, last {@link Spectator} waiting wakes the {@link Broker}
+     *
+     * {@link Spectator} waits for next race of the day, last {@link Spectator} waiting wakes the Broker
      * who's ready to start the race.
+     * @param spectatorID Spectator ID.
+     * @param budget Budget of the spectator.
      */
     public void waitForNextRace(int spectatorID, double budget){
         try{
@@ -49,8 +52,10 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
         }
     }
 
+
     /**
      * {@link Spectator} waits while watching the race.
+     * @param spectatorID ID of the spectator.
      */
     public void goWatchTheRace(int spectatorID){
         try{
@@ -74,10 +79,11 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
     
     /**
      * {@link Spectator} checks if he won his bet.
-     *
-     * @param   horseID  ID of the {@link Horse} whom the {@link Spectator} bet on.
+     * @param spectatorID ID of the spectator.
+     * @param   horseID  ID of the Horse whom the {@link Spectator} bet on.
      * @return  True if the {@link Spectator} won.
      */
+
     public boolean haveIWon(int horseID, int spectatorID){
         boolean result = false;
         try {
@@ -98,6 +104,7 @@ public class ControlCentreAndWatchingStand extends MonitorProxy{
 
     /**
      * Last function of {@link Spectator} lifecycle.
+     * @param spectatorID ID of the spectator.
      */
     public void relaxABit(Integer spectatorID){ 
         try{

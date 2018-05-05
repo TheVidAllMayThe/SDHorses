@@ -1,9 +1,15 @@
+package BettingCentre;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
+
+/**
+ * Class that initializes the server.
+ */
 
 public class Main {
     private static int closed = 0;
@@ -41,7 +47,9 @@ public class Main {
         }
     }
 
-    public static void closed(){
+
+
+    static void closed(){
         r1.lock();
         try{
             closed++;

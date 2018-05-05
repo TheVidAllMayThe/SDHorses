@@ -1,3 +1,5 @@
+package Broker;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,26 +12,25 @@ import java.util.LinkedList;
 
 /**
  * The {@link Stable} class is a monitor that contains all the
- * necessary methods to be used in mutual exclusive access by the {@link Broker} and {@link Horse}s to itself.
+ * necessary methods to be used in mutual exclusive access by the {@link Broker} and Horses to itself.
  * <p>
-* This is where the {@link Horse}s are initially and after a race.
+* This is where the Horses are initially and after a race.
 *
+ * This class serves as a proxy to communicate with the server responsible for the Stable.
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see Main.HorseRace
- *@see Threads.Broker
- *@see Horse
+
 */
 
-@SuppressWarnings("JavadocReference")
+
 public class Stable extends MonitorProxy{
     public Stable(InetSocketAddress address){
         super(address);
     }
 
     /**
-     * {@link Broker} awakes the {@link Horse}s who are waiting to enter the {@link Paddock}.
+     * {@link Broker} awakes the Horses who are waiting to enter the Paddock.
      */
     public void summonHorsesToPaddock(){
         try{
@@ -53,7 +54,7 @@ public class Stable extends MonitorProxy{
     }
 
     /**
-     * Last function of {@link Broker} lifecycle, awakes {@link Horse}s waiting to enter {@link Paddock}.
+     * Last function of {@link Broker} lifecycle, awakes Horses waiting to enter Paddock.
      */
     public void entertainTheGuests(){
         try{

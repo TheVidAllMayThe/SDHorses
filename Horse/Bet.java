@@ -1,3 +1,5 @@
+package Horse;
+
 /**
  * The {@link Bet} class holds all the information regarding a {@link Bet}.
  *
@@ -16,9 +18,9 @@ public class Bet{
     /**
      * Spectator checks if he won his bet.
      *
-     * @param   pID ID of the {@link Spectator} who's making the bet.
-     * @param   betAmount Amount of money that the {@link Spectator} wishes to bet.
-     * @param horseID ID of the {@link Horse} in  which the {@link Spectator} wishes to bet.
+     * @param   pID ID of the Spectator who's making the bet.
+     * @param   betAmount Amount of money that the Spectator wishes to bet.
+     * @param horseID ID of the Horse in  which the Spectator wishes to bet.
      * @param   odds  Odds of the bet.
      */
     public Bet(int pID, double betAmount, int horseID, double odds) {

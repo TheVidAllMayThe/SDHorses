@@ -1,4 +1,4 @@
 /**
- * Monitors.AuxiliaryClasses aggregates the different data structures used to facilitate the development of the Monitor classes.
+ * Package with sources of the files to be used by the server responsible for the ControlCentreAndWatchingStand.
  */
-package Monitors.AuxiliaryClasses;
+package ControlCentreAndWatchingStand;

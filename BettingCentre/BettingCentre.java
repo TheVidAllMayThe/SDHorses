@@ -1,18 +1,19 @@
+package BettingCentre;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
-* The {@link BettingCentre} class is a monitor that contains all the
-* necessary methods to be used in mutual exclusive access by the {@link Broker} and {@link Spectator}.
+* The BettingCentre class is a monitor that contains all the
+* necessary methods to be used in mutual exclusive access by the Broker and Spectator.
 * <p>
-* This is where the {@link Bet}s are handled.
+* This is where the bets are handled.
 *
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see Broker
-* @see Spectator
+
 */
 
 public class BettingCentre{
@@ -45,7 +46,7 @@ public class BettingCentre{
     }
 
     /**
-     * {@link Broker} accepts a {@link Bet}, wakes next {@link Spectator} in line and waits for the next one until all {@link Bet}s are taken.
+     * Broker accepts a Bet, wakes next Spectator in line and waits for the next one until all Bet's are taken.
      */
 
     public void acceptTheBets() throws IllegalMonitorStateException{
@@ -69,10 +70,10 @@ public class BettingCentre{
     }
     
     /**
-     * {@link Broker} verifies if any {@link Spectator} won a {@link Bet}.
+     * Broker} verifies if any spectator won a bet.
      *
-     * @param   winnerList  Integer array containing the ID of all the {@link Horse}s who won.
-     * @return  boolean     Returns true if any {@link Spectator} won a {@link Bet}.
+     * @param   winnerList  Integer array containing the ID of all the Horse}s who won.
+     * @return  boolean     Returns true if any spectator won a bet.
      */
 
     public boolean areThereAnyWinners(Integer[] winnerList) {
@@ -99,7 +100,7 @@ public class BettingCentre{
     }
 
     /**
-     * {@link Broker} honors a {@link Bet}, wakes next {@link Spectator} in line and waits for the next {@link Spectator} claiming a reward until all rewards are given.
+     * Broker honors a Bet, wakes next spectator in line and waits for the next spectator claiming a reward until all rewards are given.
      */
     public void honorBets(){
         r1.lock();
@@ -124,12 +125,13 @@ public class BettingCentre{
 
 
     /**
-     * {@link Spectator} waits in line, places a {@link Bet} and then wakes the {@link Broker}.
+     * spectator waits in line, places a bet and then wakes the Broker}.
      *
      * @param pid ID of the thread calling the method.
      * @param value Amount to bet.
-     * @param horseID ID of the {@link Horse} in which to bet.
-     * @param odds Odds of the {@link Horse} in which to bet.
+     * @param horseID ID of the Horse} in which to bet.
+     * @param odds Odds of the Horse} in which to bet.
+     * @param budget Budget of the bet.
      */
 
     public void placeABet(Integer pid, Double value, Integer horseID, Double odds, Double budget){
@@ -155,9 +157,11 @@ public class BettingCentre{
     }
 
     /**
-     * Called by a {@link Spectator} to collect the gain of after having won a {@link Bet}.
+     * Called by a spectator to collect the gain of after having won a bet.
      *
      * @param spectatorID ID of the thread calling the method.
+     * @param budget Budget of the bet to be collected.
+     * @return Collected gains.
      */
     public double goCollectTheGains(Integer spectatorID, Double budget){
         double result = 0;

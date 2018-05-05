@@ -1,3 +1,4 @@
+package Spectator;
 import java.net.InetSocketAddress;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -5,14 +6,13 @@ import java.util.LinkedList;
 
 /**
 * The {@link BettingCentre} class is a monitor that contains all the
-* necessary methods to be used in mutual exclusive access by the {@link Broker} and {@link Spectator}.
+* necessary methods to be used in mutual exclusive access by the Broker and {@link Spectator}.
 * <p>
-* This is where the {@link Bet}s are handled.
+* This is where the Bets are handled.
 *
 * @author  David Almeida, Manuel Xarez
 * @version 1.0
 * @since   2018-03-21
-* @see Broker
 * @see Spectator
 */
 
@@ -23,12 +23,13 @@ public class BettingCentre extends MonitorProxy{
     }
 
     /**
-     * {@link Spectator} waits in line, places a {@link Bet} and then wakes the {@link Broker}.
+     * {@link Spectator} waits in line, places a Bet and then wakes the Broker.
      *
      * @param pid ID of the thread calling the method.
      * @param value Amount to bet.
-     * @param horseID ID of the {@link Horse} in which to bet.
-     * @param odds Odds of the {@link Horse} in which to bet.
+     * @param horseID ID of the Horse in which to bet.
+     * @param odds Odds of the Horse in which to bet.
+     * @param budget Budget of the bet.
      */
 
     public void placeABet(int pid, double value, int horseID, double odds, double budget){
@@ -52,10 +53,13 @@ public class BettingCentre extends MonitorProxy{
     }
 
     /**
-     * Called by a {@link Spectator} to collect the gain of after having won a {@link Bet}.
+     * Called by a {@link Spectator} to collect the gain of after having won a Bet.
      *
      * @param spectatorID ID of the thread calling the method.
+     * @param budget Budget of the bet.
+     * @return Gains collected.
      */
+
     public double goCollectTheGains(int spectatorID, double budget){
         double result = 0.0;
         try {

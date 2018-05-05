@@ -1,3 +1,4 @@
+package Spectator;
 import java.net.InetSocketAddress;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -5,7 +6,9 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.net.SocketException;
-
+/**
+ * Parent class to any monitor proxy. Holds common variables and methods.
+ */
 public class MonitorProxy{
     protected InetSocketAddress address;
     protected Socket clientSocket;

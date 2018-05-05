@@ -1,3 +1,5 @@
+package Broker;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,24 +12,34 @@ import java.util.LinkedList;
 
 /**
  * The {@link RaceTrack} class is a monitor that contains
- * necessary methods to be used in mutual exclusive access by multiple {@link Horse}s and by the {@link Broker}.
+ * necessary methods to be used in mutual exclusive access by multiple Horses and by the {@link Broker}.
  * <p>
- * This is where the {@link Horse}s compete with each other to reach the end of the race.
+ * This is where the Horses compete with each other to reach the end of the race.
  *
+ * This class serves as a proxy to communicate with the server responsible for the RaceTrack.
  * @author  David Almeida, Manuel Xarez
  * @version 1.0
  * @since   2018-03-21
- * @see Main.HorseRace
+
 
  */
 
-@SuppressWarnings("JavadocReference")
+
 public class RaceTrack extends MonitorProxy{
 
+
+    /**
+     * Constructor of the class RaceTrack.
+     * @param address Address of the server responsible for the raceTrack.
+     */
     RaceTrack(InetSocketAddress address){
         super(address);
     }
 
+
+    /**
+     * The {@link Broker} allows the first Horse to start running.
+     */
     public void startTheRace(){
         try {
             
@@ -47,6 +59,11 @@ public class RaceTrack extends MonitorProxy{
         }
     }
 
+
+    /**
+     * The {@link Broker} enters the {@link RaceTrack} to see which Horses have won the race
+     * @return Array containing the ID's of the winning Horses.
+     */
 
     public Integer[] reportResults(){
         Integer[] result = null;
