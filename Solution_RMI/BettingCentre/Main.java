@@ -1,9 +1,10 @@
-package BettingCentre;
-
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
+import java.rmi.NotBoundException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
@@ -24,10 +25,10 @@ public class Main {
             groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 2);
 
             //Monitor is now open to requests from clients
-            BettingCentre bc = new BettingCentre();
-            BettingCentre_Interface bc_i = (BettingCentre_Interface) UnicastRemoteObject.exportObject();
+            BettingCentre bc = new BettingCentre(groi);
+            BettingCentre_Interface bc_i = (BettingCentre_Interface) UnicastRemoteObject.exportObject(bc, sourcePort);
             registry.bind("BettingCentre", bc_i);
-        } catch(RemoteException e){
+        } catch(RemoteException | NotBoundException | AlreadyBoundException | UnknownHostException e){
             e.printStackTrace();
         }
     }

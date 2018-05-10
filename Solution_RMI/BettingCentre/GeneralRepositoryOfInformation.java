@@ -1,5 +1,3 @@
-package BettingCentre;
-
 import java.util.LinkedList;
 import java.net.Socket;
 import java.io.ObjectInputStream;

@@ -1,5 +1,3 @@
-package BettingCentre;
-
 /**
  * The {@link Bet} class holds all the information regarding a {@link Bet}.
  *

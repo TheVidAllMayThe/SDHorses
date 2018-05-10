@@ -3,9 +3,9 @@ declare -a arr=("GeneralRepositoryOfInformation" "ControlCentreAndWatchingStand"
 for i in {1..9}
 do
     cd ${arr[i-1]}
-    javac ${arr[i-1]}/*.java
-    jar cfe ../out/artifacts/${arr[i-1]}_jar/${arr[i-1]}.jar ${arr[i-1]}.Main ${arr[i-1]}/*.class 
-    rm ${arr[i-1]}/*.class
+    javac *.java
+    jar cfe ../out/artifacts/${arr[i-1]}_jar/${arr[i-1]}.jar Main *.class 
+    rm *.class
     cd ../
     scp -r out/artifacts/${arr[i-1]}_jar/* sd0304@l040101-ws0$i.ua.pt:~/
 done
