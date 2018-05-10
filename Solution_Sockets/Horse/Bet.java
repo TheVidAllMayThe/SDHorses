@@ -1,4 +1,4 @@
- * The {@link Bet} class holds all the information regarding a {@link Bet}.
+ /** The {@link Bet} class holds all the information regarding a {@link Bet}.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0

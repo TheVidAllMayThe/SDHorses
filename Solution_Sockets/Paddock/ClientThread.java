@@ -3,6 +3,7 @@ import java.lang.reflect.Method;
 import java.lang.NoSuchMethodException;
 import java.lang.IllegalAccessException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.io.ObjectInputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
- * The {@link Broker} class is a thread that contains the lifecycle of the {@link Broker} during the day.
+ /** The {@link Broker} class is a thread that contains the lifecycle of the {@link Broker} during the day.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0

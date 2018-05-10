@@ -1,3 +1,4 @@
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The {@link Spectator} class is a thread that contains the lifecycle of the {@link Spectator} during the day.

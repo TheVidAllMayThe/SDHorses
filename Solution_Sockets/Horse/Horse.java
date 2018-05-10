@@ -1,3 +1,4 @@
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The {@link Horse} class is a thread that contains the lifecycle of the {@link Horse} during the day.

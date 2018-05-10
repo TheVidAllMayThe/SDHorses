@@ -1,4 +1,4 @@
- * The {@link HorsePos} class holds all the necessary information about a {@link Horse} that's racing or that has finished a race.
+ /** The {@link HorsePos} class holds all the necessary information about a {@link Horse} that's racing or that has finished a race.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0

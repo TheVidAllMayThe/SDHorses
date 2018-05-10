@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
 
@@ -38,9 +39,7 @@ public class Stable extends MonitorProxy {
                 System.out.println("Something wrong with summonHorsesToPaddock");
 
             
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }

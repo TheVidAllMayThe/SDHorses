@@ -1,3 +1,4 @@
+import java.io.Serializable;
 
 /**
  * The {@link HorseInPaddock} class holds all the necessary about a Horse that is/has been in the {@link Paddock}.
@@ -8,7 +9,7 @@
  */
 
 
-public class HorseInPaddock implements Serializable{
+public class HorseInPaddock implements Serializable {
     private int horseID;
     private int pnk;
     private double odds;
