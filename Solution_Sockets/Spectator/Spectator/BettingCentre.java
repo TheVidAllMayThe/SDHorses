@@ -1,7 +1,6 @@
 package Spectator;
-import java.net.InetSocketAddress;
 import java.io.IOException;
-import java.net.UnknownHostException;
+import java.net.InetSocketAddress;
 import java.util.LinkedList;
 
 /**
