@@ -15,7 +15,7 @@ import java.util.LinkedList;
 
  */
 
-public class ControlCentreAndWatchingStand extends Broker.MonitorProxy {
+public class ControlCentreAndWatchingStand extends MonitorProxy {
 
 
     /**

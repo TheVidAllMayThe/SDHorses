@@ -194,8 +194,4 @@ public class BettingCentre{
         }
         return result;
     }
-
-    public int getNumberOfSpectators(){
-        return this.numberOfSpectators;
-    }
 }
