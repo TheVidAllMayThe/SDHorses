@@ -1,5 +1,3 @@
-package Broker;
-
 /**
  * The {@link Broker} class is a thread that contains the lifecycle of the {@link Broker} during the day.
  *
@@ -25,7 +23,7 @@ public class Broker extends Thread{
      * @param rt Instance of RaceTrack.
      */
 
-    Broker(int numberOfRaces, Stable st, BettingCentre bc, ControlCentreAndWatchingStand ccws, RaceTrack rt){
+    Broker(int numberOfRaces, Stable_Interface st, BettingCentre_Interface bc, ControlCentreAndWatchingStand_Interface ccws, RaceTrack_Interface rt){
         this.numberOfRaces = numberOfRaces;
         this.st = st;
         this.bc = bc;

@@ -1,4 +1,3 @@
-package RaceTrack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,18 +17,18 @@ import java.util.concurrent.locks.ReentrantLock;
  * @see HorsePos
  */
 
-public class RaceTrack {
+public class RaceTrack implements RaceTrack_Interface{
     private ReentrantLock r1;
     private Condition horsesCond;
 
     private HorsePos[] horses;
     private int numHorses;
     private int numHorsesFinished;
-    private GeneralRepositoryOfInformation groi;
+    private GeneralRepositoryOfInformation_Interface groi;
     private int numberOfHorses;
     private int raceLength;
 
-    RaceTrack(GeneralRepositoryOfInformation groi){
+    RaceTrack(GeneralRepositoryOfInformation_Interface groi){
         r1 = new ReentrantLock();
         horsesCond = r1.newCondition();
         numberOfHorses = groi.getNumberOfHorses();
@@ -45,6 +44,7 @@ public class RaceTrack {
     /**
      * The Broker allows the first Horse to start running.
      */
+    @Override
     public void startTheRace(){
         r1.lock();
         try{
@@ -66,6 +66,7 @@ public class RaceTrack {
      * @return Array containing the ID's of the winning Horses.
      */
 
+    @Override
     public Integer[] reportResults(){
 
         Integer[] result = null;
@@ -104,6 +105,8 @@ public class RaceTrack {
      * @param pID Id of the calling Thread.
      * @return Returns the position of the Horse in the array {@link #horses}.
      */
+
+    @Override
     public int proceedToStartLine(Integer pID){   //Returns the pos in the array of Horses
         int returnValue = -1;
         r1.lock();
@@ -136,6 +139,7 @@ public class RaceTrack {
      * @param moveAmount Amount to be increased in the position of the Horse.
      * @param horseID ID of the horse calling the method.
      */
+    @Override
     public void makeAMove(Integer horsePos, Integer moveAmount, Integer horseID) {
         r1.lock();
         try {
@@ -161,6 +165,7 @@ public class RaceTrack {
      * @param horseID ID of the horse calling the method.
      * @return Returns true if the position of the Horse is equal or greater than the race length.
      */
+    @Override
     public boolean hasFinishLineBeenCrossed(Integer horsePos, Integer horseID){ 
         boolean returnVal = false;
         r1.lock();
@@ -195,9 +200,5 @@ public class RaceTrack {
             r1.unlock();
         }
         return returnVal;
-    }
-
-    public int getNumberOfHorses(){
-        return this.numberOfHorses;
     }
 }

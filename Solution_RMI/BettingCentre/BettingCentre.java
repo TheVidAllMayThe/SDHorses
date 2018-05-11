@@ -26,9 +26,9 @@ public class BettingCentre implements BettingCentre_Interface{
     private int numWinners;
     private int currentNumberOfSpectators;
     private int numHorsesFirst;
-    private GeneralRepositoryOfInformation groi;
+    private GeneralRepositoryOfInformation_Interface groi;
 
-    BettingCentre(GeneralRepositoryOfInformation groi){
+    BettingCentre(GeneralRepositoryOfInformation_Interface groi){
         this.numberOfSpectators = groi.getNumberOfSpectators();
         this.bets = new Bet[numberOfSpectators];
         this.r1 = new ReentrantLock();

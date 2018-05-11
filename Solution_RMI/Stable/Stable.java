@@ -1,4 +1,3 @@
-package Stable;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,17 +15,17 @@ import java.util.concurrent.ThreadLocalRandom;
 
 */
 
-public class Stable {
+public class Stable implements Stable_Interface{
     private ReentrantLock r1;
     private Condition horsesToPaddock;
     private boolean canHorsesMoveToPaddock;
     private Condition newRace;
     private int numHorses;
     private int raceNumber;
-    private GeneralRepositoryOfInformation groi;
+    private GeneralRepositoryOfInformation_Interface groi;
     private int numberOfHorses, numberOfRaces, raceLength;
 
-    Stable(GeneralRepositoryOfInformation groi){
+    Stable(GeneralRepositoryOfInformation_Interface groi){
         r1 = new ReentrantLock();
         horsesToPaddock = r1.newCondition();
         canHorsesMoveToPaddock = false;
@@ -45,6 +44,7 @@ public class Stable {
     /**
      * Broker awakes the Horses who are waiting to enter the Paddock.
      */
+    @Override
     public void summonHorsesToPaddock(){
         r1.lock();
         try{
@@ -62,6 +62,7 @@ public class Stable {
     /**
      * Last function of Broker lifecycle, awakes Horses waiting to enter Paddock.
      */
+    @Override
     public void entertainTheGuests(){
         r1.lock();
         try{
@@ -83,7 +84,7 @@ public class Stable {
      * @param raceNum Number of the race in which the calling Horse will participate.
      */
 
-
+    @Override
     public void proceedToStable(Integer raceNum, Integer horseID, Integer pnk){
         r1.lock();
         try{ 
@@ -93,7 +94,7 @@ public class Stable {
 
             groi.setHorsesState("ATS",horseID);
             groi.setHorsesPnk(pnk, horseID); 
-            groi.setHorseProbability(-1, horseID);
+            groi.setHorseProbability(-1.0, horseID);
             groi.setHorseIteration(-1, horseID);
             groi.setHorseTrackPosition(-1, horseID);
             groi.setHorsesStanding('-', horseID); 
@@ -115,9 +116,5 @@ public class Stable {
         } finally {
             r1.unlock();
         }
-    }
-
-    public int getNumberOfHorses(){
-        return this.numberOfHorses;
     }
 }

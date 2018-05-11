@@ -1,5 +1,3 @@
-package ControlCentreAndWatchingStand;
-
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 
@@ -15,7 +13,7 @@ import java.util.concurrent.locks.Condition;
 
 */
 
-public class ControlCentreAndWatchingStand{
+public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingStand_Interface{
     private ReentrantLock r1; 
     private Condition brokerCond;
     private boolean lastHorseFinished;
@@ -31,10 +29,10 @@ public class ControlCentreAndWatchingStand{
     private int raceLength;
     private int numberOfSpectators;
     private int numberOfHorses;
-    private GeneralRepositoryOfInformation groi;
+    private GeneralRepositoryOfInformation_Interface groi;
 
 
-    public ControlCentreAndWatchingStand(GeneralRepositoryOfInformation groi){
+    public ControlCentreAndWatchingStand(GeneralRepositoryOfInformation_Interface groi){
         this.r1 = new ReentrantLock(false);
         this.brokerCond = r1.newCondition();
         this.lastHorseFinished = false;
@@ -59,6 +57,7 @@ public class ControlCentreAndWatchingStand{
      * Method used to set the Broker initial state.
      */
 
+    @Override
     public void openingTheEvents(){
     }
     
@@ -67,6 +66,7 @@ public class ControlCentreAndWatchingStand{
      * @param numRace Number of the next race.
      */
 
+    @Override
     public void summonHorsesToPaddock(Integer numRace){
 
         r1.lock();
@@ -88,6 +88,8 @@ public class ControlCentreAndWatchingStand{
     /**
      *  Broker  waits for all  Horse threads to have reached the finish line before proceeding.
      */
+
+    @Override
     public void startTheRace(){
         r1.lock();
         try{ 
@@ -105,6 +107,7 @@ public class ControlCentreAndWatchingStand{
 
     }
 
+    @Override
     /**
      *  Broker declares the Horses who won and wakes up the Spectators watching the race.
      *
@@ -125,6 +128,7 @@ public class ControlCentreAndWatchingStand{
     }
 
 
+    @Override
     /**
      * Last function of Broker lifecycle.
      */
@@ -147,7 +151,7 @@ public class ControlCentreAndWatchingStand{
      * @param budget Budget of the spectator.
      */
 
-
+    @Override
     public void waitForNextRace(Integer spectatorID, Double budget){
         r1.lock();
         try{
@@ -174,6 +178,8 @@ public class ControlCentreAndWatchingStand{
      * Spectator waits while watching the race.
      * @param spectatorID ID of the spectator calling the method.
      */
+
+    @Override
     public void goWatchTheRace(Integer spectatorID){
         r1.lock();
         try {
@@ -202,6 +208,8 @@ public class ControlCentreAndWatchingStand{
      * @param spectatorID ID of the spectator calling the method.
      * @return  True if the Spectator won.
      */
+
+    @Override
     public boolean haveIWon(Integer horseID, Integer spectatorID){
         boolean result = false;
         r1.lock();
@@ -225,6 +233,8 @@ public class ControlCentreAndWatchingStand{
      * Last function of Spectator lifecycle.
      * @param spectatorID ID of the spectator calling the method.
      */
+
+    @Override
     public void relaxABit(Integer spectatorID){ 
         r1.lock();
         try{
@@ -240,6 +250,8 @@ public class ControlCentreAndWatchingStand{
      * Horse proceeds to paddock, last Horse awakes Spectators
      * that are waiting for the Horses to enter the Paddock.
      */
+
+    @Override
     public void proceedToPaddock(){
         r1.lock();
         try {
@@ -258,6 +270,8 @@ public class ControlCentreAndWatchingStand{
     /**
      * The last Horse announces in the {@link ControlCentreAndWatchingStand} that he finished the race waking up the Broker.
      */
+
+    @Override
     public void makeAMove(){
         r1.lock();
         try {
@@ -271,13 +285,5 @@ public class ControlCentreAndWatchingStand{
         }finally{
             r1.unlock();
         }
-    }
-
-    public int getNumberOfSpectators(){
-        return this.numberOfSpectators;
-    }
-
-    public int getNumberOfHorses(){
-        return this.numberOfHorses;
     }
 }

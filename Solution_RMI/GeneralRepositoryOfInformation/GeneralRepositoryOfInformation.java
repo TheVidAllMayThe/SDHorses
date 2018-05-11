@@ -1,24 +1,22 @@
-package GeneralRepositoryOfInformation;
-
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.net.ServerSocket;
 import java.io.IOException;
-import java.net.Inet4Address;
+import java.net.InetAddress;
 
 
 /**
  * This class stores the state of all the components of the program. Every time that there's a change the program logs the new state to a file (log.txt).
  */
 
-public class GeneralRepositoryOfInformation{
+public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInformation_Interface{
     private ReentrantLock r1 = new ReentrantLock(false);
     private Condition[] conditions = new Condition[5];
     private PrintWriter writer;
 
-    private Inet4Address[] monitorAddresses = new Inet4Address[5];
+    private InetAddress[] monitorAddresses = new InetAddress[5];
     private int[] monitorPorts = new int[5];
     private int numberOfRaces, numberOfHorses, numberOfSpectators, raceLength;
 
@@ -115,7 +113,8 @@ public class GeneralRepositoryOfInformation{
         writer.flush();
     }    
     
-    public void setMonitorAddress(Inet4Address address, Integer port, Integer monitor){
+    @Override
+    public void setMonitorAddress(InetAddress address, Integer port, Integer monitor){
         r1.lock();
         try{
             monitorAddresses[monitor] = address;
@@ -129,7 +128,8 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
-    public Inet4Address getMonitorAddress(Integer monitor){
+    @Override
+    public InetAddress getMonitorAddress(Integer monitor){
         r1.lock();
         try{
             while(monitorAddresses[monitor] == null) conditions[monitor].await();
@@ -141,6 +141,7 @@ public class GeneralRepositoryOfInformation{
         return monitorAddresses[monitor];
     }
 
+    @Override
     public int getMonitorPort(Integer monitor){
         r1.lock();
         try{
@@ -153,6 +154,7 @@ public class GeneralRepositoryOfInformation{
         return monitorPorts[monitor];
     }
 
+    @Override
     public void setBrokerState(String state){
         r1.lock();
         try{
@@ -165,6 +167,7 @@ public class GeneralRepositoryOfInformation{
         } 
     }
 
+    @Override
     public void setSpectatorsState(String state, Integer i){
         r1.lock();
         try{
@@ -177,6 +180,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
     
+    @Override
     public void setHorsesState(String state, Integer i){
         r1.lock();
         try{
@@ -189,6 +193,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setSpectatorsBudget(Double budget, Integer i){
         r1.lock();
         try{
@@ -203,6 +208,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setRaceNumber(Integer raceNu){
         r1.lock();
         try{
@@ -215,6 +221,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setHorsesPnk(Integer pnk, Integer i){
         r1.lock();
         try{
@@ -229,6 +236,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setRaceDistance(Integer distance){
         r1.lock();
         try{
@@ -242,6 +250,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setSpectatorsSelection(Integer horse, Integer i){
         r1.lock();
         try{
@@ -254,6 +263,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setSpectatorsBet(Double bet, Integer i){
         r1.lock();
         try{
@@ -268,6 +278,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setHorseProbability(Double prob, Integer i){
         r1.lock();
         try{
@@ -287,6 +298,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setHorseIteration(Integer iteration, Integer i){
         r1.lock();
         try{
@@ -303,6 +315,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setHorseTrackPosition(Integer position, Integer i){
         r1.lock();
         try{
@@ -319,6 +332,7 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public void setHorsesStanding(Character standing, Integer i){
         r1.lock();
         try{
@@ -331,18 +345,22 @@ public class GeneralRepositoryOfInformation{
         }
     }
 
+    @Override
     public int getNumberOfSpectators(){
         return this.numberOfSpectators;
     }
 
+    @Override
     public int getNumberOfHorses(){
         return this.numberOfHorses;
     }
 
+    @Override
     public int getRaceLength(){
         return this.raceLength;
     }
 
+    @Override
     public int getNumberOfRaces(){
         return this.numberOfRaces;
     }

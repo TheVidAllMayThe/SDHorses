@@ -1,4 +1,3 @@
-package RaceTrack;
 /**
  * The {@link HorsePos} class holds all the necessary information about a Horse that's racing or that has finished a race.
  *
