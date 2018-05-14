@@ -13,7 +13,14 @@ public class Main {
         try{
             //Creates input and output streams
             int sourcePort = Integer.valueOf(args[0]);
-            Socket echoSocket = new Socket(InetAddress.getByName(args[1]), Integer.valueOf(args[2]));
+            Socket echoSocket = null;
+            while(echoSocket == null){
+                try{
+                    echoSocket = new Socket(InetAddress.getByName(args[1]), Integer.valueOf(args[2]));
+                }catch(Exception e){
+                }
+            }
+
             groi = new GeneralRepositoryOfInformation(echoSocket);
             
             //Calls method setMonitorAddress for monitor #4 (Race_Track)
