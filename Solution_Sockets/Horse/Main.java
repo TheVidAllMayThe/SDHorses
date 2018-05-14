@@ -7,7 +7,15 @@ public class Main {
     public static void main(String[] args){
         try{
             //Creates input and output streams
-            Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
+            Socket echoSocket = null;
+            while(echoSocket == null){
+                try{
+                    echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
+                }catch(IOException e){
+                }
+            }
+
+
             GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(echoSocket);
             
             //Gets address and port of all necessary monitors
@@ -44,7 +52,7 @@ public class Main {
                 ccws[i].closeConnection();
                 rt[i].closeConnection();
             }
-        } catch(IOException | InterruptedException e){
+        } catch(InterruptedException e){
             e.printStackTrace();
         }
     }

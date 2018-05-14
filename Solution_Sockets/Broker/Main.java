@@ -8,7 +8,14 @@ public class Main {
         Socket clientSocket = null;
         try{
             //Creates input and output streams
-            Socket echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
+            Socket echoSocket = null;
+            while(echoSocket == null){
+                try{
+                    echoSocket = new Socket(InetAddress.getByName(args[0]), Integer.valueOf(args[1]));
+                }catch(IOException e){
+                }
+            }
+
             GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(echoSocket);
             
             //Gets address and port of all necessary monitors
@@ -34,8 +41,6 @@ public class Main {
             bc.closeConnection();
             ccws.closeConnection();
             rt.closeConnection();
-        } catch(IOException e){
-            e.printStackTrace();
         } catch(InterruptedException e){
             e.printStackTrace();
         }

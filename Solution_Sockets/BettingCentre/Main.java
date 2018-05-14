@@ -23,8 +23,7 @@ public class Main {
             while(echoSocket == null){
                 try{
                     echoSocket = new Socket(InetAddress.getByName(args[1]), Integer.valueOf(args[2]));
-                    System.out.println(echoSocket);
-                }catch(Exception e){
+                }catch(IOException e){
                 }
             }
             groi = new GeneralRepositoryOfInformation(echoSocket);
