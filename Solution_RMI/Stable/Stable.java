@@ -1,7 +1,7 @@
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.ThreadLocalRandom;
-
+import java.rmi.RemoteException;
 
 /**
  * The {@link Stable} class is a monitor that contains all the
@@ -32,9 +32,13 @@ public class Stable implements Stable_Interface{
         newRace = r1.newCondition();
         numHorses = 0;
         raceNumber = -1;
-        numberOfHorses = groi.getNumberOfHorses();
-        numberOfRaces = groi.getNumberOfRaces();
-        raceLength = groi.getRaceLength();
+        try{
+            numberOfHorses = groi.getNumberOfHorses();
+            numberOfRaces = groi.getNumberOfRaces();
+            raceLength = groi.getRaceLength();
+        }catch(RemoteException e){
+            e.printStackTrace();    
+        }
         this.groi = groi;
         System.out.println("numberOfHorses: " + numberOfHorses);
         System.out.println("numberOfRaces: " + numberOfRaces);
@@ -70,7 +74,7 @@ public class Stable implements Stable_Interface{
             canHorsesMoveToPaddock = true;
             newRace.signalAll();
             horsesToPaddock.signal();
-        }catch(Exception e){
+        }catch(IllegalMonitorStateException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
@@ -111,7 +115,7 @@ public class Stable implements Stable_Interface{
             }
             horsesToPaddock.signal();
 
-        }catch (IllegalMonitorStateException | InterruptedException e){
+        }catch (IllegalMonitorStateException | InterruptedException | RemoteException e){
             e.printStackTrace();
         } finally {
             r1.unlock();

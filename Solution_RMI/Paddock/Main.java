@@ -25,15 +25,15 @@ public class Main {
                 }
             }
             
-            //Calls method setMonitorAddress for monitor #2 (Betting_centre)
-            groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 2);
+            //Calls method setMonitorAddress for monitor #0 (Paddock)
+            groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 0);
 
-
+        
             //Monitor is now open to requests from clients
             Registry registry = LocateRegistry.createRegistry(sourcePort);
-            BettingCentre bc = new BettingCentre(groi);
-            BettingCentre_Interface bc_i = (BettingCentre_Interface) UnicastRemoteObject.exportObject(bc, sourcePort);
-            registry.bind("BettingCentre", bc_i);
+            Paddock pd = new Paddock(groi);
+            Paddock_Interface pd_i = (Paddock_Interface) UnicastRemoteObject.exportObject(pd, sourcePort);
+            registry.bind("Paddock", pd_i);
         } catch(RemoteException | AlreadyBoundException | UnknownHostException e){
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.rmi.RemoteException;
 
 /**
 * The BettingCentre class is a monitor that contains all the
@@ -29,8 +30,12 @@ public class BettingCentre implements BettingCentre_Interface{
     private GeneralRepositoryOfInformation_Interface groi;
 
     BettingCentre(GeneralRepositoryOfInformation_Interface groi){
-        this.numberOfSpectators = groi.getNumberOfSpectators();
-        this.bets = new Bet[numberOfSpectators];
+        try{
+            this.numberOfSpectators = groi.getNumberOfSpectators();
+            this.bets = new Bet[numberOfSpectators];
+        }catch(RemoteException e){
+            e.printStackTrace();
+        }
         this.r1 = new ReentrantLock();
         this.brokerCond = r1.newCondition();
         this.spectatorCond = r1.newCondition();
@@ -61,7 +66,7 @@ public class BettingCentre implements BettingCentre_Interface{
             }
 
             currentNumberOfSpectators = 0;
-        }catch (IllegalMonitorStateException | InterruptedException e){
+        }catch (IllegalMonitorStateException | InterruptedException | RemoteException e){
             e.printStackTrace();
         } finally {
             r1.unlock();
@@ -90,7 +95,7 @@ public class BettingCentre implements BettingCentre_Interface{
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (IllegalMonitorStateException e) {
             e.printStackTrace();
         } finally {
             r1.unlock();
@@ -152,7 +157,7 @@ public class BettingCentre implements BettingCentre_Interface{
             resolvedSpectator = false;
             brokerCond.signal();
 
-        }catch(InterruptedException ie){
+        }catch(InterruptedException | RemoteException ie){
             ie.printStackTrace();
         }finally{
             r1.unlock();
@@ -192,7 +197,7 @@ public class BettingCentre implements BettingCentre_Interface{
             }
             groi.setSpectatorsBudget(budget, spectatorID);
         
-        }catch(InterruptedException ie){
+        }catch(InterruptedException | RemoteException ie){
             ie.printStackTrace();
         }finally{
             r1.unlock();

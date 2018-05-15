@@ -1,5 +1,6 @@
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
+import java.rmi.RemoteException;
 
 /**
 * The {@link ControlCentreAndWatchingStand} class is a monitor that contains
@@ -44,9 +45,13 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
         this.nHorsesFinishedRace = 0;
         this.allowSpectatorsToWatch = false;
         this.spectatorsCondRace = r1.newCondition();
-        this.raceLength = groi.getRaceLength();
-        this.numberOfSpectators = groi.getNumberOfSpectators();
-        this.numberOfHorses = groi.getNumberOfHorses();
+        try{
+            this.raceLength = groi.getRaceLength();
+            this.numberOfSpectators = groi.getNumberOfSpectators();
+            this.numberOfHorses = groi.getNumberOfHorses();
+        }catch(RemoteException e){
+            e.printStackTrace();
+        }
         this.groi = groi;
         System.out.println("raceLength: " + raceLength);
         System.out.println("numberOfSpectators: " + numberOfSpectators);
@@ -78,7 +83,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
                 brokerCond.await();
             }
             nSpectators = 0;
-        }catch(InterruptedException e){
+        }catch(RemoteException | InterruptedException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
@@ -99,7 +104,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
             }
 
             lastHorseFinished = false;
-        }catch(IllegalMonitorStateException | InterruptedException e){
+        }catch(RemoteException | IllegalMonitorStateException | InterruptedException e){
             e.printStackTrace();
         } finally{
             r1.unlock();
@@ -120,7 +125,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
             winnerHorses = list;
             allowSpectatorsToWatch = true;
             spectatorsCondRace.signal();
-        } catch (IllegalMonitorStateException e) {
+        } catch (RemoteException | IllegalMonitorStateException e) {
             e.printStackTrace();
         } finally {
             r1.unlock();
@@ -136,7 +141,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
         r1.lock();
         try { 
             groi.setBrokerState("PHAB");
-        } catch (IllegalMonitorStateException e) {
+        } catch (RemoteException | IllegalMonitorStateException e) {
             e.printStackTrace();
         } finally {
             r1.unlock();
@@ -167,7 +172,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
             }
             else spectatorsCond.signal();
 
-        }catch(InterruptedException e){
+        }catch(RemoteException | InterruptedException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
@@ -194,7 +199,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
             }
             else spectatorsCondRace.signal();
 
-        }catch(InterruptedException ie){
+        }catch(RemoteException | InterruptedException ie){
             ie.printStackTrace();
         }finally{
             r1.unlock();
@@ -221,7 +226,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
                     break;
                 }
             }
-        }catch(Exception e){
+        }catch(RemoteException | IllegalMonitorStateException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
@@ -239,7 +244,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
         r1.lock();
         try{
             groi.setSpectatorsState("CEL", spectatorID);
-        }catch(Exception e){
+        }catch(RemoteException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
@@ -260,7 +265,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
                 nHorsesInPaddock = 0;
                 spectatorsCond.signal();
             }
-        }catch(Exception e){
+        }catch(IllegalMonitorStateException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
@@ -280,7 +285,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
                 lastHorseFinished = true;
                 brokerCond.signal();
             }
-        }catch(Exception e){
+        }catch(IllegalMonitorStateException e){
             e.printStackTrace();
         }finally{
             r1.unlock();

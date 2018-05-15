@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.rmi.RemoteException;
 
 
 /**
@@ -31,8 +32,12 @@ public class RaceTrack implements RaceTrack_Interface{
     RaceTrack(GeneralRepositoryOfInformation_Interface groi){
         r1 = new ReentrantLock();
         horsesCond = r1.newCondition();
-        numberOfHorses = groi.getNumberOfHorses();
-        raceLength = groi.getRaceLength();
+        try{
+            numberOfHorses = groi.getNumberOfHorses();
+            raceLength = groi.getRaceLength();
+        }catch(RemoteException e){
+            e.printStackTrace();
+        }
         horses = new HorsePos[numberOfHorses];
         numHorses = 0;
         numHorsesFinished = 0;
@@ -54,7 +59,7 @@ public class RaceTrack implements RaceTrack_Interface{
 
             horses[0].setMyTurn(true);
             horsesCond.signalAll();
-        }catch(Exception e){
+        }catch(IllegalMonitorStateException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
@@ -90,7 +95,7 @@ public class RaceTrack implements RaceTrack_Interface{
             numHorses = 0;
             numHorsesFinished = 0;
 
-        }catch(Exception e){
+        }catch(IllegalMonitorStateException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
@@ -125,7 +130,8 @@ public class RaceTrack implements RaceTrack_Interface{
                 horsesCond.await();
             }
 
-        }catch (InterruptedException e){e.printStackTrace();}
+        }catch (RemoteException | InterruptedException e){
+            e.printStackTrace();}
         finally {
             r1.unlock();
         }
@@ -152,7 +158,7 @@ public class RaceTrack implements RaceTrack_Interface{
             groi.setHorseTrackPosition(horses[horsePos].getPos(), horseID);
             horses[horsePos].setMyTurn(false);
 
-        } catch (IllegalMonitorStateException | InterruptedException e) {
+        } catch (IllegalMonitorStateException | InterruptedException | RemoteException e) {
             e.printStackTrace();
         } finally{
             r1.unlock();
@@ -194,7 +200,7 @@ public class RaceTrack implements RaceTrack_Interface{
 
             horsesCond.signalAll();
 
-        }catch (Exception e){
+        }catch (IllegalMonitorStateException | RemoteException e){
             e.printStackTrace();
         }finally{
             r1.unlock();
