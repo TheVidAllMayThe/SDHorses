@@ -15,20 +15,20 @@ public class Main {
             GeneralRepositoryOfInformation_Interface groi = null;
             while(groi == null){
                 try{
-                    Registry groiregistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
-                    groi = (GeneralRepositoryOfInformation_Interface) groiregistry.lookup("GeneralRepositoryOfInformation");
+                    Registry groiRegistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
+                    groi = (GeneralRepositoryOfInformation_Interface) groiRegistry.lookup("GeneralRepositoryOfInformation");
                 }catch(RemoteException | NotBoundException e){
+                    e.printStackTrace();
                 }
             }
-
             //Calls method setMonitorAddress for monitor #3 (Control Centre and Watching Stand)
             groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 3);
 
 
             //Monitor is now open to requests from clients
-            Registry registry = LocateRegistry.createRegistry(sourcePort);
             ControlCentreAndWatchingStand ccws = new ControlCentreAndWatchingStand(groi);
             ControlCentreAndWatchingStand_Interface ccws_i = (ControlCentreAndWatchingStand_Interface) UnicastRemoteObject.exportObject(ccws, sourcePort);
+            Registry registry = LocateRegistry.createRegistry(sourcePort);
             registry.bind("ControlCentreAndWatchingStand", ccws_i);
         } catch(RemoteException | AlreadyBoundException | UnknownHostException e){
             e.printStackTrace();

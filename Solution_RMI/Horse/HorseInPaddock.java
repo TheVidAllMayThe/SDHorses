@@ -1,4 +1,3 @@
-package Horse;
 import java.io.Serializable;
 
 /**

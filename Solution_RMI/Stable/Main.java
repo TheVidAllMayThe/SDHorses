@@ -18,6 +18,7 @@ public class Main {
                     Registry groiregistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
                     groi = (GeneralRepositoryOfInformation_Interface) groiregistry.lookup("GeneralRepositoryOfInformation");
                 }catch(RemoteException | NotBoundException e){
+                    e.printStackTrace();
                 }
             }
             
@@ -25,9 +26,9 @@ public class Main {
             groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 1);
 
             //Monitor is now open to requests from clients
-            Registry registry = LocateRegistry.createRegistry(sourcePort);
             Stable sb = new Stable(groi);
             Stable_Interface sb_i = (Stable_Interface) UnicastRemoteObject.exportObject(sb, sourcePort);
+            Registry registry = LocateRegistry.createRegistry(sourcePort);
             registry.bind("Stable", sb_i);
         } catch(RemoteException | AlreadyBoundException | UnknownHostException e){
             e.printStackTrace();
