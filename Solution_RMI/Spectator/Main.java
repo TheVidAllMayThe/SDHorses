@@ -5,11 +5,16 @@ import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.RemoteException;
 
 public class Main {
     public static void main(String[] args){
         try{
-
+            Registry registry;
+            GeneralRepositoryOfInformation_Interface groi = null;
+            Paddock_Interface pd = null;
+            BettingCentre_Interface bc = null;
+            ControlCentreAndWatchingStand_Interface ccws = null;
             int port = -1;
             String host = null;
 
@@ -18,32 +23,36 @@ public class Main {
                 port = Integer.parseInt(args[1]);
             }
 
-            Registry registry = LocateRegistry.getRegistry(host, port);
-            GeneralRepositoryOfInformation_Interface groi =
-                    (GeneralRepositoryOfInformation_Interface) registry.lookup("GeneralRepositoryOfInformation");
-
-            //Gets address and port of all necessary monitors
-            InetSocketAddress address0 = new InetSocketAddress(groi.getMonitorAddress(0), groi.getMonitorPort(0));
-            InetSocketAddress address2 = new InetSocketAddress(groi.getMonitorAddress(2), groi.getMonitorPort(2));
-            InetSocketAddress address3 = new InetSocketAddress(groi.getMonitorAddress(3), groi.getMonitorPort(3));
-
+            while(groi == null){
+                try{
+                    registry = LocateRegistry.getRegistry(host, port);
+                    groi = (GeneralRepositoryOfInformation_Interface) registry.lookup("GeneralRepositoryOfInformation");
+                }catch(RemoteException | NotBoundException ignored){}
+            } 
             int numberOfSpectators = groi.getNumberOfSpectators();
             int numberOfRaces = groi.getNumberOfRaces();
 
 
-            registry = LocateRegistry.getRegistry(groi.getMonitorAddress(0).getHostAddress(), groi.getMonitorPort(0));
-            Paddock_Interface pd =
-                    (Paddock_Interface) registry.lookup("Paddock");
+            while(pd == null){
+                try{
+                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(0).getHostAddress(), groi.getMonitorPort(0));
+                    pd = (Paddock_Interface) registry.lookup("Paddock");
+                }catch(RemoteException | NotBoundException ignored){}
+            }
+                
+            while(bc == null){
+                try{
+                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(2).getHostAddress(), groi.getMonitorPort(2));
+                    bc = (BettingCentre_Interface) registry.lookup("BettingCentre");
+                }catch(RemoteException | NotBoundException ignored){}
+            }
 
-            registry = LocateRegistry.getRegistry(groi.getMonitorAddress(2).getHostAddress(), groi.getMonitorPort(2));
-            BettingCentre_Interface bc =
-                    (BettingCentre_Interface) registry.lookup("BettingCentre");
-
-
-            registry = LocateRegistry.getRegistry(groi.getMonitorAddress(3).getHostAddress(), groi.getMonitorPort(3));
-            ControlCentreAndWatchingStand_Interface ccws =
-                    (ControlCentreAndWatchingStand_Interface ) registry.lookup("ControlCentreAndWatchingStand");
-
+            while(ccws == null){
+                try{
+                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(3).getHostAddress(), groi.getMonitorPort(3));
+                    ccws = (ControlCentreAndWatchingStand_Interface) registry.lookup("ControlCentreAndWatchingStand");
+                }catch(RemoteException | NotBoundException ignored){}
+            }
 
             Spectator[] spectators = new Spectator[numberOfSpectators];
             for(int i=0; i<numberOfSpectators; i++){
@@ -54,7 +63,7 @@ public class Main {
                 spectators[i].join();
             }
 
-        } catch(IOException | InterruptedException | NotBoundException e){
+        } catch(IOException | InterruptedException e){
             e.printStackTrace();
         }
     }

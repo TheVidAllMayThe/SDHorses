@@ -17,9 +17,7 @@ public class Main {
                 try{
                     Registry groiRegistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
                     groi = (GeneralRepositoryOfInformation_Interface) groiRegistry.lookup("GeneralRepositoryOfInformation");
-                }catch(RemoteException | NotBoundException e){
-                    e.printStackTrace();
-                }
+                }catch(RemoteException | NotBoundException ignored){}
             }
             //Calls method setMonitorAddress for monitor #3 (Control Centre and Watching Stand)
             groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 3);

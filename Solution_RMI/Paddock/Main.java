@@ -21,9 +21,7 @@ public class Main {
                 try{
                     Registry groiregistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
                     groi = (GeneralRepositoryOfInformation_Interface) groiregistry.lookup("GeneralRepositoryOfInformation");
-                }catch(RemoteException | NotBoundException e){
-                    e.printStackTrace();
-                }
+                }catch(RemoteException | NotBoundException ignored){}
             }
             
             //Calls method setMonitorAddress for monitor #0 (Paddock)
