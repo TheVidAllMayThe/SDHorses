@@ -59,7 +59,7 @@ public class Paddock implements Paddock_Interface{
      * @param pnk Max step size.
      */
 
-    @Override
+    
     public void proceedToPaddock(Integer horseID, Integer pnk){
         r1.lock();
         try {
@@ -91,7 +91,7 @@ public class Paddock implements Paddock_Interface{
      * Called by the Horse to exit the {@link Paddock}.
      */
 
-    @Override
+    
     public void proceedToStartLine(){
         r1.lock();
         try{
@@ -119,7 +119,7 @@ public class Paddock implements Paddock_Interface{
      * @return Returns the Horse in which the Spectator will bet.
      */
 
-    @Override
+    
     public HorseInPaddock goCheckHorses(Integer spectatorID){
         HorseInPaddock result = null;
         r1.lock();
@@ -148,5 +148,10 @@ public class Paddock implements Paddock_Interface{
             r1.unlock();
         }
         return result;
+    }
+
+
+    public void close(){
+        System.exit(0);
     }
 }

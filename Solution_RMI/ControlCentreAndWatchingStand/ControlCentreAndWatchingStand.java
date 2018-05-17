@@ -1,3 +1,4 @@
+import java.rmi.UnmarshalException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 import java.rmi.RemoteException;
@@ -32,8 +33,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
     private int numberOfHorses;
     private GeneralRepositoryOfInformation_Interface groi;
 
-
-    public ControlCentreAndWatchingStand(GeneralRepositoryOfInformation_Interface groi){
+    ControlCentreAndWatchingStand(GeneralRepositoryOfInformation_Interface groi){
         this.r1 = new ReentrantLock(false);
         this.brokerCond = r1.newCondition();
         this.lastHorseFinished = false;
@@ -62,7 +62,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      * Method used to set the Broker initial state.
      */
 
-    @Override
+    
     public void openingTheEvents(){
     }
     
@@ -71,7 +71,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      * @param numRace Number of the next race.
      */
 
-    @Override
+    
     public void summonHorsesToPaddock(Integer numRace){
 
         r1.lock();
@@ -94,7 +94,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      *  Broker  waits for all  Horse threads to have reached the finish line before proceeding.
      */
 
-    @Override
+    
     public void startTheRace(){
         r1.lock();
         try{ 
@@ -112,12 +112,13 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
 
     }
 
-    @Override
+
     /**
      *  Broker declares the Horses who won and wakes up the Spectators watching the race.
      *
      * @param   list  An integer array containing the ID of the Horses who won the race.
      */
+    
     public void reportResults(Integer[] list) {
         r1.lock();
         try { 
@@ -133,7 +134,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
     }
 
 
-    @Override
+    
     /**
      * Last function of Broker lifecycle.
      */
@@ -141,11 +142,14 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
         r1.lock();
         try { 
             groi.setBrokerState("PHAB");
-        } catch (RemoteException | IllegalMonitorStateException e) {
+        } catch (UnmarshalException ignored){}
+        catch (RemoteException | IllegalMonitorStateException e) {
             e.printStackTrace();
         } finally {
             r1.unlock();
         }
+
+
     }
 
     
@@ -156,7 +160,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      * @param budget Budget of the spectator.
      */
 
-    @Override
+    
     public void waitForNextRace(Integer spectatorID, Double budget){
         r1.lock();
         try{
@@ -184,7 +188,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      * @param spectatorID ID of the spectator calling the method.
      */
 
-    @Override
+    
     public void goWatchTheRace(Integer spectatorID){
         r1.lock();
         try {
@@ -214,7 +218,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      * @return  True if the Spectator won.
      */
 
-    @Override
+    
     public boolean haveIWon(Integer horseID, Integer spectatorID){
         boolean result = false;
         r1.lock();
@@ -239,14 +243,15 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      * @param spectatorID ID of the spectator calling the method.
      */
 
-    @Override
+    
     public void relaxABit(Integer spectatorID){ 
         r1.lock();
         try{
             groi.setSpectatorsState("CEL", spectatorID);
-        }catch(RemoteException e){
+        } catch (UnmarshalException ignored){}
+        catch (RemoteException | IllegalMonitorStateException e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             r1.unlock();
         }
     }
@@ -256,7 +261,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      * that are waiting for the Horses to enter the Paddock.
      */
 
-    @Override
+    
     public void proceedToPaddock(){
         r1.lock();
         try {
@@ -276,7 +281,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      * The last Horse announces in the {@link ControlCentreAndWatchingStand} that he finished the race waking up the Broker.
      */
 
-    @Override
+    
     public void makeAMove(){
         r1.lock();
         try {
@@ -290,5 +295,13 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
         }finally{
             r1.unlock();
         }
+    }
+
+    public void close(){
+        new Thread(() -> {
+            r1.lock();
+            System.exit(0);
+            r1.unlock();
+        }).start();
     }
 }

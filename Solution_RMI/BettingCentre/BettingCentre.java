@@ -52,7 +52,7 @@ public class BettingCentre implements BettingCentre_Interface{
      * Broker accepts a Bet, wakes next Spectator in line and waits for the next one until all Bet's are taken.
      */
 
-    @Override
+    
     public void acceptTheBets() throws IllegalMonitorStateException{
         r1.lock();
         try {
@@ -80,7 +80,7 @@ public class BettingCentre implements BettingCentre_Interface{
      * @return  boolean     Returns true if any spectator won a bet.
      */
 
-    @Override
+    
     public boolean areThereAnyWinners(Integer[] winnerList) {
         boolean returnValue = false;
         r1.lock();
@@ -108,7 +108,7 @@ public class BettingCentre implements BettingCentre_Interface{
      * Broker honors a Bet, wakes next spectator in line and waits for the next spectator claiming a reward until all rewards are given.
      */
 
-    @Override
+    
     public void honorBets(){
         r1.lock();
         try{
@@ -141,7 +141,7 @@ public class BettingCentre implements BettingCentre_Interface{
      * @param budget Budget of the bet.
      */
 
-    @Override
+    
     public void placeABet(Integer pid, Double value, Integer horseID, Double odds, Double budget){
         r1.lock();
         try{  
@@ -172,7 +172,7 @@ public class BettingCentre implements BettingCentre_Interface{
      * @return Collected gains.
      */
 
-    @Override
+    
     public double goCollectTheGains(Integer spectatorID, Double budget){
         double result = 0;
         r1.lock(); try{
@@ -204,4 +204,10 @@ public class BettingCentre implements BettingCentre_Interface{
         }
         return result;
     }
+
+    public void close(){
+
+    }
+
+
 }

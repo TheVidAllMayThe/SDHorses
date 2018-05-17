@@ -7,4 +7,5 @@ public interface BettingCentre_Interface extends Remote{
     void honorBets() throws RemoteException;
     void placeABet(Integer pid, Double value, Integer horseID, Double odds, Double budget) throws RemoteException;
     double goCollectTheGains(Integer spectatorID, Double budget) throws RemoteException;
+    void close()throws RemoteException;
 }

@@ -17,9 +17,10 @@ public class Main {
             //Creates input and output streams
             int sourcePort = Integer.valueOf(args[0]);
             GeneralRepositoryOfInformation_Interface groi = null;
+            Registry groiregistry = null;
             while(groi == null){
                 try{
-                    Registry groiregistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
+                    groiregistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
                     groi = (GeneralRepositoryOfInformation_Interface) groiregistry.lookup("GeneralRepositoryOfInformation");
                 }catch(RemoteException | NotBoundException ignored){}
             }
@@ -27,7 +28,6 @@ public class Main {
             //Calls method setMonitorAddress for monitor #0 (Paddock)
             groi.setMonitorAddress(InetAddress.getLocalHost(), sourcePort, 0);
 
-        
             //Monitor is now open to requests from clients
             Paddock pd = new Paddock(groi);
             Paddock_Interface pd_i = (Paddock_Interface) UnicastRemoteObject.exportObject(pd, sourcePort);

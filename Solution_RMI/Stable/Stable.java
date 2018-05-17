@@ -48,7 +48,7 @@ public class Stable implements Stable_Interface{
     /**
      * Broker awakes the Horses who are waiting to enter the Paddock.
      */
-    @Override
+    
     public void summonHorsesToPaddock(){
         r1.lock();
         try{
@@ -66,7 +66,7 @@ public class Stable implements Stable_Interface{
     /**
      * Last function of Broker lifecycle, awakes Horses waiting to enter Paddock.
      */
-    @Override
+    
     public void entertainTheGuests(){
         r1.lock();
         try{
@@ -88,7 +88,7 @@ public class Stable implements Stable_Interface{
      * @param raceNum Number of the race in which the calling Horse will participate.
      */
 
-    @Override
+    
     public void proceedToStable(Integer raceNum, Integer horseID, Integer pnk){
         r1.lock();
         try{ 
@@ -120,5 +120,9 @@ public class Stable implements Stable_Interface{
         } finally {
             r1.unlock();
         }
+    }
+
+    public void close(){
+        System.exit(0);
     }
 }

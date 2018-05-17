@@ -28,6 +28,7 @@ public class RaceTrack implements RaceTrack_Interface{
     private GeneralRepositoryOfInformation_Interface groi;
     private int numberOfHorses;
     private int raceLength;
+    private int numberOfRaces;
 
     RaceTrack(GeneralRepositoryOfInformation_Interface groi){
         r1 = new ReentrantLock();
@@ -35,12 +36,14 @@ public class RaceTrack implements RaceTrack_Interface{
         try{
             numberOfHorses = groi.getNumberOfHorses();
             raceLength = groi.getRaceLength();
+            numberOfRaces = groi.getNumberOfRaces();
         }catch(RemoteException e){
             e.printStackTrace();
         }
         horses = new HorsePos[numberOfHorses];
         numHorses = 0;
         numHorsesFinished = 0;
+
         this.groi = groi;
         System.out.println("raceLength: " + raceLength);
         System.out.println("numberOfHorses: " + numberOfHorses);
@@ -94,6 +97,7 @@ public class RaceTrack implements RaceTrack_Interface{
             horses = new HorsePos[numberOfHorses];
             numHorses = 0;
             numHorsesFinished = 0;
+
 
         }catch(IllegalMonitorStateException e){
             e.printStackTrace();
@@ -206,5 +210,9 @@ public class RaceTrack implements RaceTrack_Interface{
             r1.unlock();
         }
         return returnVal;
+    }
+
+    public void close(){
+        System.exit(0);
     }
 }

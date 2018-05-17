@@ -13,4 +13,5 @@ public interface ControlCentreAndWatchingStand_Interface extends Remote{
     void relaxABit(Integer spectatorID) throws RemoteException;
     void proceedToPaddock() throws RemoteException;
     void makeAMove() throws RemoteException;
+    void close() throws RemoteException;
 }

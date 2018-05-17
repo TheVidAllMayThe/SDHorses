@@ -1,3 +1,7 @@
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 import java.io.PrintWriter;
@@ -33,6 +37,8 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
     private String[] horseIteration;
     private String[] horseTrackPosition;
     private String[] horsesStanding;
+    private boolean end = false;
+
 
     public GeneralRepositoryOfInformation(int numberOfRaces, int numberOfHorses, int numberOfSpectators, int raceLength){
         this.numberOfRaces = numberOfRaces;
@@ -113,7 +119,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         writer.flush();
     }    
     
-    @Override
+    
     public void setMonitorAddress(InetAddress address, Integer port, Integer monitor){
         r1.lock();
         try{
@@ -128,7 +134,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public InetAddress getMonitorAddress(Integer monitor){
         r1.lock();
         try{
@@ -141,7 +147,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         return monitorAddresses[monitor];
     }
 
-    @Override
+    
     public int getMonitorPort(Integer monitor){
         r1.lock();
         try{
@@ -154,12 +160,15 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         return monitorPorts[monitor];
     }
 
-    @Override
+    
     public void setBrokerState(String state){
         r1.lock();
         try{
             brokerState = state;
             log();
+
+            if(state.equals("PHAB"))
+                checkIfOver();
         }catch(Exception e){
             e.printStackTrace();
         }finally{
@@ -167,12 +176,13 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         } 
     }
 
-    @Override
+    
     public void setSpectatorsState(String state, Integer i){
         r1.lock();
         try{
             spectatorsState[i] = state;
             log();
+            if(state.equals("CEL")) checkIfOver();
         }catch(Exception e){
             e.printStackTrace();
         }finally{
@@ -180,12 +190,13 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
     
-    @Override
+    
     public void setHorsesState(String state, Integer i){
         r1.lock();
         try{
             horsesState[i] = state;
             log();
+            if(state.equals("ATS")) checkIfOver();
         }catch(Exception e){
             e.printStackTrace();
         }finally{
@@ -193,7 +204,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setSpectatorsBudget(Double budget, Integer i){
         r1.lock();
         try{
@@ -208,7 +219,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setRaceNumber(Integer raceNu){
         r1.lock();
         try{
@@ -221,7 +232,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setHorsesPnk(Integer pnk, Integer i){
         r1.lock();
         try{
@@ -236,7 +247,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setRaceDistance(Integer distance){
         r1.lock();
         try{
@@ -250,7 +261,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setSpectatorsSelection(Integer horse, Integer i){
         r1.lock();
         try{
@@ -263,7 +274,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setSpectatorsBet(Double bet, Integer i){
         r1.lock();
         try{
@@ -278,7 +289,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setHorseProbability(Double prob, Integer i){
         r1.lock();
         try{
@@ -298,7 +309,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setHorseIteration(Integer iteration, Integer i){
         r1.lock();
         try{
@@ -315,7 +326,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setHorseTrackPosition(Integer position, Integer i){
         r1.lock();
         try{
@@ -332,7 +343,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public void setHorsesStanding(Character standing, Integer i){
         r1.lock();
         try{
@@ -345,23 +356,83 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         }
     }
 
-    @Override
+    
     public int getNumberOfSpectators(){
         return this.numberOfSpectators;
     }
 
-    @Override
+    
     public int getNumberOfHorses(){
         return this.numberOfHorses;
     }
 
-    @Override
+    
     public int getRaceLength(){
         return this.raceLength;
     }
 
-    @Override
+    
     public int getNumberOfRaces(){
         return this.numberOfRaces;
+    }
+
+
+
+    private void checkIfOver(){
+
+        if(end) return;
+
+        if(!brokerState.equals("PHAB")) return;
+
+        for(String i: spectatorsState)
+            if(!i.equals("CEL")) return;
+
+        //for(String i: horsesState)
+        //    if(!i.equals("ATS")) return;
+
+        end = true;
+        Registry registry;
+
+        try{
+            registry = LocateRegistry.getRegistry(getMonitorAddress(0).getHostAddress(), getMonitorPort(0));
+            Paddock_Interface pd = (Paddock_Interface) registry.lookup("Paddock");
+            pd.close();
+        }catch(RemoteException | NotBoundException ignored) {
+
+        }
+
+        try{
+            registry = LocateRegistry.getRegistry(getMonitorAddress(1).getHostAddress(), getMonitorPort(1));
+            Stable_Interface st = (Stable_Interface) registry.lookup("Stable");
+            st.close();
+        }catch(RemoteException | NotBoundException ignored){
+        }
+
+        try{
+            registry = LocateRegistry.getRegistry(getMonitorAddress(2).getHostAddress(), getMonitorPort(2));
+            BettingCentre_Interface bc = (BettingCentre_Interface) registry.lookup("BettingCentre");
+            bc.close();
+        }catch(RemoteException | NotBoundException ignored){
+
+        }
+
+        try{
+            registry = LocateRegistry.getRegistry(getMonitorAddress(3).getHostAddress(), getMonitorPort(3));
+            ControlCentreAndWatchingStand_Interface ccws = (ControlCentreAndWatchingStand_Interface) registry.lookup("ControlCentreAndWatchingStand");
+            ccws.close();
+        }catch(RemoteException | NotBoundException ignored){
+
+        }
+
+
+        try{
+            registry = LocateRegistry.getRegistry(getMonitorAddress(4).getHostAddress(), getMonitorPort(4));
+            RaceTrack_Interface rt = (RaceTrack_Interface) registry.lookup("RaceTrack");
+            rt.close();
+        }catch(RemoteException | NotBoundException ignored){
+
+        }
+
+        System.exit(0);
     }
 }
