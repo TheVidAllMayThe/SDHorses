@@ -12,9 +12,9 @@ public class Main {
         Registry registry;
         try{
             int sourcePort = Integer.valueOf(args[0]);
-            GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(5,4,4, 10);
-            GeneralRepositoryOfInformation_Interface groi_i = (GeneralRepositoryOfInformation_Interface) UnicastRemoteObject.exportObject(groi, sourcePort);
             registry = LocateRegistry.createRegistry(sourcePort);
+            GeneralRepositoryOfInformation groi = new GeneralRepositoryOfInformation(5,4,4, 10, registry);
+            GeneralRepositoryOfInformation_Interface groi_i = (GeneralRepositoryOfInformation_Interface) UnicastRemoteObject.exportObject(groi, sourcePort);
             registry.bind("GeneralRepositoryOfInformation", groi_i);
         } catch(RemoteException | AlreadyBoundException e){
             e.printStackTrace();

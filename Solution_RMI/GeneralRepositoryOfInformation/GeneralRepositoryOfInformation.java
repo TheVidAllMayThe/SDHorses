@@ -1,5 +1,7 @@
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,6 +21,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
     private ReentrantLock r1 = new ReentrantLock(false);
     private Condition[] conditions = new Condition[5];
     private PrintWriter writer;
+    private Registry registry;
 
     private InetAddress[] monitorAddresses = new InetAddress[5];
     private int[] monitorPorts = new int[5];
@@ -40,11 +43,12 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
     private boolean end = false;
 
 
-    public GeneralRepositoryOfInformation(int numberOfRaces, int numberOfHorses, int numberOfSpectators, int raceLength){
+    public GeneralRepositoryOfInformation(int numberOfRaces, int numberOfHorses, int numberOfSpectators, int raceLength, Registry registry){
         this.numberOfRaces = numberOfRaces;
         this.numberOfHorses = numberOfHorses;
         this.numberOfSpectators = numberOfSpectators;
         this.raceLength = raceLength;
+        this.registry = registry;
         for(int i=0; i < conditions.length; i++) conditions[i] = r1.newCondition();
 
         try{
@@ -376,7 +380,13 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         return this.numberOfRaces;
     }
 
-
+    public void bindObject(String name, Remote obj) {
+        try{
+            registry.bind(name, obj);
+        }catch(RemoteException |AlreadyBoundException  e){
+            e.printStackTrace();
+        }
+    }
 
     private void checkIfOver(){
 
