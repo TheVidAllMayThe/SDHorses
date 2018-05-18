@@ -18,10 +18,12 @@ public class Main {
             int sourcePort = Integer.valueOf(args[0]);
             GeneralRepositoryOfInformation_Interface groi = null;
             Registry groiregistry = null;
+            Register reg = null;
             while(groi == null){
                 try{
                     groiregistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
                     groi = (GeneralRepositoryOfInformation_Interface) groiregistry.lookup("GeneralRepositoryOfInformation");
+                    reg = (Register) groiregistry.lookup("RegisterHandler");
                 }catch(RemoteException | NotBoundException ignored){}
             }
             
@@ -31,9 +33,9 @@ public class Main {
             //Monitor is now open to requests from clients
             Paddock pd = new Paddock(groi);
             Paddock_Interface pd_i = (Paddock_Interface) UnicastRemoteObject.exportObject(pd, sourcePort);
-            Registry registry = LocateRegistry.createRegistry(sourcePort);
-            registry.bind("Paddock", pd_i);
-        } catch(RemoteException | AlreadyBoundException | UnknownHostException e){
+            //Registry registry = LocateRegistry.createRegistry(sourcePort);
+            reg.rebind("Paddock", pd_i);
+        } catch(RemoteException | UnknownHostException e){
             e.printStackTrace();
         }
     }

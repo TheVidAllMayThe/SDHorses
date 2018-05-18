@@ -13,10 +13,12 @@ public class Main {
             //Creates input and output streams
             int sourcePort = Integer.valueOf(args[0]);
             GeneralRepositoryOfInformation_Interface groi = null;
+            Register reg = null;
             while(groi == null){
                 try{
                     Registry groiregistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
                     groi = (GeneralRepositoryOfInformation_Interface) groiregistry.lookup("GeneralRepositoryOfInformation");
+                    reg = (Register) groiregistry.lookup("RegisterHandler");
                 }catch(RemoteException | NotBoundException ignored){}
             }
             
@@ -26,9 +28,9 @@ public class Main {
             //Monitor is now open to requests from clients
             RaceTrack rt = new RaceTrack(groi);
             RaceTrack_Interface rt_i = (RaceTrack_Interface) UnicastRemoteObject.exportObject(rt, sourcePort);
-            Registry registry = LocateRegistry.createRegistry(sourcePort);
-            registry.bind("RaceTrack", rt_i);
-        } catch(RemoteException | AlreadyBoundException | UnknownHostException e){
+            //Registry registry = LocateRegistry.createRegistry(sourcePort);
+            reg.rebind("RaceTrack", rt_i);
+        } catch(RemoteException | UnknownHostException e){
             e.printStackTrace();
         }
     }

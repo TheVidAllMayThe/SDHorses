@@ -282,7 +282,7 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
      */
 
     
-    public void makeAMove(){
+    public void makeAMove(int hID){
         r1.lock();
         try {
             if(++nHorsesFinishedRace == numberOfHorses){
@@ -290,9 +290,10 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
                 lastHorseFinished = true;
                 brokerCond.signal();
             }
-        }catch(IllegalMonitorStateException e){
+            groi.setHorsesState("ATS", hID);
+        }catch(IllegalMonitorStateException | RemoteException e){
             e.printStackTrace();
-        }finally{
+        } finally{
             r1.unlock();
         }
     }

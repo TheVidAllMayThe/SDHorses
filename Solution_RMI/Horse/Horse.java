@@ -55,7 +55,7 @@ public class Horse extends Thread {
                 System.out.println("hasFinishLineBeenCrossed " + this.ID);
             } while (!rt.hasFinishLineBeenCrossed(horsePos, this.ID));
             System.out.println("makeAMove(ccws) " + this.ID);
-            ccws.makeAMove();
+            ccws.makeAMove(this.ID);
 
         }catch (RemoteException e){
             e.printStackTrace();

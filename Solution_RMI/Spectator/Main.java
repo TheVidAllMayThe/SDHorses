@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 public class Main {
     public static void main(String[] args){
         try{
-            Registry registry;
+            Registry registry = null;
             GeneralRepositoryOfInformation_Interface groi = null;
             Paddock_Interface pd = null;
             BettingCentre_Interface bc = null;
@@ -35,21 +35,18 @@ public class Main {
 
             while(pd == null){
                 try{
-                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(0).getHostAddress(), groi.getMonitorPort(0));
                     pd = (Paddock_Interface) registry.lookup("Paddock");
                 }catch(RemoteException | NotBoundException ignored){}
             }
                 
             while(bc == null){
                 try{
-                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(2).getHostAddress(), groi.getMonitorPort(2));
                     bc = (BettingCentre_Interface) registry.lookup("BettingCentre");
                 }catch(RemoteException | NotBoundException ignored){}
             }
 
             while(ccws == null){
                 try{
-                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(3).getHostAddress(), groi.getMonitorPort(3));
                     ccws = (ControlCentreAndWatchingStand_Interface) registry.lookup("ControlCentreAndWatchingStand");
                 }catch(RemoteException | NotBoundException ignored){}
             }

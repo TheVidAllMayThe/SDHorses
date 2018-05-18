@@ -12,6 +12,6 @@ public interface ControlCentreAndWatchingStand_Interface extends Remote{
     boolean haveIWon(Integer horseID, Integer spectatorID) throws RemoteException;
     void relaxABit(Integer spectatorID) throws RemoteException;
     void proceedToPaddock() throws RemoteException;
-    void makeAMove() throws RemoteException;
+    void makeAMove(int hID) throws RemoteException;
     void close() throws RemoteException;
 }

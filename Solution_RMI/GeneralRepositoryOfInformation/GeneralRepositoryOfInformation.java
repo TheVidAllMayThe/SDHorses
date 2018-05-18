@@ -1,7 +1,4 @@
-import java.rmi.NotBoundException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.AlreadyBoundException;
+import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.locks.ReentrantLock;
@@ -374,7 +371,6 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
     public int getRaceLength(){
         return this.raceLength;
     }
-
     
     public int getNumberOfRaces(){
         return this.numberOfRaces;
@@ -382,8 +378,8 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
 
     public void bindObject(String name, Remote obj) {
         try{
-            registry.bind(name, obj);
-        }catch(RemoteException |AlreadyBoundException  e){
+            registry.rebind(name, obj);
+        }catch(RemoteException e){
             e.printStackTrace();
         }
     }
@@ -397,51 +393,44 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         for(String i: spectatorsState)
             if(!i.equals("CEL")) return;
 
-        //for(String i: horsesState)
-        //    if(!i.equals("ATS")) return;
+        for(String i: horsesState)
+            if(!i.equals("ATS")) return;
 
         end = true;
-        Registry registry;
 
-        try{
-            registry = LocateRegistry.getRegistry(getMonitorAddress(0).getHostAddress(), getMonitorPort(0));
-            Paddock_Interface pd = (Paddock_Interface) registry.lookup("Paddock");
-            pd.close();
-        }catch(RemoteException | NotBoundException ignored) {
-
+        try {
+            ((BettingCentre_Interface)registry.lookup("BettingCentre")).close();
+        }catch (UnmarshalException ignore){}
+         catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            ((ControlCentreAndWatchingStand_Interface) registry.lookup("ControlCentreAndWatchingStand")).close();
+        }catch (UnmarshalException ignore){}
+         catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
         }
 
-        try{
-            registry = LocateRegistry.getRegistry(getMonitorAddress(1).getHostAddress(), getMonitorPort(1));
-            Stable_Interface st = (Stable_Interface) registry.lookup("Stable");
-            st.close();
-        }catch(RemoteException | NotBoundException ignored){
+        try {
+            ((Paddock_Interface)registry.lookup("Paddock")).close();
+        }catch (UnmarshalException ignore){}
+         catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
         }
-
-        try{
-            registry = LocateRegistry.getRegistry(getMonitorAddress(2).getHostAddress(), getMonitorPort(2));
-            BettingCentre_Interface bc = (BettingCentre_Interface) registry.lookup("BettingCentre");
-            bc.close();
-        }catch(RemoteException | NotBoundException ignored){
-
+        try {
+            ((RaceTrack_Interface)registry.lookup("RaceTrack")).close();
+        }catch (UnmarshalException ignore){}
+         catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
         }
-
-        try{
-            registry = LocateRegistry.getRegistry(getMonitorAddress(3).getHostAddress(), getMonitorPort(3));
-            ControlCentreAndWatchingStand_Interface ccws = (ControlCentreAndWatchingStand_Interface) registry.lookup("ControlCentreAndWatchingStand");
-            ccws.close();
-        }catch(RemoteException | NotBoundException ignored){
-
+        try {
+            ((Stable_Interface)registry.lookup("Stable")).close();
+        }catch (UnmarshalException ignore){}
+         catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
         }
 
 
-        try{
-            registry = LocateRegistry.getRegistry(getMonitorAddress(4).getHostAddress(), getMonitorPort(4));
-            RaceTrack_Interface rt = (RaceTrack_Interface) registry.lookup("RaceTrack");
-            rt.close();
-        }catch(RemoteException | NotBoundException ignored){
-
-        }
 
         System.exit(0);
     }

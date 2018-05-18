@@ -23,4 +23,5 @@ public interface GeneralRepositoryOfInformation_Interface extends Remote{
     int getNumberOfHorses() throws RemoteException;
     int getRaceLength() throws RemoteException;
     int getNumberOfRaces() throws RemoteException;
+    void bindObject(String name, Remote obj) throws RemoteException;
 }

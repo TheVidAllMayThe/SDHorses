@@ -8,7 +8,7 @@ public class Main {
 
         try{
             //Creates input and output streams
-            Registry registry;
+            Registry registry = null;
             GeneralRepositoryOfInformation_Interface groi = null;
             Stable_Interface st = null;
             BettingCentre_Interface bc = null;
@@ -32,28 +32,24 @@ public class Main {
 
             while(st == null){
                 try{
-                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(1).getHostAddress(), groi.getMonitorPort(1));
                     st = (Stable_Interface) registry.lookup("Stable");
                 }catch(RemoteException | NotBoundException ignored){}
             }
                 
             while(bc == null){
                 try{
-                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(2).getHostAddress(), groi.getMonitorPort(2));
                     bc = (BettingCentre_Interface) registry.lookup("BettingCentre");
                 }catch(RemoteException | NotBoundException ignored){}
             }
 
             while(ccws == null){
                 try{
-                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(3).getHostAddress(), groi.getMonitorPort(3));
                     ccws = (ControlCentreAndWatchingStand_Interface) registry.lookup("ControlCentreAndWatchingStand");
                 }catch(RemoteException | NotBoundException ignored){}
             }
 
             while(rt == null){
                 try{
-                    registry = LocateRegistry.getRegistry(groi.getMonitorAddress(4).getHostAddress(), groi.getMonitorPort(4));
                     rt = (RaceTrack_Interface) registry.lookup("RaceTrack");
                 }catch(RemoteException | NotBoundException ignored){}
             }

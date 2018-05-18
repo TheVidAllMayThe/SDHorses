@@ -206,7 +206,7 @@ public class BettingCentre implements BettingCentre_Interface{
     }
 
     public void close(){
-
+        System.exit(0);
     }
 
 
