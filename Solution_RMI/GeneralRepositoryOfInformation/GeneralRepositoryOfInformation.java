@@ -1,6 +1,7 @@
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 import java.io.PrintWriter;
@@ -38,6 +39,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
     private String[] horseTrackPosition;
     private String[] horsesStanding;
     private boolean end = false;
+
 
 
     public GeneralRepositoryOfInformation(int numberOfRaces, int numberOfHorses, int numberOfSpectators, int raceLength, Registry registry){
@@ -398,39 +400,70 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
 
         end = true;
 
+        System.out.println("\nClosing BettingCentre...");
+
         try {
             ((BettingCentre_Interface)registry.lookup("BettingCentre")).close();
+            registry.unbind("BettingCentre");
         }catch (UnmarshalException ignore){}
          catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Closed BettingCentre\n");
+
+        System.out.println("Closing ControlCentre...");
         try {
             ((ControlCentreAndWatchingStand_Interface) registry.lookup("ControlCentreAndWatchingStand")).close();
+            registry.unbind("ControlCentreAndWatchingStand");
         }catch (UnmarshalException ignore){}
-         catch (RemoteException | NotBoundException e) {
+        catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Closed ControlCentre\n");
+        System.out.println("Closing Paddock...");
 
         try {
             ((Paddock_Interface)registry.lookup("Paddock")).close();
+            registry.unbind("Paddock");
         }catch (UnmarshalException ignore){}
          catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Closed Paddock\n");
+        System.out.println("Closing RaceTrack..");
+
+
         try {
             ((RaceTrack_Interface)registry.lookup("RaceTrack")).close();
+            registry.unbind("RaceTrack");
         }catch (UnmarshalException ignore){}
          catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Closed RaceTrack");
+        System.out.println("Closing Stable...");
+
         try {
             ((Stable_Interface)registry.lookup("Stable")).close();
+            registry.unbind("Stable");
         }catch (UnmarshalException ignore){}
          catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
 
+        System.out.println("Closed Stable\n");
+        System.out.println("Closing myself...");
 
+        try {
+            UnicastRemoteObject.unexportObject(this, true);
+            registry.unbind("GeneralRepositoryOfInformation");
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
 
         System.exit(0);
     }

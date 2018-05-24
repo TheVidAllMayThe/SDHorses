@@ -1,4 +1,6 @@
+import java.rmi.NoSuchObjectException;
 import java.rmi.UnmarshalException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 import java.rmi.RemoteException;
@@ -299,10 +301,14 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
     }
 
     public void close(){
-        new Thread(() -> {
-            r1.lock();
-            System.exit(0);
-            r1.unlock();
-        }).start();
+        new Thread(()->
+        {
+            try {
+                while(!UnicastRemoteObject.unexportObject(this, false));
+            } catch (NoSuchObjectException e) {
+                e.printStackTrace();
+            }
+        }
+        ).start();
     }
 }

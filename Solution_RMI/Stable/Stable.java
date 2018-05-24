@@ -1,3 +1,5 @@
+import java.rmi.NoSuchObjectException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.ThreadLocalRandom;
@@ -123,6 +125,14 @@ public class Stable implements Stable_Interface{
     }
 
     public void close(){
-        System.exit(0);
+        new Thread(()->
+            {
+                try {
+                    while(!UnicastRemoteObject.unexportObject(this, false));
+                } catch (NoSuchObjectException e) {
+                    e.printStackTrace();
+                }
+            }
+        ).start();
     }
 }

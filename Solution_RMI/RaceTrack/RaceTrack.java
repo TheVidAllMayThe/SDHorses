@@ -1,3 +1,5 @@
+import java.rmi.NoSuchObjectException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -213,6 +215,14 @@ public class RaceTrack implements RaceTrack_Interface{
     }
 
     public void close(){
-        System.exit(0);
+        new Thread(()->
+        {
+            try {
+                while(!UnicastRemoteObject.unexportObject(this, false));
+            } catch (NoSuchObjectException e) {
+                e.printStackTrace();
+            }
+        }
+        ).start();
     }
 }
