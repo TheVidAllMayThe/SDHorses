@@ -25,8 +25,8 @@ public class Main {
                     groiregistry = LocateRegistry.getRegistry(args[1], Integer.valueOf(args[2]));
                     groi = (GeneralRepositoryOfInformation_Interface) groiregistry.lookup("GeneralRepositoryOfInformation");
                     reg = (Register) groiregistry.lookup("RegisterHandler");
-                }catch(RemoteException | NotBoundException e){
-                    e.printStackTrace();
+                }catch(RemoteException | NotBoundException ignored){
+
                 }
             }
             //Calls method setMonitorAddress for monitor #2 (Betting_centre)

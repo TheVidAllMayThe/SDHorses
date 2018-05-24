@@ -1,7 +1,7 @@
 import java.io.Serializable;
 
 /**
- * The {@link HorseInPaddock} class holds all the necessary about a Horse that is/has been in the {@link Paddock}.
+ * The {@link HorseInPaddock} class holds all the necessary about a Horse that is/has been in the Paddock.
  *
  * @author  David Almeida, Manuel Xarez
  * @version 1.0

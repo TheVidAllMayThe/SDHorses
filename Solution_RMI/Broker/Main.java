@@ -13,7 +13,7 @@ public class Main {
             Stable_Interface st = null;
             BettingCentre_Interface bc = null;
             ControlCentreAndWatchingStand_Interface ccws = null;
-            RaceTrack_Interface rt = null; 
+            RaceTrack_Interface rt = null;
             int port = -1;
             String host = null;
 

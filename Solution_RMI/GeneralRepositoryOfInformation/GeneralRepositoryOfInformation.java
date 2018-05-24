@@ -400,11 +400,19 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
 
         end = true;
 
+        Register reg = null;
+        try {
+            reg = (Register) registry.lookup("RegisterHandler");
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
+
+
         System.out.println("\nClosing BettingCentre...");
 
         try {
             ((BettingCentre_Interface)registry.lookup("BettingCentre")).close();
-            registry.unbind("BettingCentre");
+            reg.unbind("BettingCentre");
         }catch (UnmarshalException ignore){}
          catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -415,7 +423,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
         System.out.println("Closing ControlCentre...");
         try {
             ((ControlCentreAndWatchingStand_Interface) registry.lookup("ControlCentreAndWatchingStand")).close();
-            registry.unbind("ControlCentreAndWatchingStand");
+            reg.unbind("ControlCentreAndWatchingStand");
         }catch (UnmarshalException ignore){}
         catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -426,7 +434,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
 
         try {
             ((Paddock_Interface)registry.lookup("Paddock")).close();
-            registry.unbind("Paddock");
+            reg.unbind("Paddock");
         }catch (UnmarshalException ignore){}
          catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -438,7 +446,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
 
         try {
             ((RaceTrack_Interface)registry.lookup("RaceTrack")).close();
-            registry.unbind("RaceTrack");
+            reg.unbind("RaceTrack");
         }catch (UnmarshalException ignore){}
          catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -449,7 +457,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
 
         try {
             ((Stable_Interface)registry.lookup("Stable")).close();
-            registry.unbind("Stable");
+            reg.unbind("Stable");
         }catch (UnmarshalException ignore){}
          catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -460,7 +468,7 @@ public class GeneralRepositoryOfInformation implements GeneralRepositoryOfInform
 
         try {
             UnicastRemoteObject.unexportObject(this, true);
-            registry.unbind("GeneralRepositoryOfInformation");
+            reg.unbind("GeneralRepositoryOfInformation");
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
