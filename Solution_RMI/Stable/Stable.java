@@ -124,6 +124,9 @@ public class Stable implements Stable_Interface{
         }
     }
 
+    /**
+     * Function called by the General Repository to close the server
+     */
     public void close(){
         new Thread(()->
             {

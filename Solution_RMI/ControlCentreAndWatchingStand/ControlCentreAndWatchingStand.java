@@ -300,6 +300,9 @@ public class ControlCentreAndWatchingStand implements ControlCentreAndWatchingSt
         }
     }
 
+    /**
+     * Function called by the General Repository to close the server
+     */
     public void close(){
         new Thread(()->
         {

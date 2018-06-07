@@ -207,6 +207,10 @@ public class BettingCentre implements BettingCentre_Interface{
         return result;
     }
 
+    /**
+     * Function called by the General Repository to close the server
+     */
+
     public void close(){
         new Thread(()->
         {
